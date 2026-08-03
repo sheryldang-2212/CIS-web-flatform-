@@ -1,0 +1,90 @@
+.splash-container {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background-color: var(--surface-white);
+  padding: 24px;
+}
+
+.splash-image-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, var(--bg-cream) 0%, var(--surface-white) 100%);
+  margin: -24px -24px 24px -24px;
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+}
+
+.splash-content {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.splash-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-navy);
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.splash-text {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+.pagination-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background-color: var(--border-light);
+  transition: all 0.3s ease;
+}
+
+.dot.active {
+  background-color: var(--accent-orange);
+  width: 16px;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 16px;
+  background-color: var(--accent-orange);
+  color: var(--surface-white);
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 12px;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:active {
+  opacity: 0.8;
+}
+
+.btn-outline {
+  width: 100%;
+  padding: 16px;
+  background-color: transparent;
+  color: var(--text-navy);
+  border: 1px solid var(--text-navy);
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.btn-outline:active {
+  background-color: var(--bg-cream);
+}

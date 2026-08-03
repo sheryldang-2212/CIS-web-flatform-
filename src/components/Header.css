@@ -1,0 +1,239 @@
+.header {
+  height: 72px;
+  background-color: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+}
+
+.header-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--bg-color);
+  padding: 10px 16px;
+  border-radius: 8px;
+  width: 400px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.header-search:focus-within {
+  border-color: var(--primary);
+  background-color: white;
+  box-shadow: 0 0 0 2px rgba(203, 160, 40, 0.1);
+}
+
+.search-icon {
+  color: var(--text-muted);
+}
+
+.header-search input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  outline: none;
+  font-size: 14px;
+  color: var(--text-main);
+}
+
+.header-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.icon-btn {
+  position: relative;
+  color: var(--text-secondary);
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  background-color: var(--bg-color);
+}
+
+.badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--danger);
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background-color: var(--border-color);
+}
+
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-main);
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.lang-btn:hover {
+  background-color: var(--bg-color);
+}
+
+.flag-icon {
+  width: 20px;
+  border-radius: 2px;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.user-profile:hover,
+.user-profile.active {
+  background-color: var(--bg-color);
+}
+
+/* Profile Dropdown */
+.profile-dropdown-container {
+  position: relative;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 260px;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-dropdown-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.profile-email {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.profile-context {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--primary);
+  background-color: rgba(203, 160, 40, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.profile-dropdown-body {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.profile-menu-item:hover {
+  background-color: #f3f4f6;
+}
+
+.menu-icon {
+  color: var(--text-muted);
+  margin-right: 12px;
+}
+
+.profile-dropdown-footer {
+  padding: 8px;
+  border-top: 1px solid var(--border-color);
+}
+
+.text-danger {
+  color: var(--danger);
+}
+
+.text-danger .menu-icon {
+  color: var(--danger);
+}
+
+.text-danger:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  background-color: rgba(203, 160, 40, 0.1);
+  color: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}

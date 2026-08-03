@@ -1,0 +1,61 @@
+.um-permissions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.um-permission-group {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.um-permission-group-header {
+  background-color: #f9fafb;
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #1f2937;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
+  cursor: pointer;
+}
+
+.um-permission-items {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.um-permission-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.um-permission-checkbox {
+  margin-top: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+}
+
+.um-permission-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.um-permission-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.um-permission-desc {
+  font-size: 0.75rem;
+  color: #6b7280;
+}

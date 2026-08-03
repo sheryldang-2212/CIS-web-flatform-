@@ -1,0 +1,146 @@
+.email-demo-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+}
+
+.email-client-container {
+  width: 700px;
+  background-color: #f3f4f6;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.email-client-header {
+  background-color: #e5e7eb;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.window-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.window-controls .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dot.red { background-color: #ef4444; }
+.dot.yellow { background-color: #f59e0b; }
+.dot.green { background-color: #10b981; }
+
+.email-client-title {
+  font-size: 13px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.email-close-btn {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+}
+
+.email-content {
+  background-color: white;
+  margin: 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.email-meta {
+  padding: 16px 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.email-meta-row {
+  display: flex;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.email-meta-row:last-child {
+  margin-bottom: 0;
+}
+
+.meta-label {
+  width: 80px;
+  color: #6b7280;
+}
+
+.meta-value {
+  color: #111827;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.email-body {
+  padding: 32px;
+  color: #374151;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.email-brand-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.email-brand-header h2 {
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.email-action-box {
+  text-align: center;
+  margin: 32px 0;
+  padding: 32px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.btn-email-primary {
+  background-color: var(--primary, #cba028);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 6px rgba(203, 160, 40, 0.2);
+  transition: all 0.2s;
+}
+
+.btn-email-primary:hover {
+  background-color: var(--primary-hover, #b0891d);
+  transform: translateY(-1px);
+}
+
+.email-fallback-text {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.email-fallback-text a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.email-signoff {
+  margin-top: 32px;
+}

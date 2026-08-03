@@ -1,0 +1,127 @@
+.auth-method-container {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background-color: var(--surface-white);
+  padding: 24px;
+}
+
+.auth-method-header {
+  margin-top: 80px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.auth-method-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-navy);
+  margin-bottom: 12px;
+}
+
+.auth-method-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  padding: 0 16px;
+}
+
+.auth-method-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-auth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px;
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 16px;
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+
+.btn-auth-primary {
+  background-color: var(--accent-orange);
+  color: var(--surface-white);
+  border: none;
+}
+
+.btn-auth-secondary {
+  background-color: transparent;
+  color: var(--text-navy);
+  border: 1px solid var(--border-light);
+}
+
+.btn-auth-secondary:active {
+  background-color: var(--bg-cream);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 32px 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.divider:not(:empty)::before {
+  margin-right: .25em;
+}
+
+.divider:not(:empty)::after {
+  margin-left: .25em;
+}
+
+.social-login {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: auto;
+}
+
+.social-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  background-color: var(--surface-white);
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.social-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.auth-footer {
+  text-align: center;
+  padding: 24px 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.auth-link {
+  color: var(--text-navy);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}

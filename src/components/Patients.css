@@ -1,0 +1,312 @@
+.patients-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.patients-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mb-0 { margin-bottom: 0 !important; }
+
+.btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--primary);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.patients-card {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+.filters-bar {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.search-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+  border-radius: 6px;
+  width: 320px;
+  transition: border-color 0.2s;
+}
+
+.search-filter:focus-within {
+  border-color: var(--primary);
+}
+
+.search-filter input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  outline: none;
+  font-size: 14px;
+  color: var(--text-main);
+}
+
+.filters-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filter-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.filter-label {
+  color: var(--text-secondary);
+}
+
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border-color);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-main);
+  background-color: white;
+  transition: all 0.2s;
+}
+
+.dropdown-trigger:hover {
+  border-color: #d1d5db;
+  background-color: #f9fafb;
+}
+
+.date-filter .dropdown-trigger {
+  width: 200px;
+}
+
+.btn-reset {
+  padding: 6px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-main);
+  background-color: white;
+  transition: all 0.2s;
+}
+
+.btn-reset:hover {
+  background-color: var(--bg-color);
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.table-container::-webkit-scrollbar {
+  height: 8px;
+}
+.table-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.table-container::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 10px;
+}
+
+.patients-table {
+  width: 100%;
+  min-width: 1400px;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.patients-table th {
+  padding: 16px 24px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.patients-table td {
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.patients-table tbody tr:hover {
+  background-color: #fafafa;
+}
+
+.font-medium { font-weight: 500; }
+.text-xs { font-size: 12px; }
+
+.badge-danger {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  font-weight: 500;
+}
+
+.badge-secondary {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background-color: var(--bg-color);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  font-weight: 500;
+}
+
+.badge-success {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+  font-weight: 500;
+}
+
+.text-primary {
+  color: #d97706 !important;
+}
+
+.text-primary:hover {
+  text-decoration: underline;
+}
+
+.action-cell {
+  position: relative;
+}
+
+.icon-btn-small {
+  padding: 4px;
+  border-radius: 4px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.icon-btn-small:hover {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+}
+
+.action-dropdown {
+  position: absolute;
+  right: 24px;
+  top: 40px;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 8px 0;
+  min-width: 160px;
+  z-index: 10;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 14px;
+  color: var(--text-main);
+  text-align: left;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: var(--bg-color);
+}
+
+.text-danger {
+  color: var(--danger) !important;
+}
+
+.text-danger:hover {
+  background-color: rgba(239, 68, 68, 0.05) !important;
+}
+
+.pagination {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text-sm { font-size: 14px; }
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.rows-per-page {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.page-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: white;
+  color: var(--text-main);
+  transition: all 0.2s;
+}
+
+.page-btn:hover:not(.disabled) {
+  background-color: var(--bg-color);
+}
+
+.page-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: var(--text-muted);
+}

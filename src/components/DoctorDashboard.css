@@ -1,0 +1,125 @@
+.doctor-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.dd-header {
+  margin-bottom: 8px;
+}
+
+.dd-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 4px 0;
+}
+
+.dd-header p {
+  color: var(--text-muted);
+  margin: 0;
+  font-size: 14px;
+}
+
+.dd-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.dd-kpi-card {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dd-kpi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.dd-kpi-icon {
+  color: var(--text-muted);
+}
+
+.dd-kpi-value {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.dd-kpi-value.danger {
+  color: var(--danger);
+}
+.dd-kpi-value.success {
+  color: var(--success);
+}
+.dd-kpi-value.warning {
+  color: var(--warning);
+}
+
+.dd-kpi-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.dd-section {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.dd-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 4px 0;
+}
+
+.dd-section-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0 0 24px 0;
+}
+
+.dd-empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.dd-view-all {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: #fafafa;
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 16px;
+}
+
+.dd-view-all:hover {
+  background: #f1f5f9;
+}

@@ -1,0 +1,228 @@
+.pm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(17, 24, 39, 0.7); /* Tailwind gray-900 with opacity */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.pm-modal-container {
+  background: white;
+  width: 95%;
+  max-width: 1200px;
+  height: 90vh;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: slideUp 0.3s ease-out;
+  overflow: hidden;
+}
+
+.pm-modal-header {
+  padding: 24px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+}
+
+.pm-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.pm-modal-title .icon {
+  color: var(--primary);
+}
+
+.pm-modal-close-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.pm-modal-close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.pm-modal-content {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+}
+
+.pm-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.pm-th {
+  position: sticky;
+  top: 0;
+  background: white;
+  padding: 16px;
+  border-bottom: 2px solid #e5e7eb;
+  z-index: 20;
+  text-align: center;
+  font-weight: 600;
+  color: #334155;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pm-th-corner {
+  position: sticky;
+  top: 0;
+  left: 0;
+  background: white;
+  z-index: 30; /* Higher z-index for the corner to stay above rows and columns */
+  border-bottom: 2px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  text-align: left;
+  padding: 16px 24px;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  vertical-align: bottom;
+}
+
+.pm-role-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.pm-role-icon {
+  width: 40px;
+  height: 40px;
+  background: #f1f5f9;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+}
+
+.pm-role-name {
+  font-size: 0.875rem;
+}
+
+.pm-module-row {
+  background: #f8fafc;
+}
+
+.pm-module-cell {
+  position: sticky;
+  left: 0;
+  background: #f8fafc;
+  padding: 12px 24px;
+  font-weight: 700;
+  color: #1e293b;
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pm-module-empty {
+  border-bottom: 1px solid #e5e7eb;
+  background: #f8fafc;
+}
+
+.pm-perm-row {
+  background: white;
+  transition: background-color 0.15s;
+}
+
+.pm-perm-row:hover {
+  background-color: #f1f5f9;
+}
+
+.pm-perm-cell {
+  position: sticky;
+  left: 0;
+  background: white; /* Needs background so it covers columns scrolling under it */
+  padding: 12px 24px 12px 48px;
+  font-weight: 500;
+  color: #475569;
+  border-bottom: 1px solid #f1f5f9;
+  border-right: 1px solid #e5e7eb;
+  z-index: 10;
+  transition: background-color 0.15s;
+}
+
+.pm-perm-row:hover .pm-perm-cell {
+  background-color: #f1f5f9;
+}
+
+.pm-checkbox-cell {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #f1f5f9;
+  border-right: 1px solid #f1f5f9;
+}
+
+.pm-checkbox-cell:last-child {
+  border-right: none;
+}
+
+.pm-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.pm-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+  background: white;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

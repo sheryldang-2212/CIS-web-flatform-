@@ -1,0 +1,395 @@
+.lab-orders-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.toggle-group {
+  display: flex;
+  background-color: var(--bg-color);
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.toggle-btn {
+  padding: 6px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.toggle-btn.active {
+  background-color: white;
+  color: var(--text-main);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.filter-dropdown-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.filter-popup {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 12px;
+  min-width: 240px;
+  z-index: 20;
+}
+
+.dropdown-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--text-main);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dropdown-option:hover {
+  background-color: var(--bg-color);
+}
+
+.dropdown-option.selected {
+  background-color: rgba(203, 160, 40, 0.05);
+  font-weight: 500;
+}
+
+/* Orders List */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border-color);
+}
+
+.order-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s;
+}
+
+.order-card:hover {
+  background-color: #fafafa;
+}
+
+.order-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.order-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.order-title-group {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.patient-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.id-number {
+  font-size: 13px;
+}
+
+.order-badges {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  border: none;
+}
+
+.priority-badge.stat { 
+  background-color: #fee2e2;
+  color: #b91c1c; 
+}
+.priority-badge.urgent { 
+  background-color: #ffedd5;
+  color: #c2410c; 
+}
+.priority-badge.routine { 
+  background-color: #f3f4f6;
+  color: #4b5563; 
+}
+
+.status-badge-outline {
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+}
+
+.status-badge-outline.pending-collection {
+  color: #c2410c;
+  background-color: #ffedd5;
+}
+
+.status-badge-outline.ready-for-pickup {
+  color: #0369a1;
+  background-color: #e0f2fe;
+}
+
+.status-badge-outline.picked-up,
+.status-badge-outline.picked-up/sent-to-lab {
+  color: #15803d;
+  background-color: #dcfce7;
+}
+
+.status-badge-outline.cancelled {
+  color: #4b5563;
+  background-color: #f3f4f6;
+}
+
+.lab-action-dropdown {
+  width: 260px;
+  right: 0;
+}
+
+/* Modern Table Layout */
+.modern-table-container {
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-top: 16px;
+  overflow: visible; /* changed from hidden to allow dropdowns to overflow */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.modern-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.modern-data-table th {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: #f9fafb;
+}
+
+.modern-data-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.modern-data-table tr {
+  transition: background-color 0.2s ease;
+}
+
+.modern-data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.modern-data-table tr:hover td {
+  background-color: #f9fafb;
+}
+
+.patient-cell-flex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.patient-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.patient-name-table {
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 14px;
+}
+
+.patient-id-table {
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.tests-cell {
+  position: relative;
+  max-width: 250px;
+}
+
+.test-pills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.test-pill {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* Tooltip Styles */
+.tests-tooltip {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #1e293b;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  z-index: 100;
+  width: 280px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  margin-top: 8px;
+}
+
+.tests-tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 20px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent #1e293b transparent;
+}
+
+.tests-cell:hover .tests-tooltip {
+  display: block;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.tooltip-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 6px;
+}
+
+.tooltip-test-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tooltip-test-item {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.status-cell-flex {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.assigned-table {
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.date-table {
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.actions-cell {
+  text-align: right;
+}
+
+.table-actions-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  position: relative;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.border-btn {
+  border: none;
+  background-color: transparent;
+  color: var(--text-muted);
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.border-btn:hover {
+  background-color: #f3f4f6;
+  color: var(--text-main);
+}

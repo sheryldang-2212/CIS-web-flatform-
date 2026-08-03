@@ -1,0 +1,388 @@
+.lot-container {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.lot-header {
+  margin-bottom: 24px;
+}
+
+.lot-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 4px 0;
+}
+
+.lot-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.lot-content-card {
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.lot-tabs-container {
+  margin-bottom: 24px;
+}
+
+.lot-tabs {
+  display: flex;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.lot-tab {
+  flex: 1;
+  text-align: center;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lot-tab:hover:not(.active) {
+  color: var(--text-main);
+}
+
+.lot-tab.active {
+  background-color: white;
+  color: var(--text-main);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  font-weight: 600;
+}
+
+.lot-filters-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.lot-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+  border-radius: 6px;
+  width: 320px;
+  transition: border-color 0.2s;
+  background-color: white;
+}
+
+.lot-search:focus-within {
+  border-color: var(--primary);
+}
+
+.lot-search input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  outline: none;
+  font-size: 13px;
+  color: var(--text-main);
+}
+
+.lot-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lot-filter-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.lot-filter-select {
+  padding: 6px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-main);
+  background-color: white;
+  outline: none;
+  cursor: pointer;
+}
+
+.lot-filter-select:focus {
+  border-color: var(--primary);
+}
+
+.btn-lot-reset {
+  padding: 6px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: 8px;
+}
+
+.btn-lot-reset:hover {
+  background-color: var(--bg-color);
+}
+
+.lot-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.lot-toolbar-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.btn-batch-action {
+  background-color: #e5e7eb;
+  color: #9ca3af;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: not-allowed;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-batch-action.active {
+  background-color: #d97706; /* A generic brand color for 'Picked Up' action */
+  color: white;
+  cursor: pointer;
+}
+
+.btn-batch-action.active:hover {
+  opacity: 0.9;
+}
+
+.lot-table-wrapper {
+  overflow-x: auto;
+}
+
+.lot-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.lot-table th,
+.lot-table td {
+  padding: 16px 20px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 13px;
+}
+
+.lot-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.lot-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.lot-table th {
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.lot-table tr:last-child td {
+  border-bottom: none;
+}
+
+.lot-table-checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+}
+
+.lot-patient-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lot-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.lot-patient-name {
+  font-weight: 600;
+  color: var(--text-main);
+  display: block;
+}
+
+.lot-patient-id {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.lot-priority-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  border: none;
+}
+
+.lot-priority-stat { 
+  background-color: #fee2e2;
+  color: #b91c1c; 
+}
+.lot-priority-urgent { 
+  background-color: #ffedd5;
+  color: #c2410c; 
+}
+.lot-priority-routine { 
+  background-color: #f3f4f6;
+  color: #4b5563; 
+}
+
+.lot-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.btn-lot-action {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.btn-lot-action:hover {
+  background-color: #f3f4f6;
+  color: var(--text-main);
+}
+
+.btn-lot-primary {
+  background-color: #d97706; /* Warmer, premium amber */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(217, 119, 6, 0.2);
+}
+
+.btn-lot-primary:hover {
+  background-color: #b45309;
+  box-shadow: 0 4px 6px rgba(217, 119, 6, 0.2);
+  transform: translateY(-1px);
+}
+
+.lot-status-pill {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.lot-test-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.lot-test-chip {
+  background-color: #f3f4f6;
+  color: var(--text-main);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.lot-status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.status-sent-to-lab {
+  background-color: #f0f9ff;
+  color: #0284c7;
+  border-color: #bae6fd;
+}
+
+.status-received-by-lab {
+  background-color: #fef08a; /* A bit more golden */
+  color: #854d0e;
+  border-color: #fde047;
+}
+
+.status-processing {
+  background-color: #f3e8ff;
+  color: #7e22ce;
+  border-color: #e9d5ff;
+}
+
+.status-result-available {
+  background-color: #dcfce7;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.status-doctor-review-pending {
+  background-color: #ffedd5;
+  color: #c2410c;
+  border-color: #fed7aa;
+}

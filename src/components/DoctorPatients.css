@@ -1,0 +1,245 @@
+.doctor-patients {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.dp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.dp-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 4px 0;
+}
+
+.dp-header p {
+  color: var(--text-muted);
+  margin: 0;
+  font-size: 14px;
+}
+
+.dp-total-badge {
+  background: white;
+  border: 1px solid var(--border-color);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.dp-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.dp-search {
+  position: relative;
+  flex: 1;
+  max-width: 600px;
+}
+
+.dp-search input {
+  width: 100%;
+  padding: 10px 14px 10px 36px;
+  border: 1px solid transparent;
+  background: #f1f5f9;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+.dp-search input:focus {
+  border-color: var(--primary);
+  background: white;
+}
+
+.dp-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.dp-select {
+  padding: 10px 32px 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  min-width: 150px;
+}
+
+.dp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dp-card {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dp-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 16px;
+}
+
+.dp-patient-primary {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.dp-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dp-name-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.dp-name-group h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+.dp-mrn {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.dp-mrn span {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.dp-risk-badges {
+  display: flex;
+  gap: 12px;
+}
+.dp-badge {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 16px;
+  background: #f1f5f9;
+  color: #475569;
+}
+.dp-badge.medium-risk { background: #fef08a; color: #854d0e; }
+.dp-badge.low-risk { background: #dcfce7; color: #166534; }
+
+.dp-card-body {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.dp-info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dp-info-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.dp-info-item svg {
+  color: #94a3b8;
+}
+.dp-info-item span {
+  color: var(--text-main);
+}
+
+.dp-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.dp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.dp-tag {
+  background: #f1f5f9;
+  color: var(--text-main);
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.dp-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.dp-btn {
+  background: #f8eadd;
+  color: #9c6c3f;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dp-btn:hover {
+  background: #f1d8c1;
+}
+
+.dp-id-badge {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 12px;
+}

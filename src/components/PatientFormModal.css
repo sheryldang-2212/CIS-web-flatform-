@@ -1,0 +1,276 @@
+.patient-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 4px 0;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.required {
+  color: var(--danger);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-main);
+  background-color: white;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--primary);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+/* Custom Input Wrappers */
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon input {
+  padding-right: 36px;
+}
+
+.input-icon {
+  position: absolute;
+  right: 12px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.select-wrapper select {
+  appearance: none;
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+.select-icon {
+  position: absolute;
+  right: 12px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* Phone Input with Country Code */
+.phone-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: white;
+  transition: border-color 0.2s;
+  overflow: hidden;
+}
+
+.phone-input:focus-within {
+  border-color: var(--primary);
+}
+
+.phone-input input {
+  border: none;
+  border-radius: 0;
+  padding-left: 12px;
+}
+
+.phone-input input:focus {
+  border: none;
+}
+
+.country-code {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-right: 1px solid var(--border-color);
+  background-color: #f9fafb;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.flag {
+  width: 20px;
+  border-radius: 2px;
+}
+
+/* Checkboxes */
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-main);
+  cursor: pointer;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.checkbox-label:hover {
+  background-color: var(--bg-color);
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.checkbox-label:has(input:checked) {
+  border-color: var(--primary);
+  background-color: rgba(203, 160, 40, 0.05);
+}
+
+.mt-3 {
+  margin-top: 12px;
+}
+
+/* Footer Actions */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-color);
+  margin-top: 8px;
+}
+
+.btn-cancel {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 10px 16px;
+  transition: color 0.2s;
+}
+
+.btn-cancel:hover {
+  color: var(--text-main);
+}
+
+/* Additional CSS for Nationality rules */
+.nationality-toggle {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.radio-label input {
+  accent-color: var(--primary);
+  margin: 0;
+}
+
+.empty-state-box {
+  background-color: #f9fafb;
+  border: 1px dashed var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+
+.input-error {
+  border-color: var(--danger) !important;
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.1) !important;
+}
+
+.error-text {
+  color: var(--danger);
+  font-size: 12px;
+  font-weight: 500;
+  display: block;
+}
+
+.full-width-error {
+  grid-column: 1 / -1;
+}
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+
+.mt-4 {
+  margin-top: 16px !important;
+}
+
+.mb-4 {
+  margin-bottom: 16px !important;
+}
+

@@ -1,0 +1,109 @@
+.addon-test-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.addon-selector-group {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.addon-dropdown-trigger {
+  padding: 10px 12px;
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-main);
+  background-color: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 0 0 2px rgba(203, 160, 40, 0.1);
+}
+
+.addon-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  margin-top: 4px;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 20;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sticky-search {
+  margin: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: white;
+}
+
+.addon-categories-list {
+  overflow-y: auto;
+  padding: 0 12px 12px 12px;
+}
+
+.addon-category-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.addon-category-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.addon-category-header:hover {
+  background-color: #f9fafb;
+}
+
+.addon-category-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
+.addon-category-body {
+  display: flex;
+  flex-direction: column;
+  padding-left: 20px;
+  padding-bottom: 8px;
+}
+
+.addon-test-label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start !important;
+  gap: 10px;
+  padding: 6px 4px;
+  font-size: 13px;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.addon-test-label:hover {
+  background-color: #f9fafb;
+}
+
+.addon-test-label input {
+  accent-color: var(--primary);
+  width: auto !important;
+  margin: 0;
+}
+
+.mb-4 {
+  margin-bottom: 24px;
+}

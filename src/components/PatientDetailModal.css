@@ -1,0 +1,389 @@
+/* Accordion Styles */
+.patient-detail-accordions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 8px; /* for scrollbar */
+}
+
+/* Scrollbar styling for modal */
+.patient-detail-accordions::-webkit-scrollbar {
+  width: 6px;
+}
+.patient-detail-accordions::-webkit-scrollbar-track {
+  background: transparent;
+}
+.patient-detail-accordions::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+.accordion-section {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: white;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 16px;
+  background-color: #f9fafb;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s;
+}
+
+.accordion-header:hover {
+  background-color: #f3f4f6;
+}
+
+.accordion-header:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.accordion-title-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.accordion-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.accordion-count {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.accordion-icon {
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+}
+
+.accordion-content {
+  padding: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Detail Grid (Personal Summary) */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.detail-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+/* Medical History */
+.medical-history-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.mh-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.mh-list-item:last-child {
+  border-bottom: none;
+}
+
+.mh-list-item:hover {
+  background-color: #fafafa;
+}
+
+.mh-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-main);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.mh-icon {
+  color: #4b5563;
+}
+
+.mh-item-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mh-alert-icon {
+  color: #ea580c; /* Orange for the exclamation mark */
+  background-color: #ffedd5;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+/* Medical History Subviews */
+.mh-subview-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.mh-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #0369a1;
+  font-weight: 500;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  position: absolute;
+  left: 0;
+}
+
+.mh-subview-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}
+
+.mh-edit-btn {
+  color: #0369a1;
+  font-weight: 500;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  position: absolute;
+  right: 0;
+}
+
+.mh-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+.mh-detail-row:last-child {
+  border-bottom: none;
+}
+.mh-detail-label {
+  font-weight: 500;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mh-detail-value {
+  color: #64748b;
+}
+
+.mh-detail-stacked {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mh-detail-stacked:last-child {
+  border-bottom: none;
+}
+.mh-stacked-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mh-stacked-title {
+  font-weight: 500;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mh-stacked-value {
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+/* Empty States */
+.empty-state-box {
+  background-color: #f9fafb;
+  border: 1px dashed var(--border-color);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Header Area */
+.patient-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.profile-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-name {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.profile-meta {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+/* Data Tables */
+.table-container {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.data-table th,
+.data-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.data-table th {
+  font-weight: 600;
+  color: var(--text-muted);
+  background-color: #f9fafb;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.font-medium {
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.status-completed {
+  background-color: #e0f2f1;
+  color: #00796b;
+}
+
+.status-pending {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.status-in-progress {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.abnormal-flag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.action-buttons-row {
+  display: flex;
+  gap: 8px;
+}
+
+.my-3 {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
