@@ -22,6 +22,11 @@ export default function LabOrders() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [activeFilterDropdown, setActiveFilterDropdown] = useState<string | null>(null);
 
+  // Filter States
+  const [timeFilter, setTimeFilter] = useState('Today');
+  const [assignedFilter, setAssignedFilter] = useState('All');
+  const [priorityFilter, setPriorityFilter] = useState('Urgent');
+
   // Modal States
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingOrder, setEditingOrder] = useState<any>(null);
@@ -157,27 +162,61 @@ export default function LabOrders() {
           
           <div className="filters-right">
             <div className="toggle-group">
-              <button className="toggle-btn">All</button>
-              <button className="toggle-btn active">Today</button>
+              <button 
+                className={`toggle-btn ${timeFilter === 'All' ? 'active' : ''}`}
+                onClick={() => setTimeFilter('All')}
+              >All</button>
+              <button 
+                className={`toggle-btn ${timeFilter === 'Today' ? 'active' : ''}`}
+                onClick={() => setTimeFilter('Today')}
+              >Today</button>
             </div>
             
             <div className="filter-dropdown-container">
               <span className="filter-label">Assigned to:</span>
               <button className="dropdown-trigger" onClick={() => toggleFilterDropdown('assigned')}>
-                All <ChevronDown size={14} />
+                {assignedFilter} <ChevronDown size={14} />
               </button>
-              {/* ... Dropdown contents omitted for brevity, same as before ... */}
+              {activeFilterDropdown === 'assigned' && (
+                <div className="filter-dropdown-menu">
+                  {['All', 'Dr. Narong Phanich', 'Dr. Preecha Suthiwong', 'Dr. Apinya Chamroenuk', 'Dr. Michel Kikuzaki'].map(doc => (
+                    <button 
+                      key={doc} 
+                      className={`dropdown-item ${assignedFilter === doc ? 'active' : ''}`}
+                      onClick={() => { setAssignedFilter(doc); setActiveFilterDropdown(null); }}
+                    >
+                      {doc}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             
             <div className="filter-dropdown-container">
               <span className="filter-label">Priority:</span>
               <button className="dropdown-trigger" onClick={() => toggleFilterDropdown('priority')}>
-                Urgent <ChevronDown size={14} />
+                {priorityFilter} <ChevronDown size={14} />
               </button>
-              {/* ... */}
+              {activeFilterDropdown === 'priority' && (
+                <div className="filter-dropdown-menu">
+                  {['All', 'STAT', 'Urgent', 'Routine'].map(prio => (
+                    <button 
+                      key={prio} 
+                      className={`dropdown-item ${priorityFilter === prio ? 'active' : ''}`}
+                      onClick={() => { setPriorityFilter(prio); setActiveFilterDropdown(null); }}
+                    >
+                      {prio}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             
-            <button className="btn-reset">Reset</button>
+            <button className="btn-reset" onClick={() => {
+              setTimeFilter('Today');
+              setAssignedFilter('All');
+              setPriorityFilter('All');
+            }}>Reset</button>
           </div>
         </div>
 

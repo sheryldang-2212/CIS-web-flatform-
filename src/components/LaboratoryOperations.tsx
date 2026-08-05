@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Truck, Clock, FileText, Settings, ShieldAlert, Mail, MessageSquare, Bell, Save, CheckCircle, Barcode, ClipboardCheck, AlertTriangle } from 'lucide-react';
+import { Truck, Clock, FileText, Settings, ShieldAlert, Save, CheckCircle, Barcode, ClipboardCheck, AlertTriangle } from 'lucide-react';
 import './LaboratoryOperations.css';
 
 const TABS = [
   { id: 'delivery', name: 'Logistics & Delivery', icon: Truck },
-  { id: 'workflow', name: 'Workflow Settings', icon: Settings },
-  { id: 'notifications', name: 'Alerts & Notifications', icon: Bell },
+  { id: 'workflow', name: 'Workflow Settings', icon: Settings }
 ];
 
 const DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
 
 export default function LaboratoryOperations() {
   const [activeTab, setActiveTab] = useState(TABS[0].id);
@@ -24,11 +24,6 @@ export default function LaboratoryOperations() {
   const [criticalValueAlerts, setCriticalValueAlerts] = useState(true);
   const [turnaroundTime, setTurnaroundTime] = useState('24');
 
-  // Notification State
-  const [emailNotifs, setEmailNotifs] = useState(true);
-  const [smsNotifs, setSmsNotifs] = useState(false);
-  const [systemAlerts, setSystemAlerts] = useState(true);
-  const [labResultAlerts, setLabResultAlerts] = useState(true);
 
   const toggleDay = (day: string) => {
     setPickupDays(prev => 
@@ -186,69 +181,6 @@ export default function LaboratoryOperations() {
           </div>
         )}
 
-        {/* Alerts & Notifications */}
-        {activeTab === 'notifications' && (
-          <div className="fadeIn">
-            <h2 className="lab-ops-section-title">Notification Preferences</h2>
-            <p className="lab-ops-section-desc">Manage how and when this clinic receives operational alerts.</p>
-
-            <div className="action-card">
-              <div className="action-card-info">
-                <div className="action-card-icon" style={{ backgroundColor: '#f0fdf4', color: '#16a34a' }}><Mail size={20} /></div>
-                <div className="action-card-text">
-                  <span className="action-card-title">Email Notifications</span>
-                  <span className="action-card-desc">Send alerts to the clinic's primary email address.</span>
-                </div>
-              </div>
-              <label className="setting-toggle">
-                <input type="checkbox" checked={emailNotifs} onChange={e => setEmailNotifs(e.target.checked)} />
-                <span className="toggle-bg"></span>
-              </label>
-            </div>
-
-            <div className="action-card">
-              <div className="action-card-info">
-                <div className="action-card-icon" style={{ backgroundColor: '#eff6ff', color: '#2563eb' }}><MessageSquare size={20} /></div>
-                <div className="action-card-text">
-                  <span className="action-card-title">SMS Notifications</span>
-                  <span className="action-card-desc">Send text messages to the primary contact number.</span>
-                </div>
-              </div>
-              <label className="setting-toggle">
-                <input type="checkbox" checked={smsNotifs} onChange={e => setSmsNotifs(e.target.checked)} />
-                <span className="toggle-bg"></span>
-              </label>
-            </div>
-
-            <div className="action-card">
-              <div className="action-card-info">
-                <div className="action-card-icon" style={{ backgroundColor: '#fef2f2', color: '#ef4444' }}><ShieldAlert size={20} /></div>
-                <div className="action-card-text">
-                  <span className="action-card-title">System Alerts</span>
-                  <span className="action-card-desc">Show in-app notification banners for urgent issues.</span>
-                </div>
-              </div>
-              <label className="setting-toggle">
-                <input type="checkbox" checked={systemAlerts} onChange={e => setSystemAlerts(e.target.checked)} />
-                <span className="toggle-bg"></span>
-              </label>
-            </div>
-
-            <div className="action-card">
-              <div className="action-card-info">
-                <div className="action-card-icon" style={{ backgroundColor: '#fffbeb', color: '#d97706' }}><CheckCircle size={20} /></div>
-                <div className="action-card-text">
-                  <span className="action-card-title">Lab Result Alerts</span>
-                  <span className="action-card-desc">Notify when new patient lab results are ready.</span>
-                </div>
-              </div>
-              <label className="setting-toggle">
-                <input type="checkbox" checked={labResultAlerts} onChange={e => setLabResultAlerts(e.target.checked)} />
-                <span className="toggle-bg"></span>
-              </label>
-            </div>
-          </div>
-        )}
 
         <div className="lab-ops-footer">
           <button className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={handleSave}>

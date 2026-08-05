@@ -1,4 +1,4 @@
-import { LayoutGrid, Users, FlaskConical, PanelLeftClose, Settings, Shield, Lock, Box, Activity, FileKey, ShieldAlert } from 'lucide-react';
+import { LayoutGrid, Users, FlaskConical, PanelLeftClose, Settings, Shield, Lock, Box, Activity, FileKey, ShieldAlert, Database } from 'lucide-react';
 import './Sidebar.css';
 
 interface SidebarProps {
@@ -23,6 +23,12 @@ const getNavGroups = (role: string) => {
         items: [
           { name: 'Staff Management', icon: Users },
           { name: 'Roles & Permissions', icon: Shield }
+        ]
+      },
+      {
+        groupName: 'PATIENT DATA MANAGEMENT',
+        items: [
+          { name: 'Patient Data', icon: Database, locked: true }
         ]
       },
       {
@@ -118,11 +124,13 @@ export default function Sidebar({
                 return (
                   <li key={item.name}>
                     <button 
-                      className={`nav-item ${isActive ? 'active' : ''}`}
-                      onClick={() => setActiveTab(item.name)}
+                      className={`nav-item ${isActive ? 'active' : ''} ${(item as any).locked ? 'locked' : ''}`}
+                      onClick={() => !(item as any).locked && setActiveTab(item.name)}
+                      disabled={(item as any).locked}
                     >
                       <Icon size={20} className="nav-icon" />
                       <span className="nav-text">{item.name}</span>
+                      {(item as any).locked && <span className="nav-locked-badge">Coming Soon</span>}
                     </button>
                   </li>
                 );

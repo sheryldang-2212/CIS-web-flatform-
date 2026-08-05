@@ -15,6 +15,7 @@ const mockOrders = [
     notes: 'Rule-out MI',
     tests: ['HbA1c', 'Fasting Glucose', 'Creatinine', 'BUN'],
     extraTests: 12,
+    allTests: ['HbA1c', 'Fasting Glucose', 'Creatinine', 'BUN', 'Lipid Profile', 'CBC', 'TSH', 'Free T4', 'AST', 'ALT', 'ALP', 'Total Protein', 'Albumin', 'Globulin', 'Bilirubin Total', 'Uric Acid'],
     status: 'Pending Collection',
     date: 'Jul 10, 2026, 09:15 AM'
   },
@@ -26,6 +27,7 @@ const mockOrders = [
     notes: 'Severe migraine evaluation',
     tests: ['CBC', 'CD4', 'CRP', 'Ferritin'],
     extraTests: 0,
+    allTests: ['CBC', 'CD4', 'CRP', 'Ferritin'],
     status: 'Pending Collection',
     date: 'Jul 10, 2026, 10:30 AM'
   },
@@ -37,6 +39,7 @@ const mockOrders = [
     notes: 'Annual checkup routine',
     tests: ['TSH', 'Free T4', 'Free T3', 'Anti-TPO'],
     extraTests: 2,
+    allTests: ['TSH', 'Free T4', 'Free T3', 'Anti-TPO', 'Thyroglobulin', 'Calcitonin'],
     status: 'Ready for Pickup',
     date: 'Jul 10, 2026, 08:00 AM'
   },
@@ -48,6 +51,7 @@ const mockOrders = [
     notes: 'Jul 20, 2026, 09:15 AM',
     tests: ['AST', 'ALT', 'GGT', 'Total Bilirubin'],
     extraTests: 12,
+    allTests: ['AST', 'ALT', 'GGT', 'Total Bilirubin', 'Direct Bilirubin', 'ALP', 'Total Protein', 'Albumin', 'Globulin', 'A/G Ratio', 'Amylase', 'Lipase', 'LDH', 'G6PD', 'HBsAg', 'Anti-HBs'],
     status: 'Picked Up/Sent to Lab',
     date: 'Jul 10, 2026, 07:45 AM'
   },
@@ -59,6 +63,7 @@ const mockOrders = [
     notes: 'Emergency',
     tests: ['Troponin I', 'CK-MB'],
     extraTests: 0,
+    allTests: ['Troponin I', 'CK-MB'],
     status: 'Cancelled',
     date: 'Jul 10, 2026, 11:20 AM'
   }
@@ -194,7 +199,17 @@ export default function SampleCollectionQueue() {
                 <td className="col-tests">
                   <div className="test-chips">
                     {order.tests.map(t => <span key={t} className="test-chip">{t}</span>)}
-                    {order.extraTests > 0 && <span className="test-chip test-chip-more">+{order.extraTests}</span>}
+                    {order.extraTests > 0 && (
+                      <div className="test-tooltip-wrapper">
+                        <span className="test-chip test-chip-more">+{order.extraTests}</span>
+                        <div className="test-tooltip">
+                          <div className="test-tooltip-header">All Tests ({order.allTests.length})</div>
+                          <div className="test-tooltip-body">
+                            {order.allTests.map(t => <span key={t} className="test-chip">{t}</span>)}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </td>
                 

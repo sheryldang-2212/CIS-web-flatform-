@@ -5,14 +5,14 @@ import UserPermissionsModal from './UserPermissionsModal';
 import './UserManagement.css';
 
 const MOCK_USERS = [
-  { id: '1', name: 'Sarah Chen', email: 'sarah.chen@healthhub.com', phone: '+1234567890', clinic: 'Downtown Medical Center', role: 'Receptionist', status: 'Active', lastLogin: 'Jan 15, 2024 08:30', hasKey: false },
-  { id: '2', name: 'Dr. James Wilson', email: 'james.wilson@healthhub.com', phone: '+1234567891', clinic: 'Downtown Medical Center', role: 'Doctor', status: 'Active', lastLogin: 'Jan 15, 2024 07:45', hasKey: true },
-  { id: '3', name: 'Maria Rodriguez', email: 'maria.rodriguez@healthhub.com', phone: '+1234567892', clinic: 'Downtown Medical Center', role: 'Technician', status: 'Active', lastLogin: 'Jan 15, 2024 09:00', hasKey: false },
-  { id: '4', name: 'Dr. Lisa Park', email: 'lisa.park@healthhub.com', phone: '+1234567893', clinic: 'Downtown Medical Center', role: 'Admin', status: 'Active', lastLogin: 'Jan 15, 2024 08:00', hasKey: true },
-  { id: '5', name: 'Jennifer Thompson', email: 'jennifer.thompson@suburbanfamily.com', phone: '+1234567896', clinic: 'Suburban Family Clinic', role: 'Receptionist', status: 'Active', lastLogin: 'Jan 15, 2024 08:15', hasKey: false },
-  { id: '6', name: 'Dr. Michael Davis', email: 'michael.davis@suburbanfamily.com', phone: '+1234567897', clinic: 'Suburban Family Clinic', role: 'Doctor', status: 'Active', lastLogin: 'Jan 15, 2024 07:30', hasKey: true },
-  { id: '7', name: 'Dr. Anna Martinez', email: 'anna.martinez@suburbanfamily.com', phone: '+1234567898', clinic: 'Suburban Family Clinic', role: 'Admin', status: 'Active', lastLogin: 'Jan 15, 2024 08:30', hasKey: true },
-  { id: '8', name: 'Robert Johnson', email: 'robert.johnson@urgentcare.com', phone: '+1234567899', clinic: 'Emergency Care Center', role: 'Technician', status: 'Active', lastLogin: 'Jan 15, 2024 06:00', hasKey: false },
+  { id: '1', name: 'Sarah Chen', email: 'sarah.chen@healthhub.com', phone: '+1234567890', clinic: 'Downtown Medical Center', role: ['Receptionist'], status: 'Active', lastLogin: 'Jan 15, 2024 08:30', hasKey: false },
+  { id: '2', name: 'Dr. James Wilson', email: 'james.wilson@healthhub.com', phone: '+1234567891', clinic: 'Downtown Medical Center', role: ['Doctor', 'Clinic Admin'], status: 'Active', lastLogin: 'Jan 15, 2024 07:45', hasKey: true },
+  { id: '3', name: 'Maria Rodriguez', email: 'maria.rodriguez@healthhub.com', phone: '+1234567892', clinic: 'Downtown Medical Center', role: ['Technician', 'Receptionist'], status: 'Active', lastLogin: 'Jan 15, 2024 09:00', hasKey: false },
+  { id: '4', name: 'Dr. Lisa Park', email: 'lisa.park@healthhub.com', phone: '+1234567893', clinic: 'Downtown Medical Center', role: ['Admin'], status: 'Active', lastLogin: 'Jan 15, 2024 08:00', hasKey: true },
+  { id: '5', name: 'Jennifer Thompson', email: 'jennifer.thompson@suburbanfamily.com', phone: '+1234567896', clinic: 'Suburban Family Clinic', role: ['Receptionist'], status: 'Active', lastLogin: 'Jan 15, 2024 08:15', hasKey: false },
+  { id: '6', name: 'Dr. Michael Davis', email: 'michael.davis@suburbanfamily.com', phone: '+1234567897', clinic: 'Suburban Family Clinic', role: ['Doctor'], status: 'Active', lastLogin: 'Jan 15, 2024 07:30', hasKey: true },
+  { id: '7', name: 'Dr. Anna Martinez', email: 'anna.martinez@suburbanfamily.com', phone: '+1234567898', clinic: 'Suburban Family Clinic', role: ['Admin', 'Doctor', 'Technician'], status: 'Active', lastLogin: 'Jan 15, 2024 08:30', hasKey: true },
+  { id: '8', name: 'Robert Johnson', email: 'robert.johnson@urgentcare.com', phone: '+1234567899', clinic: 'Emergency Care Center', role: ['Technician'], status: 'Active', lastLogin: 'Jan 15, 2024 06:00', hasKey: false },
 ];
 
 export default function UserManagement() {
@@ -115,7 +115,21 @@ export default function UserManagement() {
                         </div>
                       </td>
                       <td><span className="um-cell-text">{user.email}</span></td>
-                      <td><span className="um-badge um-badge-role">{user.role}</span></td>
+                      <td>
+                        <div className="um-roles-cell">
+                          {user.role.slice(0, 1).map(r => (
+                            <span key={r} className="um-badge um-badge-role">{r}</span>
+                          ))}
+                          {user.role.length > 1 && (
+                            <span 
+                              className="um-badge um-badge-role-more" 
+                              title={user.role.slice(1).join(', ')}
+                            >
+                              +{user.role.length - 1}
+                            </span>
+                          )}
+                        </div>
+                      </td>
                       <td><span className="um-badge um-badge-active">{user.status}</span></td>
                       <td>
                         <span className="um-cell-text">{user.lastLogin}</span>

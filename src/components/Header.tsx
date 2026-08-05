@@ -6,20 +6,22 @@ interface HeaderProps {
   activeTab: string;
   currentClinic: any;
   currentRole: string;
-  setActiveTab?: (tab: string) => void;
-  setSettingsTab?: (tab: string) => void;
-  setShowSettingsModal?: (show: boolean) => void;
+  setActiveTab: (tab: string) => void;
+  setSettingsTab: (tab: string) => void;
+  setShowSettingsModal: (show: boolean) => void;
   setShowContextModal?: (show: boolean) => void;
+  onLogout?: () => void;
 }
 
 export default function Header({ 
-  activeTab, 
   currentClinic, 
   currentRole,
+  activeTab,
   setActiveTab,
   setSettingsTab,
   setShowSettingsModal,
-  setShowContextModal
+  setShowContextModal,
+  onLogout
 }: HeaderProps) {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
@@ -112,7 +114,7 @@ export default function Header({
               </div>
               
               <div className="profile-dropdown-footer">
-                <button className="profile-menu-item text-danger">
+                <button className="profile-menu-item text-danger" onClick={onLogout}>
                   <LogOut size={16} className="menu-icon" />
                   <span>Log out</span>
                 </button>

@@ -1,0 +1,222 @@
+.verify-identity-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.verify-identity-modal {
+  background-color: #ffffff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease-out;
+  overflow: hidden;
+}
+
+.vim-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.vim-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.vim-close-btn {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.vim-close-btn:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.vim-body {
+  padding: 24px;
+}
+
+.vim-instruction {
+  font-size: 14px;
+  color: #4b5563;
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+}
+
+.vim-form-group {
+  margin-bottom: 24px;
+}
+
+.vim-form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.vim-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #1f2937;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.vim-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(203, 160, 40, 0.1);
+}
+
+.vim-comparison-box {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.vim-comparison-header {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.vim-field-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.vim-field-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.vim-field-label {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.vim-field-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.vim-confirmation-section {
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.vim-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.vim-checkbox {
+  margin-top: 3px;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  accent-color: #16a34a;
+}
+
+.vim-checkbox-text {
+  font-size: 13px;
+  color: #166534;
+  line-height: 1.5;
+}
+
+.vim-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f9fafb;
+}
+
+.vim-mismatch-warning {
+  font-size: 12px;
+  color: #b45309;
+  line-height: 1.4;
+}
+
+.vim-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.vim-btn-cancel {
+  padding: 10px 16px;
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  color: #374151;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.vim-btn-cancel:hover {
+  background-color: #f3f4f6;
+}
+
+.vim-btn-confirm {
+  padding: 10px 16px;
+  border: none;
+  background-color: #94a3b8;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: not-allowed;
+  transition: all 0.2s;
+}
+
+.vim-btn-confirm.active {
+  background-color: var(--primary);
+  cursor: pointer;
+}
+
+.vim-btn-confirm.active:hover {
+  background-color: var(--primary-hover);
+}

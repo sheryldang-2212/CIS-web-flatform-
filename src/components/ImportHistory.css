@@ -1,0 +1,29 @@
+.import-history-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.action-buttons-sm {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-action {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-action:hover {
+  background-color: rgba(203, 160, 40, 0.1);
+  color: var(--primary);
+}

@@ -181,6 +181,51 @@
   background-color: transparent;
   color: var(--text-muted);
   border-style: dashed;
+  cursor: pointer;
+}
+
+/* Tooltip */
+.test-tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.test-tooltip {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  padding: 12px;
+  min-width: 200px;
+  z-index: 50;
+  transition: all 0.2s ease;
+  transform: translateY(-5px);
+}
+
+.test-tooltip-wrapper:hover .test-tooltip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.test-tooltip-header {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.test-tooltip-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .status-pill.outline {

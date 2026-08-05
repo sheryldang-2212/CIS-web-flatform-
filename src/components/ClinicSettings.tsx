@@ -1,9 +1,115 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Building2, MapPin, Clock, CalendarDays, FlaskConical, 
-  UploadCloud, Lock, Phone, Mail, Plus, Trash2, Edit2
+  UploadCloud, Lock, Phone, Mail, Plus, Trash2, Edit2,
+  Bell, Activity, Users, Database, ChevronDown, ClipboardCheck
 } from 'lucide-react';
 import './ClinicSettings.css';
+
+const NOTIFICATION_SECTIONS = [
+  {
+    id: 'clinical-workflow',
+    title: 'Clinical Workflow',
+    icon: Activity,
+    color: '#3b82f6',
+    bgColor: '#eff6ff',
+    events: [
+      { id: 1, name: 'New Lab Order Created', recipients: ['Technician'], inApp: true },
+      { id: 2, name: 'Lab Result Pending Review', recipients: ['Doctor'], inApp: true },
+      { id: 3, name: 'Lab Result Returned to LIS', recipients: ['Doctor', 'Technician'], inApp: true },
+      { id: 4, name: 'Lab Order Cancelled', recipients: ['Receptionist', 'Technician'], inApp: true },
+    ]
+  },
+  {
+    id: 'patient-link',
+    title: 'Patient Link & Consent',
+    icon: Users,
+    color: '#14b8a6',
+    bgColor: '#f0fdfa',
+    events: [
+      { id: 21, name: 'Patient Linked Successfully', recipients: ['Receptionist'], inApp: true },
+      { id: 22, name: 'Invitation Delivery Failed', recipients: ['Receptionist'], inApp: true },
+      { id: 23, name: 'Consent Withdrawn', recipients: ['Admin'], inApp: true },
+    ]
+  },
+  {
+    id: 'system-lis',
+    title: 'System & LIS Integration',
+    icon: Database,
+    color: '#6366f1',
+    bgColor: '#e0e7ff',
+    events: [
+      { id: 31, name: 'Lab Order Submission Failed', recipients: ['Admin'], inApp: true },
+      { id: 32, name: 'LIS Result Sync Failed', recipients: ['Admin'], inApp: true },
+      { id: 33, name: 'Scheduled Maintenance', recipients: ['All Clinic Staff'], inApp: true },
+    ]
+  }
+];
+
+const ROLES_OPTIONS = ['Doctor', 'Receptionist', 'Technician', 'Admin', 'All Clinic Staff', 'Platform Admin'];
+
+const MultiSelectDropdown = ({ selected, onChange }: { selected: string[], onChange: (newSelection: string[]) => void }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const toggleOption = (role: string) => {
+    if (selected.includes(role)) {
+      onChange(selected.filter(r => r !== role));
+    } else {
+      onChange([...selected, role]);
+    }
+  };
+
+  return (
+    <div className="table-multi-select" ref={dropdownRef}>
+      <div className="table-multi-select-trigger" onClick={() => setIsOpen(!isOpen)}>
+        <span className="table-multi-select-value">{selected.join(', ') || 'Select recipients'}</span>
+        <ChevronDown size={14} />
+      </div>
+      {isOpen && (
+        <div className="table-multi-select-menu">
+          {ROLES_OPTIONS.map(role => (
+            <label key={role} className="table-multi-select-option">
+              <input type="checkbox" checked={selected.includes(role)} onChange={() => toggleOption(role)} />
+              <span>{role}</span>
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const NotificationRow = ({ event, index }: { event: any, index: number }) => {
+  const [recipients, setRecipients] = useState(event.recipients);
+  const [inApp, setInApp] = useState(event.inApp);
+
+  return (
+    <tr>
+      <td className="notif-index">{index + 1}</td>
+      <td className="notif-event-name">{event.name}</td>
+      <td>
+        <MultiSelectDropdown selected={recipients} onChange={setRecipients} />
+      </td>
+      <td>
+        <label className="setting-toggle small">
+          <input type="checkbox" checked={inApp} onChange={e => setInApp(e.target.checked)} />
+          <span className="toggle-bg"></span>
+        </label>
+      </td>
+    </tr>
+  );
+};
 
 export default function ClinicSettings() {
   const [activeTab, setActiveTab] = useState('general');
@@ -36,6 +142,7 @@ export default function ClinicSettings() {
     { id: 'hours', label: 'Business Hours', icon: Clock },
     { id: 'holidays', label: 'Holidays & Special Hours', icon: CalendarDays },
     { id: 'operations', label: 'Sample Operations', icon: FlaskConical },
+    { id: 'notifications', label: 'Notification Settings', icon: Bell },
   ];
 
   return (
@@ -325,6 +432,48 @@ export default function ClinicSettings() {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* TAB 6: Notification Settings */}
+        {activeTab === 'notifications' && (
+          <div className="settings-panel">
+            <h2 className="settings-section-title">Clinic Notification Settings</h2>
+            <p className="text-muted" style={{ fontSize: '14px', marginBottom: '16px' }}>
+              Configure notification events, recipients, and delivery channels for this clinic.
+            </p>
+
+            <div className="notif-table-container">
+              {NOTIFICATION_SECTIONS.map(section => {
+                const SectionIcon = section.icon;
+                return (
+                  <div key={section.id} className="notif-section-card">
+                    <div className="notif-section-header">
+                      <div className="notif-section-icon" style={{ backgroundColor: section.bgColor, color: section.color }}>
+                        <SectionIcon size={18} />
+                      </div>
+                      <h3>{section.title}</h3>
+                    </div>
+                    
+                    <table className="notif-table">
+                      <thead>
+                        <tr>
+                          <th style={{ width: '40px' }}></th>
+                          <th style={{ width: '40%' }}>Event</th>
+                          <th style={{ width: '40%' }}>Recipient</th>
+                          <th style={{ width: '20%' }}>In-App</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {section.events.map((ev, index) => (
+                          <NotificationRow key={ev.id} event={ev} index={index} />
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 

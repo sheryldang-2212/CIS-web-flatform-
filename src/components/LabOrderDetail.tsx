@@ -265,9 +265,9 @@ export default function LabOrderDetail({ order, patient, onBack, onEdit, onPrint
             {activeTab === 'history' && (
               <div className="history-tab">
                 <div className="history-filters" style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
-                  <div className="search-filter history-search" style={{ flex: 1, position: 'relative' }}>
-                    <Search size={16} className="text-muted" style={{ position: 'absolute', left: '12px', top: '10px' }} />
-                    <input type="text" placeholder="Search..." style={{ width: '100%', padding: '8px 12px 8px 36px', borderRadius: '8px', border: '1px solid #d1d5db' }} />
+                  <div className="search-filter history-search" style={{ flex: 1 }}>
+                    <Search size={16} className="text-muted" />
+                    <input type="text" placeholder="Search..." />
                   </div>
                   <div className="filter-dropdown date-filter">
                     <button className="dropdown-trigger" style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #d1d5db', backgroundColor: 'white', display: 'flex', gap: '8px', alignItems: 'center' }}>

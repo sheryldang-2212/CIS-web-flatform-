@@ -13,6 +13,7 @@ export default function RolesPermissions() {
   const [expandedModules, setExpandedModules] = useState<string[]>(['dashboard', 'patient_management', 'lab_orders']);
   const [roleActive, setRoleActive] = useState(true);
   const [isMatrixOpen, setIsMatrixOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const toggleModule = (moduleId: string) => {
     if (expandedModules.includes(moduleId)) {
@@ -38,11 +39,6 @@ export default function RolesPermissions() {
         <div className="rp-title">
           <h1>Roles & Permissions</h1>
           <p>Configure permissions by role. Users may have multiple roles within each clinic.</p>
-        </div>
-        <div className="rp-header-actions">
-          <button className="um-btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => setIsMatrixOpen(true)}>
-            <Grid size={16} /> View Permission Matrix
-          </button>
         </div>
       </div>
 
@@ -97,18 +93,12 @@ export default function RolesPermissions() {
               <div className="rp-main-actions">
                 <span style={{ fontSize: '0.875rem', color: '#4b5563' }}>Role active</span>
                 <label className="um-toggle-switch">
-                  <input type="checkbox" checked={roleActive} onChange={(e) => setRoleActive(e.target.checked)} />
+                  <input type="checkbox" checked={roleActive} onChange={(e) => setRoleActive(e.target.checked)} disabled={!isEditing} />
                   <span className="um-toggle-slider"></span>
                 </label>
                 <MoreVertical size={20} color="#9ca3af" style={{ cursor: 'pointer' }} />
               </div>
             </div>
-          </div>
-
-          <div className="rp-info-banner">
-            <Info size={20} />
-            <span>Effective access is the union of all active roles assigned to a user in the active clinic.</span>
-            <a href="#">View rules</a>
           </div>
 
           <div className="rp-toolbar">
@@ -144,11 +134,13 @@ export default function RolesPermissions() {
                   const selectedCount = module.permissions.filter(p => p.roles && p.roles.includes(activeRole.id)).length;
                   const ModIcon = module.icon;
                   
+                  if (!isEditing && selectedCount === 0) return null;
+                  
                   return (
                     <React.Fragment key={module.id}>
                       <tr className="rp-module-row" onClick={() => toggleModule(module.id)}>
                         <td className="rp-td" style={{ paddingLeft: '16px' }}>
-                          <input type="checkbox" className="rp-checkbox" checked={selectedCount > 0} readOnly onClick={(e) => e.stopPropagation()} />
+                          <input type="checkbox" className="rp-checkbox" checked={selectedCount > 0} disabled={!isEditing} readOnly onClick={(e) => e.stopPropagation()} />
                         </td>
                         <td className="rp-td rp-module-cell">
                           <ModIcon size={18} color="#4b5563" />
@@ -162,7 +154,7 @@ export default function RolesPermissions() {
                       {isExpanded && module.permissions.map(perm => (
                         <tr key={perm.code} className="rp-perm-row">
                           <td className="rp-td" style={{ paddingLeft: '40px' }}>
-                            <input type="checkbox" className="rp-checkbox sub-checkbox" checked={perm.roles && perm.roles.includes(activeRole.id)} readOnly />
+                            <input type="checkbox" className="rp-checkbox sub-checkbox" checked={perm.roles && perm.roles.includes(activeRole.id)} disabled={!isEditing} readOnly />
                           </td>
                           <td className="rp-td">
                             <div className="rp-perm-name">{perm.name}</div>
@@ -186,8 +178,16 @@ export default function RolesPermissions() {
           <div className="rp-main-footer">
             <div style={{ fontWeight: 600, color: '#111827' }}>14 permissions selected</div>
             <div style={{ display: 'flex', gap: '12px' }}>
-              <button className="um-btn-outline">Discard</button>
-              <button className="um-btn-primary">Save Changes</button>
+              {!isEditing ? (
+                <button className="um-btn-primary" onClick={() => setIsEditing(true)}>
+                  <Edit2 size={16} style={{ marginRight: '8px', display: 'inline' }} /> Edit Permissions
+                </button>
+              ) : (
+                <>
+                  <button className="um-btn-outline" onClick={() => setIsEditing(false)}>Discard</button>
+                  <button className="um-btn-primary" onClick={() => setIsEditing(false)}>Save Changes</button>
+                </>
+              )}
             </div>
           </div>
         </div>

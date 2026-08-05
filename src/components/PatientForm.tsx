@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Calendar, ChevronDown } from 'lucide-react';
+import { Calendar, ChevronDown, ShieldCheck, ShieldAlert } from 'lucide-react';
 import './PatientFormModal.css'; // Reuse the same CSS for now
 
 interface PatientFormProps {
   mode: 'create' | 'edit';
   initialData?: any;
-  onSubmitSuccess?: (email: string) => void;
+  onSubmitSuccess?: (email: string, isVerified?: boolean, newPatientData?: any) => void;
   onCancel: () => void;
 }
 
@@ -15,16 +15,26 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
 
   const [nationalId, setNationalId] = useState(initialData?.nationalId || '');
   const [email, setEmail] = useState(initialData?.email || '');
+  const [isDocumentReviewed, setIsDocumentReviewed] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (onSubmitSuccess) {
-      onSubmitSuccess(email || 'patient@example.com');
+      onSubmitSuccess(
+        email || 'patient@example.com', 
+        isDocumentReviewed, 
+        { nationalId, email } // Simplified data for mockup
+      );
     }
   };
 
   return (
     <form className="patient-form" onSubmit={handleSubmit} noValidate>
+      {isEdit && initialData?.identityVerification === 'Verified' && (
+        <div style={{ backgroundColor: '#fffbeb', border: '1px solid #fde68a', borderRadius: '8px', padding: '12px', marginBottom: '20px', display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+          <span style={{ color: '#d97706', fontSize: '13px', fontWeight: 600 }}>Warning: Changing the patient's Name, Date of Birth, or ID/Passport will reset their Identity Verification status to Unverified.</span>
+        </div>
+      )}
       {/* General Information */}
       <section className="form-section">
         <div className="section-header-flex">
@@ -32,7 +42,24 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
         </div>
         
         <div className="form-group mt-4 mb-4">
-          <label>National ID <span className="required">*</span></label>
+          <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span>National ID <span className="required">*</span></span>
+            {!isEdit && (
+              <label className="toggle-switch-wrapper" title="Toggle to confirm you've verified the identity document">
+                <div className="toggle-switch">
+                  <input 
+                    type="checkbox" 
+                    checked={isDocumentReviewed}
+                    onChange={(e) => setIsDocumentReviewed(e.target.checked)}
+                  />
+                  <span className="toggle-slider"></span>
+                </div>
+                <span className={`toggle-label ${isDocumentReviewed ? 'verified' : ''}`}>
+                  {isDocumentReviewed ? 'Identity Verified' : 'Verify Identity'}
+                </span>
+              </label>
+            )}
+          </label>
           <input 
             type="text" 
             placeholder="Enter National ID or Passport Number" 
@@ -227,6 +254,7 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
       </section>
 
       {/* Footer Actions */}
+
       <div className="modal-actions" style={{ paddingBottom: '24px' }}>
         <button type="button" className="btn-cancel" onClick={onCancel}>Cancel</button>
         <button type="submit" className="btn-primary" disabled={!nationalId}>

@@ -18,6 +18,10 @@ import AuditLogs from './components/AuditLogs';
 import DoctorDashboard from './components/DoctorDashboard';
 import DoctorLabResults from './components/DoctorLabResults';
 import DoctorPatients from './components/DoctorPatients';
+import PatientDataManagement from './components/PatientDataManagement';
+import Login from './components/Login';
+import ForgotPassword from './components/ForgotPassword';
+import CreatePassword from './components/CreatePassword';
 import './App.css';
 
 const MOCK_CLINICS = [
@@ -26,6 +30,9 @@ const MOCK_CLINICS = [
 ];
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authRoute, setAuthRoute] = useState('login');
+  
   const [activeTab, setActiveTab] = useState('Patients');
   
   // mock user data
@@ -41,6 +48,24 @@ function App() {
     setCurrentClinic(clinic);
     setCurrentRole(role);
   };
+
+  if (!isAuthenticated) {
+    if (authRoute === 'forgot-password') return <ForgotPassword onNavigate={setAuthRoute} />;
+    if (authRoute === 'create-password') return <CreatePassword mode="create" onNavigate={setAuthRoute} />;
+    if (authRoute === 'reset-password') return <CreatePassword mode="reset" onNavigate={setAuthRoute} />;
+    
+    return (
+      <Login 
+        mockClinics={MOCK_CLINICS} 
+        onLoginSuccess={(clinic, role) => {
+          setCurrentClinic(clinic);
+          setCurrentRole(role);
+          setIsAuthenticated(true);
+        }}
+        onNavigate={setAuthRoute}
+      />
+    );
+  }
 
   return (
     <div className="web-app-container" style={{ display: 'flex', flexDirection: 'row', width: '100vw', height: '100vh', overflow: 'hidden', margin: 0, padding: 0 }}>
@@ -59,6 +84,10 @@ function App() {
           setSettingsTab={setSettingsTab}
           setShowSettingsModal={setShowSettingsModal}
           setShowContextModal={setShowContextModal}
+          onLogout={() => {
+            setIsAuthenticated(false);
+            setAuthRoute('login');
+          }}
         />
         <div className="content-area" style={{ flex: 1, overflowY: 'auto', padding: '24px', backgroundColor: '#f8f9fa' }}>
           {activeTab === 'Dashboard' && currentRole !== 'Doctor' && <Dashboard currentRole={currentRole} setActiveTab={setActiveTab} />}
@@ -88,6 +117,11 @@ function App() {
           {activeTab === 'Audit Logs' && (
             <div className="fadeIn">
               <AuditLogs />
+            </div>
+          )}
+          {activeTab === 'Patient Data' && (
+            <div className="fadeIn" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <PatientDataManagement />
             </div>
           )}
         </div>

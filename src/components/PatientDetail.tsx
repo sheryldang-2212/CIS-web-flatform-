@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Edit2, ChevronDown, ChevronRight, AlertTriangle, Eye, Settings, Activity, ArrowLeft, Printer, Phone, Mail, MapPin, Shield, PhoneCall, HeartPulse, FileText, Pill, Link2, Lock } from 'lucide-react';
+import { Edit2, ChevronDown, ChevronRight, AlertTriangle, Eye, Settings, Activity, ArrowLeft, Printer, Phone, Mail, MapPin, Shield, PhoneCall, HeartPulse, FileText, Pill, Link2, Lock, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import LabResultReviewModal from './LabResultReviewModal';
 import LabOrderDetail from './LabOrderDetail';
+import VerifyIdentityModal from './VerifyIdentityModal';
 import './PatientDetail.css';
 
 interface PatientDetailProps {
@@ -27,8 +28,19 @@ export default function PatientDetail({ patient, onEdit, onBack }: PatientDetail
   const [activeTab, setActiveTab] = useState<string>('medical_history');
   const [activeHistoryView, setActiveHistoryView] = useState<string>('main');
   const [viewingLabOrder, setViewingLabOrder] = useState<any>(null);
+  const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
+  const [localPatient, setLocalPatient] = useState(patient);
 
-  if (!patient) return null;
+  if (!localPatient) return null;
+
+  const handleVerify = (verificationDetails: any) => {
+    setLocalPatient({
+      ...localPatient,
+      identityVerification: 'Verified',
+      ...verificationDetails
+    });
+    setIsVerifyModalOpen(false);
+  };
 
   if (viewingLabOrder) {
     return (
@@ -70,16 +82,45 @@ export default function PatientDetail({ patient, onEdit, onBack }: PatientDetail
               <h3 className="profile-name">{patient.name}</h3>
               <span className="profile-meta">{patient.idNumber} • {patient.age} • {patient.gender}</span>
             </div>
-            {patient.allergy && (
+            {localPatient.allergy && (
               <span className="alert-tag-red">
                 <AlertTriangle size={12} style={{ display: 'inline', marginRight: '4px' }} />
                 Has Allergies
               </span>
             )}
-            <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '4px', color: '#16a34a', fontSize: '13px', fontWeight: 600 }}>
-              <Lock size={12} />
-              <span>Synced with Mobile App</span>
-            </div>
+            {localPatient.registrationSource === 'Mobile App' && (
+              <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '4px', color: '#16a34a', fontSize: '13px', fontWeight: 600 }}>
+                <Lock size={12} />
+                <span>Synced with Mobile App</span>
+              </div>
+            )}
+          </div>
+
+          <div className="sidebar-section">
+            <h4 className="sidebar-title">Identity Verification</h4>
+            {localPatient.identityVerification === 'Unverified' ? (
+              <div className="sidebar-item">
+                <ShieldAlert size={16} className="sidebar-icon" style={{ color: '#d97706' }} />
+                <div className="sidebar-item-content">
+                  <span className="sidebar-item-label" style={{ color: '#d97706', fontWeight: 600 }}>Unverified</span>
+                  <span className="sidebar-item-value text-muted" style={{ fontSize: '13px' }}>Source: {localPatient.registrationSource}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="sidebar-item">
+                <CheckCircle2 size={16} className="sidebar-icon" style={{ color: '#16a34a' }} />
+                <div className="sidebar-item-content">
+                  <span className="sidebar-item-label" style={{ color: '#16a34a', fontWeight: 600 }}>Verified</span>
+                  <div className="text-muted" style={{ fontSize: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                    <span>Verified by: {localPatient.verifiedBy}</span>
+                    <span>Verified at: {localPatient.verifiedAt}</span>
+                    <span>Clinic: {localPatient.verifiedClinic}</span>
+                    <span>Doc Type: {localPatient.documentType}</span>
+                    <span>Method: {localPatient.verificationMethod}</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="sidebar-section">
@@ -152,6 +193,21 @@ export default function PatientDetail({ patient, onEdit, onBack }: PatientDetail
 
         {/* RIGHT COLUMN: Main Content */}
         <div className="patient-main-content">
+          {localPatient.identityVerification === 'Unverified' && (
+            <div className="identity-verification-banner">
+              <div className="ivb-content">
+                <ShieldAlert size={20} className="ivb-icon" />
+                <div>
+                  <h4 className="ivb-title">Identity verification required</h4>
+                  <p className="ivb-desc">This patient has not been verified at the clinic. Please review the patient's original National ID or Passport.</p>
+                </div>
+              </div>
+              <button className="btn-primary btn-sm" onClick={() => setIsVerifyModalOpen(true)}>
+                Verify Identity
+              </button>
+            </div>
+          )}
+
           <div className="patient-tabs">
             <button 
               className={`patient-tab-btn ${activeTab === 'medical_history' ? 'active' : ''}`}
@@ -256,23 +312,23 @@ export default function PatientDetail({ patient, onEdit, onBack }: PatientDetail
                     </div>
                     <div className="mh-detail-stacked">
                       <span className="mh-stacked-title">Health Goal</span>
-                      <span className="mh-stacked-value">Answer</span>
+                      <span className="mh-stacked-value">None</span>
                     </div>
                     <div className="mh-detail-stacked">
                       <span className="mh-stacked-title">Activity</span>
-                      <span className="mh-stacked-value">Answer</span>
+                      <span className="mh-stacked-value">None</span>
                     </div>
                     <div className="mh-detail-stacked">
                       <span className="mh-stacked-title">Nutrition</span>
-                      <span className="mh-stacked-value">Answer</span>
+                      <span className="mh-stacked-value">None</span>
                     </div>
                     <div className="mh-detail-stacked">
                       <span className="mh-stacked-title">Smoking Status</span>
-                      <span className="mh-stacked-value">Answer</span>
+                      <span className="mh-stacked-value">None</span>
                     </div>
                     <div className="mh-detail-stacked">
                       <span className="mh-stacked-title">Alcohol Consumption</span>
-                      <span className="mh-stacked-value">Answer</span>
+                      <span className="mh-stacked-value">None</span>
                     </div>
                   </div>
                 ) : activeHistoryView === 'medical_conditions' ? (
@@ -381,6 +437,14 @@ export default function PatientDetail({ patient, onEdit, onBack }: PatientDetail
         <LabResultReviewModal 
           result={selectedResultToReview}
           onClose={() => setSelectedResultToReview(null)}
+        />
+      )}
+      
+      {isVerifyModalOpen && (
+        <VerifyIdentityModal 
+          patient={localPatient}
+          onClose={() => setIsVerifyModalOpen(false)}
+          onVerify={handleVerify}
         />
       )}
     </div>

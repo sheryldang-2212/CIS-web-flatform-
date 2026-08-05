@@ -223,31 +223,31 @@ export default function PatientDetailModal({ isOpen, onClose, patient, onEdit }:
                 <div className="mh-stacked-header">
                   <span className="mh-stacked-title">Health Goal</span>
                 </div>
-                <div className="mh-stacked-value">Answer</div>
+                <div className="mh-stacked-value">None</div>
               </div>
               <div className="mh-detail-stacked">
                 <div className="mh-stacked-header">
                   <span className="mh-stacked-title">Activity</span>
                 </div>
-                <div className="mh-stacked-value">Answer</div>
+                <div className="mh-stacked-value">None</div>
               </div>
               <div className="mh-detail-stacked">
                 <div className="mh-stacked-header">
                   <span className="mh-stacked-title">Nutrition</span>
                 </div>
-                <div className="mh-stacked-value">Answer</div>
+                <div className="mh-stacked-value">None</div>
               </div>
               <div className="mh-detail-stacked">
                 <div className="mh-stacked-header">
                   <span className="mh-stacked-title">Smoking Status</span>
                 </div>
-                <div className="mh-stacked-value">Answer</div>
+                <div className="mh-stacked-value">None</div>
               </div>
               <div className="mh-detail-stacked">
                 <div className="mh-stacked-header">
                   <span className="mh-stacked-title">Alcohol Consumption</span>
                 </div>
-                <div className="mh-stacked-value">Answer</div>
+                <div className="mh-stacked-value">None</div>
               </div>
               <div className="mh-detail-stacked">
                 <div className="mh-stacked-header">

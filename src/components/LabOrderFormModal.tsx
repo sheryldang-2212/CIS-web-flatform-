@@ -61,10 +61,24 @@ export default function LabOrderFormModal({ isOpen, onClose, mode, initialData, 
 
   const isEdit = mode === 'edit';
 
-  const mockPatients = ['Somchai Wongsakul', 'Supaporn Rattanakul', 'Thanakorn Jitprasert', 'Pornpimon Srisawat', 'Kittisak Boonyarattana'];
+  const mockPatients = [
+    { name: 'Somchai Wongsakul', verification: 'Verified' },
+    { name: 'Supaporn Rattanakul', verification: 'Verified' },
+    { name: 'Thanakorn Jitprasert', verification: 'Verified' },
+    { name: 'Pornpimon Srisawat', verification: 'Verified' },
+    { name: 'Kittisak Boonyarattana', verification: 'Unverified' }
+  ];
+
+  const selectedPatientData = mockPatients.find(p => p.name === patientSearch);
+  const isPatientUnverified = selectedPatientData?.verification === 'Unverified';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isPatientUnverified) {
+      alert("Identity verification is required before creating a lab order for this patient.");
+      return;
+    }
     
     // Simulate system behavior
     let message = `Lab Order ${isEdit ? 'updated' : 'created'} successfully!\n\n`;
@@ -121,15 +135,26 @@ export default function LabOrderFormModal({ isOpen, onClose, mode, initialData, 
             
             {showPatientDropdown && !isEdit && (
               <div className="patient-dropdown">
-                {mockPatients.filter(p => p.toLowerCase().includes(patientSearch.toLowerCase())).map((p, i) => (
-                  <div key={i} className="patient-option" onClick={() => { setPatientSearch(p); setShowPatientDropdown(false); }}>
-                    <div className="patient-option-name">{p}</div>
+                {mockPatients.filter(p => p.name.toLowerCase().includes(patientSearch.toLowerCase())).map((p, i) => (
+                  <div key={i} className="patient-option" onClick={() => { setPatientSearch(p.name); setShowPatientDropdown(false); }}>
+                    <div className="patient-option-name" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      {p.name}
+                      {p.verification === 'Unverified' && (
+                        <span style={{ fontSize: '11px', color: '#d97706', backgroundColor: '#fef3c7', padding: '2px 6px', borderRadius: '4px' }}>Unverified</span>
+                      )}
+                    </div>
                     <div className="patient-option-id text-muted text-xs">MRN00{i+1} • ID: CLN2023-00{i+1}</div>
                   </div>
                 ))}
               </div>
             )}
           </div>
+          
+          {isPatientUnverified && (
+            <div style={{ marginTop: '12px', padding: '12px', backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '6px', display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <span style={{ color: '#dc2626', fontWeight: 600, fontSize: '13px' }}>Identity verification is required before creating a lab order for this patient.</span>
+            </div>
+          )}
         </div>
 
         {/* Test Packages */}

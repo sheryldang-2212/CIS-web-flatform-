@@ -110,6 +110,26 @@
   width: 200px;
 }
 
+.filter-dropdown-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.filter-dropdown-menu {
+  position: absolute;
+  top: 40px;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 8px 0;
+  min-width: 160px;
+  z-index: 20;
+}
+
 .btn-reset {
   padding: 6px 16px;
   border: 1px solid var(--border-color);
@@ -310,3 +330,83 @@
   cursor: not-allowed;
   color: var(--text-muted);
 }
+
+
+.sticky-col {
+  position: sticky;
+  background-color: white;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+th.sticky-col {
+  z-index: 2;
+  background-color: white;
+}
+
+.patients-table tbody tr:hover td.sticky-col {
+  background-color: #fafafa;
+}
+
+.first-col {
+  left: 0;
+  min-width: 110px;
+  max-width: 110px;
+}
+
+.second-col {
+  left: 110px;
+  min-width: 230px;
+  max-width: 230px;
+}
+
+.second-col::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -5px;
+  width: 5px;
+  height: 100%;
+  box-shadow: inset 4px 0 4px -2px rgba(0,0,0,0.1);
+  pointer-events: none;
+}
+
+.sticky-col-right {
+  position: sticky;
+  background-color: white;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+th.sticky-col-right {
+  z-index: 2;
+  background-color: white;
+}
+
+.patients-table tbody tr:hover td.sticky-col-right {
+  background-color: #fafafa;
+}
+
+.first-right-col {
+  right: 0;
+  min-width: 80px;
+  max-width: 80px;
+}
+
+.second-right-col {
+  right: 80px;
+  min-width: 140px;
+  max-width: 140px;
+}
+
+.second-right-col::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -5px;
+  width: 5px;
+  height: 100%;
+  box-shadow: inset -4px 0 4px -2px rgba(0,0,0,0.1);
+  pointer-events: none;
+}
+
