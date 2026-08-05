@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Edit2, ChevronDown, ChevronRight, AlertTriangle, Eye, Settings, Activity, ArrowLeft, Printer, Phone, Mail, MapPin, Shield, PhoneCall, HeartPulse, FileText, Pill, Link2, Lock, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { useState } from 'react';
+import { Edit2, ChevronRight, AlertTriangle, Activity, ArrowLeft, Phone, Mail, MapPin, Shield, PhoneCall, HeartPulse, FileText, Pill, Link2, Lock, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import LabResultReviewModal from './LabResultReviewModal';
 import LabOrderDetail from './LabOrderDetail';
 import VerifyIdentityModal from './VerifyIdentityModal';
@@ -12,11 +12,11 @@ interface PatientDetailProps {
 }
 
 // --- Mock Data for Labs ---
-const mockLabResults = [
-  { id: 'RES001', testName: 'Complete Blood Count (CBC)', date: '15/07/2026', status: 'Approved', isAbnormal: false },
-  { id: 'RES002', testName: 'Lipid Panel', date: '10/07/2026', status: 'Approved', isAbnormal: true },
-  { id: 'RES003', testName: 'Liver Function Test', date: '08/07/2026', status: 'Pending Doctor Review', isAbnormal: false },
-];
+// const mockLabResults = [
+//   { id: 'RES001', testName: 'Complete Blood Count (CBC)', date: '15/07/2026', status: 'Approved', isAbnormal: false },
+//   { id: 'RES002', testName: 'Lipid Panel', date: '10/07/2026', status: 'Approved', isAbnormal: true },
+//   { id: 'RES003', testName: 'Liver Function Test', date: '08/07/2026', status: 'Pending Doctor Review', isAbnormal: false },
+// ];
 
 const mockLabOrders = [
   { id: 'ORD-20260718-01', tests: 'Thyroid Panel', date: '18/07/2026', status: 'Pending Collection' },
@@ -46,7 +46,7 @@ export default function PatientDetail({ patient, onEdit, onBack }: PatientDetail
     return (
       <LabOrderDetail 
         order={viewingLabOrder} 
-        patient={patient} 
+
         onBack={() => setViewingLabOrder(null)} 
         onEdit={() => {}}
         onPrint={() => {}}

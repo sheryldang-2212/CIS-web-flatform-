@@ -1,5 +1,4 @@
-import React from 'react';
-import { Search, Filter, Info, Clock, CheckCircle2, XCircle, AlertTriangle, UserCheck, Eye, RefreshCw, History, User } from 'lucide-react';
+import { Search, Filter, Clock, CheckCircle2, XCircle, AlertTriangle, UserCheck, Eye, RefreshCw, History } from 'lucide-react';
 import './ImportedPatients.css';
 
 const IMPORTED_PATIENTS = [

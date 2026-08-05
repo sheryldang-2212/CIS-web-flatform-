@@ -17,7 +17,6 @@ import StaffSecurity from './components/StaffSecurity';
 import AuditLogs from './components/AuditLogs';
 import DoctorDashboard from './components/DoctorDashboard';
 import DoctorLabResults from './components/DoctorLabResults';
-import DoctorPatients from './components/DoctorPatients';
 import PatientDataManagement from './components/PatientDataManagement';
 import Login from './components/Login';
 import ForgotPassword from './components/ForgotPassword';

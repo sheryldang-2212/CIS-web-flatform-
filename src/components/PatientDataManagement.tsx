@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Database, Upload, History, UserCheck, Copy } from 'lucide-react';
 import BulkPatientUpload from './BulkPatientUpload';
 import ImportHistory from './ImportHistory';

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Check, Plus, Edit2, Trash2, X, Package, FileText, Barcode, FlaskConical, Save } from 'lucide-react';
-import { useClinicConfig } from '../context/ClinicConfigContext';
+import { useClinicConfig, type Category } from '../context/ClinicConfigContext';
 import './ServicesAndPackages.css';
 
 export default function ServicesAndPackages() {
@@ -56,7 +56,7 @@ export default function ServicesAndPackages() {
 
   const handleAddTest = () => {
     if (!newTestName.trim()) return;
-    setCategories(prev => prev.map(cat => {
+    setCategories(categories.map((cat: Category) => {
       if (cat.name === activeCategory) {
         return { ...cat, tests: [...cat.tests, newTestName] };
       }

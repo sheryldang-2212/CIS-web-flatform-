@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { MoreVertical, Edit2 } from 'lucide-react';
 import './Profile.css';
 

@@ -16,8 +16,8 @@ interface HeaderProps {
 export default function Header({ 
   currentClinic, 
   currentRole,
-  activeTab,
-  setActiveTab,
+  activeTab: _activeTab,
+  setActiveTab: _setActiveTab,
   setSettingsTab,
   setShowSettingsModal,
   setShowContextModal,

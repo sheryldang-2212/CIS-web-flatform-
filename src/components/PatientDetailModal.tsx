@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Edit2, ChevronDown, ChevronRight, Printer, CheckCircle2, AlertTriangle, Eye, Settings, Activity } from 'lucide-react';
+import React, { useState } from 'react';
+import { Edit2, ChevronDown, ChevronRight, Printer, AlertTriangle, Eye, Settings, Activity } from 'lucide-react';
 import Modal from './Modal';
 import LabResultReviewModal from './LabResultReviewModal';
 import './PatientDetailModal.css';

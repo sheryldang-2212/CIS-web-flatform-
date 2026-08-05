@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { 
   Building2, MapPin, Clock, CalendarDays, FlaskConical, 
   UploadCloud, Lock, Phone, Mail, Plus, Trash2, Edit2,
-  Bell, Activity, Users, Database, ChevronDown, ClipboardCheck
+  Bell, Activity, Users, Database, ChevronDown
 } from 'lucide-react';
 import './ClinicSettings.css';
 

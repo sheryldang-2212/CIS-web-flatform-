@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
-import { Search, Calendar, Edit2, Trash2, CheckCircle2, ChevronDown, ChevronUp, XCircle, Activity, FilePlus, Clock, ArrowLeft, Printer, User, ShieldAlert, FileText, AlertTriangle } from 'lucide-react';
+import { useState } from 'react';
+import { Search, Calendar, Edit2, CheckCircle2, ChevronDown, ChevronUp, XCircle, Activity, Clock, ArrowLeft, Printer, User, ShieldAlert, FileText, AlertTriangle } from 'lucide-react';
 import './LabOrderDetail.css';
 
 interface LabOrderDetailProps {
   order: any;
-  patient?: any;
   onBack: () => void;
   onEdit: () => void;
   onPrint: () => void;
   onCancel?: () => void;
 }
 
-export default function LabOrderDetail({ order, patient, onBack, onEdit, onPrint, onCancel }: LabOrderDetailProps) {
+export default function LabOrderDetail({ order, onBack, onEdit, onPrint, onCancel }: LabOrderDetailProps) {
   const [activeTab, setActiveTab] = useState<'info' | 'history'>('info');
   const [openCategories, setOpenCategories] = useState<string[]>(['Hematology', 'Hormones', 'Infectious Diseases']);
 

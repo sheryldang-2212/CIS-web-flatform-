@@ -7,7 +7,7 @@ interface LabResultReviewModalProps {
   onClose: () => void;
 }
 
-export default function LabResultReviewModal({ result, onClose }: LabResultReviewModalProps) {
+export default function LabResultReviewModal({ result: _result, onClose }: LabResultReviewModalProps) {
   const [clinicalInterp, setClinicalInterp] = useState('');
   const [doctorComment, setDoctorComment] = useState('');
 

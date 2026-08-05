@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Sun, Bell, Star, Activity, Flame, Droplets, Heart, Dna } from 'lucide-react';
 import './Dashboard.css';
 

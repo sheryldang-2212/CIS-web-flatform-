@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Copy, AlertTriangle, Link, Users, Edit2, Search, Filter, CheckCircle2 } from 'lucide-react';
+import { useState } from 'react';
+import { AlertTriangle, Link, Users, Edit2, Search, Filter } from 'lucide-react';
 import './PossibleDuplicates.css';
 
 const DUPLICATE_PAIRS = [

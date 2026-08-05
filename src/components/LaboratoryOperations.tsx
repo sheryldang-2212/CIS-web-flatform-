@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Truck, Clock, FileText, Settings, ShieldAlert, Save, CheckCircle, Barcode, ClipboardCheck, AlertTriangle } from 'lucide-react';
+import { useState } from 'react';
+import { Truck, Clock, FileText, Settings, Save, Barcode, ClipboardCheck, AlertTriangle } from 'lucide-react';
 import './LaboratoryOperations.css';
 
 const TABS = [

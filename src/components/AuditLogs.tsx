@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, Download, Filter, Eye, X } from 'lucide-react';
+import { useState } from 'react';
+import { Search, Download, Eye, X } from 'lucide-react';
 import './AuditLogs.css';
 
 const MOCK_LOGS = [

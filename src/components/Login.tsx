@@ -149,7 +149,7 @@ export default function Login({ onLoginSuccess, onNavigate, mockClinics }: Login
       )}
 
       {showUnactivatedModal && (
-        <Modal title="" onClose={() => setShowUnactivatedModal(false)} size="sm">
+        <Modal isOpen={showUnactivatedModal} title="" onClose={() => setShowUnactivatedModal(false)}>
           <div style={{ textAlign: 'center', padding: '10px 0' }}>
             <div style={{ display: 'inline-flex', padding: '16px', backgroundColor: '#fee2e2', borderRadius: '50%', color: '#ef4444', marginBottom: '16px' }}>
               <AlertTriangle size={32} />

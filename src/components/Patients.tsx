@@ -295,11 +295,11 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
             consentDetail: 'None',
             identityVerification: isVerified ? 'Verified' : 'Unverified',
             registrationSource: 'Clinic',
-            documentType: isVerified ? 'Thai National ID' : null,
-            verifiedBy: isVerified ? 'Receptionist' : null,
-            verifiedAt: isVerified ? new Date().toLocaleString() : null,
-            verificationMethod: isVerified ? 'In Person' : null,
-            verifiedClinic: isVerified ? 'Downtown Medical Center' : null
+            documentType: isVerified ? 'Thai National ID' : '',
+            verifiedBy: isVerified ? 'Receptionist' : '',
+            verifiedAt: isVerified ? new Date().toLocaleString() : '',
+            verificationMethod: isVerified ? 'In Person' : '',
+            verifiedClinic: isVerified ? 'Downtown Medical Center' : ''
           };
           setPatientsList([newPatient, ...patientsList]);
         }}

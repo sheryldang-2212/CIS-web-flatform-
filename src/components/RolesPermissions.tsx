@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { 
-  Search, User, Stethoscope, Microscope, Shield, Lock, Plus, 
-  Grid, ChevronUp, ChevronDown, Info, 
-  Save, MoreVertical, Edit2, Maximize2, Minimize2 
+  Search, ChevronUp, ChevronDown, 
+  MoreVertical, Edit2, Maximize2, Minimize2 
 } from 'lucide-react';
 import './RolesPermissions.css';
 
@@ -12,7 +11,6 @@ export default function RolesPermissions() {
   const [activeRole, setActiveRole] = useState(ROLES_LIST[0]);
   const [expandedModules, setExpandedModules] = useState<string[]>(['dashboard', 'patient_management', 'lab_orders']);
   const [roleActive, setRoleActive] = useState(true);
-  const [isMatrixOpen, setIsMatrixOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleModule = (moduleId: string) => {

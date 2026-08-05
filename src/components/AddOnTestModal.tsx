@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, ChevronDown, ChevronUp, X } from 'lucide-react';
+import { useState } from 'react';
+import { Search, ChevronDown, X } from 'lucide-react';
 import Modal from './Modal';
 import './AddOnTestModal.css';
 

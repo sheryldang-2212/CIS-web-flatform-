@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, ChevronDown, Plus, MoreVertical, Printer, Eye, Edit2, Copy, FilePlus2, ClipboardList, Clock, BriefcaseMedical, CheckCircle2, CheckCircle, Undo2, XCircle, Truck } from 'lucide-react';
+import { Search, ChevronDown, Plus, MoreVertical, Printer, Eye, Edit2, Copy, FilePlus2, ClipboardList, Clock, BriefcaseMedical, CheckCircle2, XCircle } from 'lucide-react';
 import LabOrderFormModal from './LabOrderFormModal';
 import LabOrderDetail from './LabOrderDetail';
 import AddOnTestModal from './AddOnTestModal';
@@ -49,7 +49,7 @@ export default function LabOrders() {
   };
 
   // State Transition Handlers
-  const handleUpdateStatus = (orderId: string, newStatus: string, reason?: string) => {
+  const handleUpdateStatus = (orderId: string, newStatus: string, _reason?: string) => {
     setOrders(prev => prev.map(o => {
       if (o.id === orderId) {
         // In a real app, reason would be appended to the history log here

@@ -174,7 +174,7 @@
 }
 
 .status-badge-outline.picked-up,
-.status-badge-outline.picked-up/sent-to-lab {
+.status-badge-outline.picked-up\/sent-to-lab {
   color: #15803d;
   background-color: #dcfce7;
 }

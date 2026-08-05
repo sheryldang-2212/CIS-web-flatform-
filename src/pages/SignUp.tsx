@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Eye, EyeOff, X } from 'lucide-react';
 import './SignUp.css';
 

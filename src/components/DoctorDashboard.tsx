@@ -1,5 +1,4 @@
-import React from 'react';
-import { Activity, CheckCircle, FileText, AlertTriangle, FileSearch } from 'lucide-react';
+import { CheckCircle, FileText, AlertTriangle, FileSearch } from 'lucide-react';
 import './DoctorDashboard.css';
 
 export default function DoctorDashboard() {

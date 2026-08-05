@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Settings, UserPlus, Search, Edit, Shield, Trash2, Key } from 'lucide-react';
+import { Settings, UserPlus, Search, Edit, Trash2, Key } from 'lucide-react';
 import UserFormModal from './UserFormModal';
-import UserPermissionsModal from './UserPermissionsModal';
 import './UserManagement.css';
 
 const MOCK_USERS = [

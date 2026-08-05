@@ -1,4 +1,4 @@
-import React from 'react';
+
 import './Splash.css';
 
 interface SplashProps {

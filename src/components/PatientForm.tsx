@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, ChevronDown, ShieldCheck, ShieldAlert } from 'lucide-react';
+import { Calendar, ChevronDown } from 'lucide-react';
 import './PatientFormModal.css'; // Reuse the same CSS for now
 
 interface PatientFormProps {

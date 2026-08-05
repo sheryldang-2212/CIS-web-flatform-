@@ -1,5 +1,4 @@
-import React from 'react';
-import { Search, Filter, Download, Eye, RotateCw, CheckCircle2, AlertTriangle, XCircle, Clock, MoreVertical } from 'lucide-react';
+import { Search, Filter, Download, Eye, RotateCw, CheckCircle2, AlertTriangle, XCircle, Clock } from 'lucide-react';
 import './ImportHistory.css';
 
 const HISTORY_DATA = [

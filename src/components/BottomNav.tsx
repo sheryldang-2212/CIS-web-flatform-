@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Home, MessageSquare, FileText, User } from 'lucide-react';
 import './BottomNav.css';
 

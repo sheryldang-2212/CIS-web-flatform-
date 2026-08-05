@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Shield, Key, Clock, Network, Save, X, Plus, Edit2, CheckCircle } from 'lucide-react';
+import { useState } from 'react';
+import { Key, Clock, Save, Edit2, CheckCircle } from 'lucide-react';
 import './StaffSecurity.css';
 
 export default function StaffSecurity() {
