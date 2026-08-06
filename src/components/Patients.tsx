@@ -6,7 +6,30 @@ import EmailDemoModal from './EmailDemoModal';
 import MobileAppSimulator from './MobileAppSimulator';
 import './Patients.css';
 
-const initialMockPatients = [
+export interface Patient {
+  id: string;
+  name: string;
+  idNumber: string | null;
+  gender: string;
+  age: string;
+  dob: string;
+  contact: string;
+  allergy: boolean;
+  insurance: string;
+  lastVisit: string;
+  createdAt: string;
+  consentStatus: string;
+  consentDetail: string;
+  identityVerification: string;
+  registrationSource: string;
+  documentType: string | null;
+  verifiedBy: string | null;
+  verifiedAt: string | null;
+  verificationMethod: string | null;
+  verifiedClinic: string | null;
+}
+
+const initialMockPatients: Patient[] = [
   { id: 'MRN001', name: 'Natthawut Srisomboon', idNumber: 'ID234567890', gender: 'Male', age: '38 years', dob: '14/03/1988', contact: '082-614-7293\nnatthawut.s@gmail.com', allergy: true, insurance: 'Thai Life\nTL-385190247', lastVisit: '22/07/2026', createdAt: '2026-07-22', consentStatus: 'Linked', consentDetail: 'Linked on 30 Jul 2026', identityVerification: 'Unverified', registrationSource: 'Mobile App', documentType: null, verifiedBy: null, verifiedAt: null, verificationMethod: null, verifiedClinic: null },
   { id: 'MRN002', name: 'Sirada Wongsawan', idNumber: 'ID312890456', gender: 'Female', age: '27 years', dob: '09/11/1998', contact: '091-208-5634\nsirada.w@hotmail.com', allergy: true, insurance: 'AIA Thailand\nAIA-724058163', lastVisit: '19/07/2026', createdAt: '2026-07-19', consentStatus: 'Not Linked', consentDetail: 'Invitation sent', identityVerification: 'Verified', registrationSource: 'Clinic', documentType: 'Thai National ID', verifiedBy: 'Thao Nguyen', verifiedAt: '05 Aug 2026, 09:45', verificationMethod: 'In Person', verifiedClinic: 'Downtown Medical Center' },
   { id: 'MRN003', name: 'Pongsakorn Thanakit', idNumber: 'ID478123905', gender: 'Male', age: '52 years', dob: '25/06/1974', contact: '087-935-1846\npongsakorn.t@yahoo.com', allergy: true, insurance: 'No insurance', lastVisit: '16/07/2026', createdAt: '2026-07-16', consentStatus: 'Linked', consentDetail: 'Linked on 28 Jul 2026', identityVerification: 'Verified', registrationSource: 'Mobile App', documentType: 'Passport', verifiedBy: 'Sarah Chen', verifiedAt: '28 Jul 2026, 14:20', verificationMethod: 'In Person', verifiedClinic: 'Downtown Medical Center' },
@@ -26,7 +49,7 @@ interface PatientsProps {
 export default function Patients({ isDoctor = false }: PatientsProps) {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [activeFilterDropdown, setActiveFilterDropdown] = useState<string | null>(null);
-  const [patientsList, setPatientsList] = useState(initialMockPatients);
+  const [patientsList, setPatientsList] = useState<Patient[]>(initialMockPatients);
   
   // Filter States
   const [verificationFilter, setVerificationFilter] = useState('All');
@@ -36,8 +59,8 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
   
   // Modal states
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const [editingPatient, setEditingPatient] = useState<any>(null);
-  const [viewingPatient, setViewingPatient] = useState<any>(null);
+  const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
+  const [viewingPatient, setViewingPatient] = useState<Patient | null>(null);
   const [demoEmail, setDemoEmail] = useState<string | null>(null);
   const [simEmail, setSimEmail] = useState<string | null>(null);
 
@@ -47,17 +70,17 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
 
   const openRegisterModal = () => setIsRegisterOpen(true);
   
-  const openEditModal = (patient: any) => {
+  const openEditModal = (patient: Patient) => {
     setEditingPatient(patient);
     setActiveDropdown(null);
   };
 
-  const openViewModal = (patient: any) => {
+  const openViewModal = (patient: Patient) => {
     setViewingPatient(patient);
     setActiveDropdown(null);
   };
 
-  const handleSendEmailDemo = (patient: any) => {
+  const handleSendEmailDemo = (patient: Patient) => {
     // Extract email from contact string (format is "Phone\nEmail")
     let email = 'patient@example.com';
     if (patient.contact && patient.contact.includes('\n')) {
@@ -67,7 +90,7 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
     setActiveDropdown(null);
   };
 
-  const filteredPatients = patientsList.filter(patient => {
+  const filteredPatients: Patient[] = patientsList.filter(patient => {
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       const matchName = patient.name.toLowerCase().includes(q);
@@ -248,7 +271,7 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
               </tr>
             </thead>
             <tbody>
-              {filteredPatients.map((patient: any) => (
+              {filteredPatients.map((patient) => (
                 <tr key={patient.id} onClick={() => openViewModal(patient)} style={{ cursor: 'pointer' }} className="patient-row-clickable">
                   <td className="text-muted">{patient.id}</td>
                   <td className="font-medium">{patient.name}</td>
@@ -373,7 +396,7 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
         mode="create" 
         onSubmitSuccess={(email, isVerified, newPatientData) => {
           setDemoEmail(email);
-          const newPatient = {
+          const newPatient: Patient = {
             id: `MRN0${patientsList.length + 1}`,
             name: newPatientData?.firstName ? `${newPatientData.firstName} ${newPatientData.lastName}` : 'New Patient',
             idNumber: newPatientData?.nationalId || 'ID123456789',
@@ -389,11 +412,11 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
             consentDetail: 'None',
             identityVerification: isVerified ? 'Verified' : 'Unverified',
             registrationSource: 'Clinic',
-            documentType: isVerified ? 'Thai National ID' : '',
-            verifiedBy: isVerified ? 'Receptionist' : '',
-            verifiedAt: isVerified ? new Date().toLocaleString() : '',
-            verificationMethod: isVerified ? 'In Person' : '',
-            verifiedClinic: isVerified ? 'Downtown Medical Center' : ''
+            documentType: isVerified ? 'Thai National ID' : null,
+            verifiedBy: isVerified ? 'Receptionist' : null,
+            verifiedAt: isVerified ? new Date().toLocaleString() : null,
+            verificationMethod: isVerified ? 'In Person' : null,
+            verifiedClinic: isVerified ? 'Downtown Medical Center' : null
           };
           setPatientsList([newPatient, ...patientsList]);
         }}

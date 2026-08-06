@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, ChevronDown, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import Modal from './Modal';
 import './AddOnTestModal.css';
 
@@ -10,7 +10,6 @@ interface AddOnTestModalProps {
 }
 
 export default function AddOnTestModal({ isOpen, onClose, order }: AddOnTestModalProps) {
-  const [showDropdown, setShowDropdown] = useState(false);
   const [selectedTests, setSelectedTests] = useState<string[]>([]);
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({
     'Hematology': true
@@ -35,12 +34,7 @@ export default function AddOnTestModal({ isOpen, onClose, order }: AddOnTestModa
     setSelectedTests(prev => prev.filter(t => t !== test));
   };
 
-  const toggleCategory = (category: string) => {
-    setExpandedCategories(prev => ({
-      ...prev,
-      [category]: !prev[category]
-    }));
-  };
+
 
   if (!order) return null;
 
