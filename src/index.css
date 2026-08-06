@@ -109,3 +109,47 @@ a {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+ /* Standard Segmented Control & Shared Filter Styles */
+.date-segmented-control {
+  display: flex;
+  align-items: center;
+  background-color: var(--border-light);
+  border-radius: 8px;
+  padding: 4px;
+}
+.date-segmented-control button {
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+.date-segmented-control button:hover:not(.active) {
+  color: var(--text-navy);
+}
+.date-segmented-control button.active {
+  background-color: white;
+  color: var(--text-navy);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.btn-reset {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-reset:hover {
+  background-color: #f8fafc;
+  color: var(--text-navy);
+  border-color: #e2e8f0;
+}

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ClipboardList, Clock, BriefcaseMedical, Flag, Search, MoreVertical, Eye, Printer, Droplet, FileText } from 'lucide-react';
+import { ClipboardList, Clock, BriefcaseMedical, Flag, Search, MoreVertical, Eye, Printer, Droplet, FileText, Calendar } from 'lucide-react';
 import CollectSampleModal from './CollectSampleModal';
 import PrintBarcodeModal from './PrintBarcodeModal';
 import PatientDetailModal from './PatientDetailModal';
@@ -72,7 +72,11 @@ const mockOrders = [
 export default function SampleCollectionQueue() {
   const [searchQuery, setSearchQuery] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('All');
+  const [dateFilter, setDateFilter] = useState<'All' | 'Today' | 'Custom'>('All');
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  const [appliedDateRange, setAppliedDateRange] = useState({ start: '', end: '' });
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [activeFilterDropdown, setActiveFilterDropdown] = useState<string | null>(null);
   
   const [selectedOrderForCollection, setSelectedOrderForCollection] = useState<any>(null);
   const [selectedOrderForPrint, setSelectedOrderForPrint] = useState<string | null>(null);
@@ -102,8 +106,28 @@ export default function SampleCollectionQueue() {
     );
   }
 
+  const filteredOrders = mockOrders.filter(order => {
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      if (!order.id.toLowerCase().includes(q) && !order.patient.name.toLowerCase().includes(q)) return false;
+    }
+    
+    if (priorityFilter !== 'All' && order.priority !== priorityFilter) return false;
+    
+    if (dateFilter === 'Today') {
+      // Mock logic
+    } else if (dateFilter === 'Custom' && appliedDateRange.start && appliedDateRange.end) {
+       const start = new Date(appliedDateRange.start);
+       const end = new Date(appliedDateRange.end);
+       end.setHours(23, 59, 59, 999);
+       const orderDate = new Date(order.date);
+       if (!isNaN(orderDate.getTime()) && (orderDate < start || orderDate > end)) return false;
+    }
+    return true;
+  });
+
   return (
-    <div className="queue-container">
+    <div className="queue-container" onClick={() => setActiveFilterDropdown(null)}>
       <h1 className="page-title">Sample Collection Queue</h1>
       
       <div className="queue-summary">
@@ -113,7 +137,7 @@ export default function SampleCollectionQueue() {
           </div>
           <div className="queue-summary-content">
             <span className="queue-summary-label">Total Orders</span>
-            <span className="queue-summary-value text-primary">32</span>
+            <span className="queue-summary-value text-primary">{filteredOrders.length}</span>
           </div>
         </div>
         <div className="queue-summary-card">
@@ -122,7 +146,7 @@ export default function SampleCollectionQueue() {
           </div>
           <div className="queue-summary-content">
             <span className="queue-summary-label">Pending Collection</span>
-            <span className="queue-summary-value text-warning">6</span>
+            <span className="queue-summary-value text-warning">{filteredOrders.filter(o => o.status === 'Pending Collection').length}</span>
           </div>
         </div>
         <div className="queue-summary-card">
@@ -131,7 +155,7 @@ export default function SampleCollectionQueue() {
           </div>
           <div className="queue-summary-content">
             <span className="queue-summary-label">In Progress</span>
-            <span className="queue-summary-value text-info">5</span>
+            <span className="queue-summary-value text-info">{filteredOrders.filter(o => ['Ready for Pickup', 'Picked Up/Sent to Lab'].includes(o.status)).length}</span>
           </div>
         </div>
         <div className="queue-summary-card">
@@ -140,7 +164,7 @@ export default function SampleCollectionQueue() {
           </div>
           <div className="queue-summary-content">
             <span className="queue-summary-label">STAT Orders</span>
-            <span className="queue-summary-value text-danger">3</span>
+            <span className="queue-summary-value text-danger">{filteredOrders.filter(o => o.priority === 'STAT').length}</span>
           </div>
         </div>
       </div>
@@ -156,19 +180,108 @@ export default function SampleCollectionQueue() {
           />
         </div>
         
-        <div className="queue-filters">
-          <span className="filter-label">Priority:</span>
-          <select 
-            className="filter-select"
-            value={priorityFilter}
-            onChange={(e) => setPriorityFilter(e.target.value)}
-          >
-            <option value="All">All</option>
-            <option value="STAT">STAT</option>
-            <option value="Urgent">Urgent</option>
-            <option value="Routine">Routine</option>
-          </select>
-          <button className="btn-reset">Reset</button>
+        <div className="filters-right">
+          <div className="date-segmented-control">
+            <button 
+              type="button"
+              className={dateFilter === 'All' ? 'active' : ''}
+              onClick={() => { setDateFilter('All'); setAppliedDateRange({ start: '', end: '' }); }}
+            >All</button>
+            <button 
+              type="button"
+              className={dateFilter === 'Today' ? 'active' : ''}
+              onClick={() => { setDateFilter('Today'); setAppliedDateRange({ start: '', end: '' }); }}
+            >Today</button>
+          </div>
+
+          <div className="filter-dropdown-container date-filter-container">
+            <button 
+              className={`dropdown-trigger ${dateFilter === 'Custom' ? 'active' : ''}`} 
+              style={{ minWidth: '160px', justifyContent: 'space-between', padding: '8px 12px', border: '1px solid var(--border-color)', borderRadius: '6px', background: 'white', display: 'flex', alignItems: 'center' }}
+              onClick={(e) => { e.stopPropagation(); setActiveFilterDropdown(activeFilterDropdown === 'date' ? null : 'date'); }}
+            >
+              <span className="text-muted" style={{ fontSize: '13px' }}>
+                {appliedDateRange.start && appliedDateRange.end ? `${appliedDateRange.start} ~ ${appliedDateRange.end}` : 'Date range'}
+              </span>
+              <Calendar size={14} className="text-muted" />
+            </button>
+            {activeFilterDropdown === 'date' && (
+              <div className="filter-dropdown-menu date-range-menu" onClick={e => e.stopPropagation()}>
+                <div className="date-range-header">
+                  <span className="font-medium text-sm">Select Date Range</span>
+                </div>
+                <div className="date-range-body">
+                  <div className="date-input-group">
+                    <label>Start Date</label>
+                    <input 
+                      type="date" 
+                      className="date-input" 
+                      value={dateRange.start} 
+                      onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })} 
+                    />
+                  </div>
+                  <div className="date-input-separator">to</div>
+                  <div className="date-input-group">
+                    <label>End Date</label>
+                    <input 
+                      type="date" 
+                      className="date-input" 
+                      value={dateRange.end} 
+                      onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })} 
+                    />
+                  </div>
+                </div>
+                <div className="date-range-footer">
+                  <button 
+                    className="btn-secondary btn-sm" 
+                    onClick={() => {
+                      setDateRange({ start: '', end: '' });
+                      setAppliedDateRange({ start: '', end: '' });
+                      setDateFilter('All');
+                      setActiveFilterDropdown(null);
+                    }}
+                  >
+                    Clear
+                  </button>
+                  <button 
+                    className="btn-primary btn-sm" 
+                    onClick={() => {
+                      setAppliedDateRange(dateRange);
+                      setDateFilter('Custom');
+                      setActiveFilterDropdown(null);
+                    }}
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="filter-label" style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Priority:</span>
+            <select 
+              className="filter-select"
+              style={{ padding: '8px 12px', border: '1px solid var(--border-color)', borderRadius: '6px', fontSize: '13px' }}
+              value={priorityFilter}
+              onChange={(e) => setPriorityFilter(e.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="STAT">STAT</option>
+              <option value="Urgent">Urgent</option>
+              <option value="Routine">Routine</option>
+            </select>
+          </div>
+          <button 
+            className="btn-reset" 
+            onClick={() => {
+              setDateFilter('All');
+              setDateRange({ start: '', end: '' });
+              setAppliedDateRange({ start: '', end: '' });
+              setSearchQuery('');
+              setPriorityFilter('All');
+            }}
+          >Reset</button>
         </div>
       </div>
 
@@ -187,7 +300,7 @@ export default function SampleCollectionQueue() {
             </tr>
           </thead>
           <tbody>
-            {mockOrders.map(order => (
+            {filteredOrders.map(order => (
               <tr key={order.id}>
                 <td className="col-order-id">
                   <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>{order.id}</span>

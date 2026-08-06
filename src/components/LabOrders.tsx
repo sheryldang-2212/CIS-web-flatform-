@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, ChevronDown, Plus, MoreVertical, Printer, Eye, Edit2, Copy, FilePlus2, ClipboardList, Clock, BriefcaseMedical, CheckCircle2, XCircle } from 'lucide-react';
+import { Search, ChevronDown, Plus, MoreVertical, Printer, Eye, Edit2, Copy, FilePlus2, ClipboardList, Clock, BriefcaseMedical, CheckCircle2, XCircle, Calendar } from 'lucide-react';
 import LabOrderFormModal from './LabOrderFormModal';
 import LabOrderDetail from './LabOrderDetail';
 import AddOnTestModal from './AddOnTestModal';
@@ -24,9 +24,12 @@ export default function LabOrders() {
   const [activeFilterDropdown, setActiveFilterDropdown] = useState<string | null>(null);
 
   // Filter States
-  const [timeFilter, setTimeFilter] = useState('Today');
+  const [dateFilter, setDateFilter] = useState<'All' | 'Today' | 'Custom'>('All');
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  const [appliedDateRange, setAppliedDateRange] = useState({ start: '', end: '' });
+  const [searchQuery, setSearchQuery] = useState('');
   const [assignedFilter, setAssignedFilter] = useState('All');
-  const [priorityFilter, setPriorityFilter] = useState('Urgent');
+  const [priorityFilter, setPriorityFilter] = useState('All');
 
   // Modal States
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -120,6 +123,30 @@ export default function LabOrders() {
     );
   }
 
+  const filteredOrders = orders.filter(order => {
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      if (!order.idNumber.toLowerCase().includes(q) && !order.patientName.toLowerCase().includes(q)) return false;
+    }
+    
+    if (dateFilter === 'Today') {
+      // Mock: Assume all mock orders are from Today if we strictly check 'Jul 10, 2026', but for a real app we'd parse date.
+      // We will leave it as true for mock data to show them, but in real life it would compare to new Date()
+    } else if (dateFilter === 'Custom' && appliedDateRange.start && appliedDateRange.end) {
+       // Mock custom date filtering
+       const start = new Date(appliedDateRange.start);
+       const end = new Date(appliedDateRange.end);
+       end.setHours(23, 59, 59, 999);
+       const orderDate = new Date(order.date);
+       if (!isNaN(orderDate.getTime()) && (orderDate < start || orderDate > end)) return false;
+    }
+    
+    if (assignedFilter !== 'All' && order.assignedTo !== assignedFilter) return false;
+    if (priorityFilter !== 'All' && order.priority !== priorityFilter) return false;
+    
+    return true;
+  });
+
   return (
     <div className="lab-orders-container" onClick={() => { setActiveDropdown(null); setActiveFilterDropdown(null); }}>
       <div className="patients-header">
@@ -137,7 +164,7 @@ export default function LabOrders() {
           </div>
           <div className="card-content">
             <span className="card-label">Today's Orders</span>
-            <span className="card-value text-primary">{orders.length}</span>
+            <span className="card-value text-primary">{filteredOrders.length}</span>
           </div>
         </div>
         <div className="summary-card">
@@ -146,7 +173,7 @@ export default function LabOrders() {
           </div>
           <div className="card-content">
             <span className="card-label">Pending Collection</span>
-            <span className="card-value text-warning">{orders.filter(o => o.status === 'Pending Collection').length}</span>
+            <span className="card-value text-warning">{filteredOrders.filter(o => o.status === 'Pending Collection').length}</span>
           </div>
         </div>
         <div className="summary-card">
@@ -155,7 +182,7 @@ export default function LabOrders() {
           </div>
           <div className="card-content">
             <span className="card-label">Ready for Pickup</span>
-            <span className="card-value text-info">{orders.filter(o => o.status === 'Ready for Pickup').length}</span>
+            <span className="card-value text-info">{filteredOrders.filter(o => o.status === 'Ready for Pickup').length}</span>
           </div>
         </div>
         <div className="summary-card">
@@ -164,7 +191,7 @@ export default function LabOrders() {
           </div>
           <div className="card-content">
             <span className="card-label">Sent to Lab</span>
-            <span className="card-value text-success">{orders.filter(o => o.status === 'Picked Up/Sent to Lab').length}</span>
+            <span className="card-value text-success">{filteredOrders.filter(o => o.status === 'Picked Up/Sent to Lab').length}</span>
           </div>
         </div>
       </div>
@@ -173,19 +200,90 @@ export default function LabOrders() {
         <div className="filters-bar">
           <div className="search-filter">
             <Search size={18} className="text-muted" />
-            <input type="text" placeholder="Search..." />
+            <input 
+              type="text" 
+              placeholder="Search by ID or Patient Name..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
           
           <div className="filters-right">
-            <div className="toggle-group">
+            <div className="date-segmented-control">
               <button 
-                className={`toggle-btn ${timeFilter === 'All' ? 'active' : ''}`}
-                onClick={() => setTimeFilter('All')}
+                type="button"
+                className={dateFilter === 'All' ? 'active' : ''}
+                onClick={() => { setDateFilter('All'); setAppliedDateRange({ start: '', end: '' }); }}
               >All</button>
               <button 
-                className={`toggle-btn ${timeFilter === 'Today' ? 'active' : ''}`}
-                onClick={() => setTimeFilter('Today')}
+                type="button"
+                className={dateFilter === 'Today' ? 'active' : ''}
+                onClick={() => { setDateFilter('Today'); setAppliedDateRange({ start: '', end: '' }); }}
               >Today</button>
+            </div>
+
+            <div className="filter-dropdown-container date-filter-container">
+              <button 
+                className={`dropdown-trigger ${dateFilter === 'Custom' ? 'active' : ''}`} 
+                style={{ minWidth: '160px', justifyContent: 'space-between' }}
+                onClick={() => toggleFilterDropdown('date')}
+              >
+                <span className="text-muted">
+                  {appliedDateRange.start && appliedDateRange.end ? `${appliedDateRange.start} ~ ${appliedDateRange.end}` : 'Date range'}
+                </span>
+                <Calendar size={14} className="text-muted" />
+              </button>
+              {activeFilterDropdown === 'date' && (
+                <div className="filter-dropdown-menu date-range-menu">
+                  <div className="date-range-header">
+                    <span className="font-medium text-sm">Select Date Range</span>
+                  </div>
+                  <div className="date-range-body">
+                    <div className="date-input-group">
+                      <label>Start Date</label>
+                      <input 
+                        type="date" 
+                        className="date-input" 
+                        value={dateRange.start} 
+                        onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })} 
+                      />
+                    </div>
+                    <div className="date-input-separator">to</div>
+                    <div className="date-input-group">
+                      <label>End Date</label>
+                      <input 
+                        type="date" 
+                        className="date-input" 
+                        value={dateRange.end} 
+                        onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })} 
+                      />
+                    </div>
+                  </div>
+                  <div className="date-range-footer">
+                    <button 
+                      className="btn-secondary btn-sm" 
+                      onClick={() => {
+                        setDateRange({ start: '', end: '' });
+                        setAppliedDateRange({ start: '', end: '' });
+                        setDateFilter('All');
+                        setActiveFilterDropdown(null);
+                      }}
+                    >
+                      Clear
+                    </button>
+                    <button 
+                      className="btn-primary btn-sm" 
+                      onClick={() => {
+                        setAppliedDateRange(dateRange);
+                        setDateFilter('Custom');
+                        setActiveFilterDropdown(null);
+                      }}
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
             
             <div className="filter-dropdown-container">
@@ -229,7 +327,10 @@ export default function LabOrders() {
             </div>
             
             <button className="btn-reset" onClick={() => {
-              setTimeFilter('Today');
+              setDateFilter('All');
+              setDateRange({ start: '', end: '' });
+              setAppliedDateRange({ start: '', end: '' });
+              setSearchQuery('');
               setAssignedFilter('All');
               setPriorityFilter('All');
             }}>Reset</button>
@@ -251,7 +352,7 @@ export default function LabOrders() {
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
+              {filteredOrders.map((order) => (
                 <tr 
                   key={order.id} 
                   onClick={() => setViewingOrder(order)}

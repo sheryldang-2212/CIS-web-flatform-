@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Printer, Undo2, CheckCircle, Eye, Search, Copy, MoreVertical, RefreshCw } from 'lucide-react';
+import { Printer, Undo2, CheckCircle, Eye, Search, Copy, MoreVertical, RefreshCw, Calendar } from 'lucide-react';
 import LabResultReviewModal from './LabResultReviewModal';
 import './LabOrderTracking.css';
 
@@ -147,7 +147,10 @@ export default function LabOrderTracking() {
   const [searchQuery, setSearchQuery] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
-  const [dateFilter, setDateFilter] = useState('Today');
+  const [dateFilter, setDateFilter] = useState<'All' | 'Today' | 'Custom'>('All');
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  const [appliedDateRange, setAppliedDateRange] = useState({ start: '', end: '' });
+  const [activeFilterDropdown, setActiveFilterDropdown] = useState<string | null>(null);
 
   // Orders State
   const [orders, setOrders] = useState(mockOrdersData);
@@ -243,6 +246,18 @@ export default function LabOrderTracking() {
     }
     if (statusFilter !== 'All') {
       filteredOrders = filteredOrders.filter(o => o.status === statusFilter);
+    }
+    
+    if (dateFilter === 'Today') {
+       // Mock logic
+    } else if (dateFilter === 'Custom' && appliedDateRange.start && appliedDateRange.end) {
+       const start = new Date(appliedDateRange.start);
+       const end = new Date(appliedDateRange.end);
+       end.setHours(23, 59, 59, 999);
+       filteredOrders = filteredOrders.filter(o => {
+         const orderDate = new Date(o.collectedAt); // mock check
+         return !isNaN(orderDate.getTime()) && orderDate >= start && orderDate <= end;
+       });
     }
 
     const allSelected = filteredOrders.length > 0 && selectedOrderIds.size === filteredOrders.length;
@@ -481,7 +496,7 @@ export default function LabOrderTracking() {
           </div>
         </div>
 
-        <div className="lot-filters-bar">
+        <div className="lot-filters-bar" onClick={() => setActiveFilterDropdown(null)}>
           <div className="lot-search">
             <Search size={16} className="text-muted" />
             <input 
@@ -541,25 +556,95 @@ export default function LabOrderTracking() {
             </div>
 
             <div className="lot-filter-item">
-              <span className="lot-filter-label">Date Range:</span>
-              <select 
-                className="lot-filter-select"
-                value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
+              <div className="date-segmented-control">
+                <button 
+                  type="button"
+                  className={dateFilter === 'All' ? 'active' : ''}
+                  onClick={() => { setDateFilter('All'); setAppliedDateRange({ start: '', end: '' }); }}
+                >All</button>
+                <button 
+                  type="button"
+                  className={dateFilter === 'Today' ? 'active' : ''}
+                  onClick={() => { setDateFilter('Today'); setAppliedDateRange({ start: '', end: '' }); }}
+                >Today</button>
+              </div>
+            </div>
+
+            <div className="lot-filter-item filter-dropdown-container date-filter-container">
+              <button 
+                className={`dropdown-trigger ${dateFilter === 'Custom' ? 'active' : ''}`} 
+                style={{ minWidth: '160px', justifyContent: 'space-between', padding: '8px 12px', border: '1px solid var(--border-color)', borderRadius: '6px', background: 'white', display: 'flex', alignItems: 'center' }}
+                onClick={(e) => { e.stopPropagation(); setActiveFilterDropdown(activeFilterDropdown === 'date' ? null : 'date'); }}
               >
-                <option value="Today">Today</option>
-                <option value="Yesterday">Yesterday</option>
-                <option value="Last 7 Days">Last 7 Days</option>
-                <option value="All Time">All Time</option>
-              </select>
+                <span className="text-muted" style={{ fontSize: '13px' }}>
+                  {appliedDateRange.start && appliedDateRange.end ? `${appliedDateRange.start} ~ ${appliedDateRange.end}` : 'Date range'}
+                </span>
+                <Calendar size={14} className="text-muted" />
+              </button>
+              {activeFilterDropdown === 'date' && (
+                <div className="filter-dropdown-menu date-range-menu" onClick={e => e.stopPropagation()}>
+                  <div className="date-range-header">
+                    <span className="font-medium text-sm">Select Date Range</span>
+                  </div>
+                  <div className="date-range-body">
+                    <div className="date-input-group">
+                      <label>Start Date</label>
+                      <input 
+                        type="date" 
+                        className="date-input" 
+                        value={dateRange.start} 
+                        onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })} 
+                      />
+                    </div>
+                    <div className="date-input-separator">to</div>
+                    <div className="date-input-group">
+                      <label>End Date</label>
+                      <input 
+                        type="date" 
+                        className="date-input" 
+                        value={dateRange.end} 
+                        onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })} 
+                      />
+                    </div>
+                  </div>
+                  <div className="date-range-footer">
+                    <button 
+                      className="btn-secondary btn-sm" 
+                      onClick={() => {
+                        setDateRange({ start: '', end: '' });
+                        setAppliedDateRange({ start: '', end: '' });
+                        setDateFilter('All');
+                        setActiveFilterDropdown(null);
+                      }}
+                    >
+                      Clear
+                    </button>
+                    <button 
+                      className="btn-primary btn-sm" 
+                      onClick={() => {
+                        setAppliedDateRange(dateRange);
+                        setDateFilter('Custom');
+                        setActiveFilterDropdown(null);
+                      }}
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
             
-            <button className="btn-lot-reset" onClick={() => {
-              setSearchQuery('');
-              setPriorityFilter('All');
-              setStatusFilter('All');
-              setDateFilter('Today');
-            }}>Reset</button>
+            <button 
+              className="btn-reset" 
+              onClick={() => {
+                setDateFilter('All');
+                setDateRange({ start: '', end: '' });
+                setAppliedDateRange({ start: '', end: '' });
+                setSearchQuery('');
+                setStatusFilter('All');
+                setPriorityFilter('All');
+              }}
+            >Reset</button>
           </div>
         </div>
 

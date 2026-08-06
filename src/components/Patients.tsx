@@ -67,6 +67,8 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
   
   // Filter States
   const [verificationFilter, setVerificationFilter] = useState('All');
+  
+  const [dateFilter, setDateFilter] = useState<'All' | 'Today' | 'Custom'>('All');
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [appliedDateRange, setAppliedDateRange] = useState({ start: '', end: '' });
   const [searchQuery, setSearchQuery] = useState('');
@@ -118,9 +120,15 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
       if (patient.identityVerification !== verificationFilter) return false;
     }
 
-    if (appliedDateRange.start && appliedDateRange.end) {
+    if (dateFilter === 'Today') {
+      const today = new Date();
+      const patientDate = new Date(patient.createdAt);
+      if (patientDate.toDateString() !== today.toDateString()) return false;
+    } else if (dateFilter === 'Custom' && appliedDateRange.start && appliedDateRange.end) {
       const start = new Date(appliedDateRange.start);
+      // Set end date to end of day to include all times on that day
       const end = new Date(appliedDateRange.end);
+      end.setHours(23, 59, 59, 999);
       const patientDate = new Date(patient.createdAt);
       if (patientDate < start || patientDate > end) return false;
     }
@@ -192,9 +200,26 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
               )}
             </div>
             
+            <div className="date-segmented-control" style={{ marginRight: '8px' }}>
+              <button 
+                type="button"
+                className={dateFilter === 'All' ? 'active' : ''} 
+                onClick={() => { setDateFilter('All'); setAppliedDateRange({ start: '', end: '' }); }}
+              >
+                All
+              </button>
+              <button 
+                type="button"
+                className={dateFilter === 'Today' ? 'active' : ''} 
+                onClick={() => { setDateFilter('Today'); setAppliedDateRange({ start: '', end: '' }); }}
+              >
+                Today
+              </button>
+            </div>
+
             <div className="filter-dropdown-container date-filter-container">
               <button 
-                className="dropdown-trigger" 
+                className={`dropdown-trigger ${dateFilter === 'Custom' ? 'active' : ''}`}  
                 style={{ minWidth: '160px', justifyContent: 'space-between' }}
                 onClick={() => {
                   setActiveFilterDropdown(activeFilterDropdown === 'date' ? null : 'date');
@@ -238,6 +263,7 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
                       onClick={() => {
                         setDateRange({ start: '', end: '' });
                         setAppliedDateRange({ start: '', end: '' });
+                        setDateFilter('All');
                         setActiveFilterDropdown(null);
                       }}
                     >
@@ -247,6 +273,7 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
                       className="btn-primary btn-sm" 
                       onClick={() => {
                         setAppliedDateRange(dateRange);
+                        setDateFilter('Custom');
                         setActiveFilterDropdown(null);
                       }}
                     >
@@ -259,6 +286,7 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
             
             <button className="btn-reset" onClick={() => {
               setVerificationFilter('All');
+              setDateFilter('All');
               setDateRange({ start: '', end: '' });
               setAppliedDateRange({ start: '', end: '' });
               setSearchQuery('');
