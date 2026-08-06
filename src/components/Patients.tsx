@@ -67,6 +67,30 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
     setActiveDropdown(null);
   };
 
+  const filteredPatients = patientsList.filter(patient => {
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const matchName = patient.name.toLowerCase().includes(q);
+      const matchPhone = patient.contact.toLowerCase().includes(q);
+      const matchId = (patient.idNumber || '').toLowerCase().includes(q);
+      const matchMRN = patient.id.toLowerCase().includes(q);
+      if (!matchName && !matchPhone && !matchId && !matchMRN) return false;
+    }
+    
+    if (verificationFilter !== 'All') {
+      if (patient.identityVerification !== verificationFilter) return false;
+    }
+
+    if (appliedDateRange.start && appliedDateRange.end) {
+      const start = new Date(appliedDateRange.start);
+      const end = new Date(appliedDateRange.end);
+      const patientDate = new Date(patient.createdAt);
+      if (patientDate < start || patientDate > end) return false;
+    }
+
+    return true;
+  });
+
   if (viewingPatient) {
     return (
       <PatientDetail 
@@ -222,7 +246,7 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
               </tr>
             </thead>
             <tbody>
-              {filteredPatients.map((patient) => (
+              {filteredPatients.map((patient: any) => (
                 <tr key={patient.id} onClick={() => openViewModal(patient)} style={{ cursor: 'pointer' }} className="patient-row-clickable">
                   <td className="text-muted">{patient.id}</td>
                   <td className="font-medium">{patient.name}</td>
@@ -358,6 +382,7 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
             allergy: false,
             insurance: 'No insurance',
             lastVisit: 'N/A',
+            createdAt: new Date().toISOString().split('T')[0],
             consentStatus: 'Not Linked',
             consentDetail: 'None',
             identityVerification: isVerified ? 'Verified' : 'Unverified',
