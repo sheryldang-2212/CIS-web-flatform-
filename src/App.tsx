@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Dashboard from './components/Dashboard';
@@ -33,6 +33,15 @@ function App() {
   const [authRoute, setAuthRoute] = useState('login');
   
   const [activeTab, setActiveTab] = useState('Patients');
+  
+  useEffect(() => {
+    const handleTabChange = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setActiveTab(customEvent.detail);
+    };
+    window.addEventListener('request-tab-change', handleTabChange);
+    return () => window.removeEventListener('request-tab-change', handleTabChange);
+  }, []);
   
   // mock user data
   const [currentClinic, setCurrentClinic] = useState(MOCK_CLINICS[0]);

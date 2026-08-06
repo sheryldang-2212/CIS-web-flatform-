@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Calendar, ChevronDown, Plus, MoreVertical, Eye, Edit2, Trash2, Send, Link } from 'lucide-react';
 import PatientFormModal from './PatientFormModal';
 import PatientDetail from './PatientDetail';
@@ -29,7 +29,7 @@ export interface Patient {
   verifiedClinic: string | null;
 }
 
-const initialMockPatients: Patient[] = [
+export const initialMockPatients: Patient[] = [
   { id: 'MRN001', name: 'Natthawut Srisomboon', idNumber: 'ID234567890', gender: 'Male', age: '38 years', dob: '14/03/1988', contact: '082-614-7293\nnatthawut.s@gmail.com', allergy: true, insurance: 'Thai Life\nTL-385190247', lastVisit: '22/07/2026', createdAt: '2026-07-22', consentStatus: 'Linked', consentDetail: 'Linked on 30 Jul 2026', identityVerification: 'Unverified', registrationSource: 'Mobile App', documentType: null, verifiedBy: null, verifiedAt: null, verificationMethod: null, verifiedClinic: null },
   { id: 'MRN002', name: 'Sirada Wongsawan', idNumber: 'ID312890456', gender: 'Female', age: '27 years', dob: '09/11/1998', contact: '091-208-5634\nsirada.w@hotmail.com', allergy: true, insurance: 'AIA Thailand\nAIA-724058163', lastVisit: '19/07/2026', createdAt: '2026-07-19', consentStatus: 'Not Linked', consentDetail: 'Invitation sent', identityVerification: 'Verified', registrationSource: 'Clinic', documentType: 'Thai National ID', verifiedBy: 'Thao Nguyen', verifiedAt: '05 Aug 2026, 09:45', verificationMethod: 'In Person', verifiedClinic: 'Downtown Medical Center' },
   { id: 'MRN003', name: 'Pongsakorn Thanakit', idNumber: 'ID478123905', gender: 'Male', age: '52 years', dob: '25/06/1974', contact: '087-935-1846\npongsakorn.t@yahoo.com', allergy: true, insurance: 'No insurance', lastVisit: '16/07/2026', createdAt: '2026-07-16', consentStatus: 'Linked', consentDetail: 'Linked on 28 Jul 2026', identityVerification: 'Verified', registrationSource: 'Mobile App', documentType: 'Passport', verifiedBy: 'Sarah Chen', verifiedAt: '28 Jul 2026, 14:20', verificationMethod: 'In Person', verifiedClinic: 'Downtown Medical Center' },
@@ -50,6 +50,20 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [activeFilterDropdown, setActiveFilterDropdown] = useState<string | null>(null);
   const [patientsList, setPatientsList] = useState<Patient[]>(initialMockPatients);
+  
+  // Custom navigation event listener
+  useEffect(() => {
+    const handleNavigate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const patientId = customEvent.detail;
+      const patient = patientsList.find(p => p.id === patientId);
+      if (patient) {
+        setViewingPatient(patient);
+      }
+    };
+    window.addEventListener('navigate-to-patient', handleNavigate);
+    return () => window.removeEventListener('navigate-to-patient', handleNavigate);
+  }, [patientsList]);
   
   // Filter States
   const [verificationFilter, setVerificationFilter] = useState('All');

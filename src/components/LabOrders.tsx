@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, ChevronDown, Plus, MoreVertical, Printer, Eye, Edit2, Copy, FilePlus2, ClipboardList, Clock, BriefcaseMedical, CheckCircle2, XCircle } from 'lucide-react';
 import LabOrderFormModal from './LabOrderFormModal';
 import LabOrderDetail from './LabOrderDetail';
@@ -7,6 +7,7 @@ import PrintModal from './PrintModal';
 import PatientFormModal from './PatientFormModal';
 import ActionReasonModal from './ActionReasonModal';
 import './LabOrders.css';
+import { initialMockPatients } from './Patients';
 
 const initialMockLabOrders = [
   { id: 'ORD001', patientName: 'Somchai Wongsakul', idNumber: 'ORD-DWT-20260710-000001', priority: 'STAT', status: 'Pending Collection', assignedTo: 'Dr. Narong Phanich', date: 'Jul 10, 2026, 09:15 AM', tests: ['HbA1c', 'Fasting Glucose', 'Creatinine', 'BUN', 'Lipid Profile', 'CBC', 'TSH', 'Free T4', 'AST', 'ALT', 'ALP', 'Total Protein', 'Albumin', 'Globulin', 'Bilirubin Total', 'Uric Acid'] },
@@ -37,6 +38,21 @@ export default function LabOrders() {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [cancelOrder, setCancelOrder] = useState<any>(null);
   const [undoOrder, setUndoOrder] = useState<any>(null);
+  const [createInitialData, setCreateInitialData] = useState<any>(null);
+
+  useEffect(() => {
+    const handleNavigate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const patientId = customEvent.detail;
+      const patient = initialMockPatients.find(p => p.id === patientId);
+      if (patient) {
+        setIsCreateOpen(true);
+        setCreateInitialData({ patientName: patient.name, patientId: patient.id });
+      }
+    };
+    window.addEventListener('navigate-to-create-lab-order', handleNavigate);
+    return () => window.removeEventListener('navigate-to-create-lab-order', handleNavigate);
+  }, []);
 
   const toggleActionDropdown = (id: string) => {
     setActiveDropdown(activeDropdown === id ? null : id);
@@ -370,8 +386,12 @@ export default function LabOrders() {
       {/* Modals */}
       <LabOrderFormModal 
         isOpen={isCreateOpen} 
-        onClose={() => setIsCreateOpen(false)} 
+        onClose={() => {
+          setIsCreateOpen(false);
+          setCreateInitialData(null);
+        }} 
         mode="create" 
+        initialData={createInitialData}
         onRegisterPatient={() => {
           setIsCreateOpen(false);
           setIsRegisterOpen(true);

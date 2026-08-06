@@ -107,18 +107,31 @@ export default function PatientDetail({ patient, onEdit, onBack }: PatientDetail
                 </div>
               </div>
             ) : (
-              <div className="sidebar-item">
-                <CheckCircle2 size={16} className="sidebar-icon" style={{ color: '#16a34a' }} />
-                <div className="sidebar-item-content">
-                  <span className="sidebar-item-label" style={{ color: '#16a34a', fontWeight: 600 }}>Verified</span>
-                  <div className="text-muted" style={{ fontSize: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                    <span>Verified by: {localPatient.verifiedBy}</span>
-                    <span>Verified at: {localPatient.verifiedAt}</span>
-                    <span>Clinic: {localPatient.verifiedClinic}</span>
-                    <span>Doc Type: {localPatient.documentType}</span>
-                    <span>Method: {localPatient.verificationMethod}</span>
+              <div className="sidebar-item" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <CheckCircle2 size={16} className="sidebar-icon" style={{ color: '#16a34a', marginTop: '2px' }} />
+                  <div className="sidebar-item-content">
+                    <span className="sidebar-item-label" style={{ color: '#16a34a', fontWeight: 600 }}>Verified</span>
+                    <div className="text-muted" style={{ fontSize: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <span>Verified by: {localPatient.verifiedBy}</span>
+                      <span>Verified at: {localPatient.verifiedAt}</span>
+                      <span>Clinic: {localPatient.verifiedClinic}</span>
+                      <span>Doc Type: {localPatient.documentType}</span>
+                      <span>Method: {localPatient.verificationMethod}</span>
+                    </div>
                   </div>
                 </div>
+                <button 
+                  type="button" 
+                  className="btn-primary" 
+                  style={{ width: '100%', marginTop: '16px', padding: '8px', fontSize: '13px' }}
+                  onClick={() => {
+                    window.dispatchEvent(new CustomEvent('request-tab-change', { detail: 'Lab Orders' }));
+                    setTimeout(() => window.dispatchEvent(new CustomEvent('navigate-to-create-lab-order', { detail: localPatient.id })), 100);
+                  }}
+                >
+                  Create Lab Order
+                </button>
               </div>
             )}
           </div>
