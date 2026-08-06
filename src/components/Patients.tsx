@@ -170,31 +170,34 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
                 <Calendar size={14} className="text-muted" />
               </button>
               {activeFilterDropdown === 'date' && (
-                <div className="filter-dropdown-menu p-3" style={{ right: 0, left: 'auto', width: '280px', display: 'flex', flexDirection: 'column', gap: '12px', zIndex: 10 }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <label className="text-sm font-medium">Start Date</label>
-                    <input 
-                      type="date" 
-                      className="form-control" 
-                      style={{ width: '100%' }}
-                      value={dateRange.start} 
-                      onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })} 
-                    />
+                <div className="filter-dropdown-menu date-range-menu">
+                  <div className="date-range-header">
+                    <span className="font-medium text-sm">Select Date Range</span>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <label className="text-sm font-medium">End Date</label>
-                    <input 
-                      type="date" 
-                      className="form-control" 
-                      style={{ width: '100%' }}
-                      value={dateRange.end} 
-                      onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })} 
-                    />
+                  <div className="date-range-body">
+                    <div className="date-input-group">
+                      <label>Start Date</label>
+                      <input 
+                        type="date" 
+                        className="date-input" 
+                        value={dateRange.start} 
+                        onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })} 
+                      />
+                    </div>
+                    <div className="date-input-separator">to</div>
+                    <div className="date-input-group">
+                      <label>End Date</label>
+                      <input 
+                        type="date" 
+                        className="date-input" 
+                        value={dateRange.end} 
+                        onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })} 
+                      />
+                    </div>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '4px' }}>
+                  <div className="date-range-footer">
                     <button 
-                      className="btn-secondary" 
-                      style={{ padding: '6px 12px', fontSize: '12px' }}
+                      className="btn-secondary btn-sm" 
                       onClick={() => {
                         setDateRange({ start: '', end: '' });
                         setAppliedDateRange({ start: '', end: '' });
@@ -204,14 +207,13 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
                       Clear
                     </button>
                     <button 
-                      className="btn-primary" 
-                      style={{ padding: '6px 12px', fontSize: '12px' }}
+                      className="btn-primary btn-sm" 
                       onClick={() => {
                         setAppliedDateRange(dateRange);
                         setActiveFilterDropdown(null);
                       }}
                     >
-                      Search
+                      Apply
                     </button>
                   </div>
                 </div>
