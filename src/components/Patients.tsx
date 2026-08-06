@@ -319,9 +319,6 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
                         ) : (
                           <span className="badge-secondary w-fit" style={{ backgroundColor: '#f1f5f9', color: '#64748b' }}>Unverified</span>
                         )}
-                        {patient.identityVerification === 'Unverified' && (
-                          <span className="text-xs" style={{ color: '#d97706', fontWeight: 500 }}>Verify Identity</span>
-                        )}
                       </div>
                     </td>
                   )}
