@@ -13,9 +13,29 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
   const isEdit = mode === 'edit';
   const submitText = isEdit ? 'Update Patient' : 'Register Patient';
 
-  const [nationalId, setNationalId] = useState(initialData?.nationalId || '');
-  const [email, setEmail] = useState(initialData?.email || '');
-  const [isDocumentReviewed, setIsDocumentReviewed] = useState(false);
+  let parsedInitialData = { ...initialData };
+  if (isEdit && initialData && initialData.name) {
+    const nameParts = initialData.name.split(' ');
+    parsedInitialData.firstName = nameParts[0] || '';
+    parsedInitialData.lastName = nameParts.slice(1).join(' ') || '';
+    parsedInitialData.nationalId = initialData.idNumber || '';
+    
+    if (initialData.contact) {
+      const contactParts = initialData.contact.split('\n');
+      parsedInitialData.phone = contactParts[0] || '';
+      parsedInitialData.email = contactParts[1] || '';
+    }
+
+    if (initialData.insurance && initialData.insurance !== 'No insurance') {
+      const insParts = initialData.insurance.split('\n');
+      parsedInitialData.insuranceProvider = insParts[0] || '';
+      parsedInitialData.policyNumber = insParts[1] || '';
+    }
+  }
+
+  const [nationalId, setNationalId] = useState(parsedInitialData?.nationalId || '');
+  const [email, setEmail] = useState(parsedInitialData?.email || '');
+  const [isDocumentReviewed, setIsDocumentReviewed] = useState(initialData?.identityVerification === 'Verified' || false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,21 +64,19 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
         <div className="form-group mt-4 mb-4">
           <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span>National ID <span className="required">*</span></span>
-            {!isEdit && (
-              <label className="toggle-switch-wrapper" title="Toggle to confirm you've verified the identity document">
-                <div className="toggle-switch">
-                  <input 
-                    type="checkbox" 
-                    checked={isDocumentReviewed}
-                    onChange={(e) => setIsDocumentReviewed(e.target.checked)}
-                  />
-                  <span className="toggle-slider"></span>
-                </div>
-                <span className={`toggle-label ${isDocumentReviewed ? 'verified' : ''}`}>
-                  {isDocumentReviewed ? 'Identity Verified' : 'Verify Identity'}
-                </span>
-              </label>
-            )}
+            <label className="toggle-switch-wrapper" title="Toggle to confirm you've verified the identity document">
+              <div className="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  checked={isDocumentReviewed}
+                  onChange={(e) => setIsDocumentReviewed(e.target.checked)}
+                />
+                <span className="toggle-slider"></span>
+              </div>
+              <span className={`toggle-label ${isDocumentReviewed ? 'verified' : ''}`}>
+                {isDocumentReviewed ? 'Identity Verified' : 'Verify Identity'}
+              </span>
+            </label>
           </label>
           <input 
             type="text" 
@@ -72,15 +90,15 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
         <div className="form-row-3">
           <div className="form-group">
             <label>First name <span className="required">*</span></label>
-            <input type="text" defaultValue={initialData?.firstName} />
+            <input type="text" defaultValue={parsedInitialData?.firstName} />
           </div>
           <div className="form-group">
             <label>Middle Name</label>
-            <input type="text" defaultValue={initialData?.middleName} />
+            <input type="text" defaultValue={parsedInitialData?.middleName} />
           </div>
           <div className="form-group">
             <label>Last Name <span className="required">*</span></label>
-            <input type="text" defaultValue={initialData?.lastName} />
+            <input type="text" defaultValue={parsedInitialData?.lastName} />
           </div>
         </div>
 
@@ -88,14 +106,14 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
           <div className="form-group">
             <label>Date of Birth <span className="required">*</span></label>
             <div className="input-with-icon">
-              <input type="text" placeholder="DD/MM/YYYY" defaultValue={initialData?.dob} />
+              <input type="text" placeholder="DD/MM/YYYY" defaultValue={parsedInitialData?.dob} />
               <Calendar size={16} className="input-icon" />
             </div>
           </div>
           <div className="form-group">
             <label>Gender</label>
             <div className="select-wrapper">
-              <select defaultValue={initialData?.gender || "Select"}>
+              <select defaultValue={parsedInitialData?.gender || "Select"}>
                 <option disabled>Select</option>
                 <option>Male</option>
                 <option>Female</option>
@@ -115,7 +133,7 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
                 <span>+66</span>
                 <ChevronDown size={14} className="text-muted" />
               </div>
-              <input type="text" defaultValue={initialData?.phone} />
+              <input type="text" defaultValue={parsedInitialData?.phone} />
             </div>
           </div>
           <div className="form-group">
@@ -131,7 +149,7 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
 
         <div className="form-group">
           <label>Address</label>
-          <textarea rows={3} defaultValue={initialData?.address}></textarea>
+          <textarea rows={3} defaultValue={parsedInitialData?.address}></textarea>
         </div>
       </section>
 
@@ -142,7 +160,7 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
         <div className="form-row-3">
           <div className="form-group">
             <label>Emergency Contact Name</label>
-            <input type="text" defaultValue={initialData?.emergencyContactName} />
+            <input type="text" defaultValue={parsedInitialData?.emergencyContactName} />
           </div>
           <div className="form-group">
             <label>Emergency Phone</label>
@@ -152,13 +170,13 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
                 <span>+66</span>
                 <ChevronDown size={14} className="text-muted" />
               </div>
-              <input type="text" defaultValue={initialData?.emergencyPhone} />
+              <input type="text" defaultValue={parsedInitialData?.emergencyPhone} />
             </div>
           </div>
           <div className="form-group">
             <label>Relationship</label>
             <div className="select-wrapper">
-              <select defaultValue={initialData?.relationship || "Select"}>
+              <select defaultValue={parsedInitialData?.relationship || "Select"}>
                 <option disabled>Select</option>
                 <option>Spouse</option>
                 <option>Parent</option>
@@ -178,11 +196,11 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
         <div className="form-row-2">
           <div className="form-group">
             <label>Insurance Provider</label>
-            <input type="text" defaultValue={initialData?.insuranceProvider} />
+            <input type="text" defaultValue={parsedInitialData?.insuranceProvider} />
           </div>
           <div className="form-group">
             <label>Policy Number</label>
-            <input type="text" defaultValue={initialData?.policyNumber} />
+            <input type="text" defaultValue={parsedInitialData?.policyNumber} />
           </div>
         </div>
       </section>
@@ -219,31 +237,31 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
         <h3 className="section-title">Medical History</h3>
         <div className="checkbox-grid">
           <label className="checkbox-label">
-            <input type="checkbox" defaultChecked={initialData?.medicalHistory?.includes('Diabetes')} />
+            <input type="checkbox" defaultChecked={parsedInitialData?.medicalHistory?.includes('Diabetes')} />
             <span>Diabetes</span>
           </label>
           <label className="checkbox-label">
-            <input type="checkbox" defaultChecked={initialData?.medicalHistory?.includes('Hypertension')} />
+            <input type="checkbox" defaultChecked={parsedInitialData?.medicalHistory?.includes('Hypertension')} />
             <span>Hypertension</span>
           </label>
           <label className="checkbox-label">
-            <input type="checkbox" defaultChecked={initialData?.medicalHistory?.includes('Cardiovascular Disease')} />
+            <input type="checkbox" defaultChecked={parsedInitialData?.medicalHistory?.includes('Cardiovascular Disease')} />
             <span>Cardiovascular Disease</span>
           </label>
           <label className="checkbox-label">
-            <input type="checkbox" defaultChecked={initialData?.medicalHistory?.includes('Respiratory Disease')} />
+            <input type="checkbox" defaultChecked={parsedInitialData?.medicalHistory?.includes('Respiratory Disease')} />
             <span>Respiratory Disease</span>
           </label>
           <label className="checkbox-label">
-            <input type="checkbox" defaultChecked={initialData?.medicalHistory?.includes('Kidney Disease')} />
+            <input type="checkbox" defaultChecked={parsedInitialData?.medicalHistory?.includes('Kidney Disease')} />
             <span>Kidney Disease</span>
           </label>
           <label className="checkbox-label">
-            <input type="checkbox" defaultChecked={initialData?.medicalHistory?.includes('Liver Disease')} />
+            <input type="checkbox" defaultChecked={parsedInitialData?.medicalHistory?.includes('Liver Disease')} />
             <span>Liver Disease</span>
           </label>
           <label className="checkbox-label">
-            <input type="checkbox" defaultChecked={initialData?.medicalHistory?.includes('None')} />
+            <input type="checkbox" defaultChecked={parsedInitialData?.medicalHistory?.includes('None')} />
             <span>None</span>
           </label>
         </div>

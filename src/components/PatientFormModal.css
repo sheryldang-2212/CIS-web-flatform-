@@ -75,22 +75,26 @@
   gap: 20px;
 }
 
-/* Custom Input Wrappers */
-.input-with-icon {
+.patient-form .input-with-icon {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
-.input-with-icon input {
+.patient-form .input-with-icon input {
   padding-right: 36px;
+  padding-left: 12px; /* override global left padding */
 }
 
-.input-icon {
+.patient-form .input-icon {
   position: absolute;
   right: 12px;
+  left: auto; /* override global left position */
   color: var(--text-muted);
   pointer-events: none;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .select-wrapper {

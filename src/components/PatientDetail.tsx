@@ -215,7 +215,7 @@ export default function PatientDetail({ patient, onEdit, onBack }: PatientDetail
                   <p className="ivb-desc">This patient has not been verified at the clinic. Please review the patient's original National ID or Passport.</p>
                 </div>
               </div>
-              <button className="btn-primary btn-sm" onClick={() => setIsVerifyModalOpen(true)}>
+              <button className="btn-primary btn-sm" onClick={onEdit}>
                 Verify Identity
               </button>
             </div>
