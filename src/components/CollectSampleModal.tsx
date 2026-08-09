@@ -136,7 +136,7 @@ export default function CollectSampleModal({ order, onClose, onPrintBarcode, onC
           <div className="footer-right">
             <button className="btn-print" onClick={onPrintBarcode}>
               <Printer size={16} />
-              Print Barcode
+              Print / Reprint Specimen Labels
             </button>
             <button className="btn-complete" onClick={onComplete}>
               <Check size={16} />

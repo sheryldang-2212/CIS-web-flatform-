@@ -1,163 +1,141 @@
 .print-modal {
-  width: 100%;
-  max-width: 800px;
-  display: flex;
-  flex-direction: row;
-  overflow: hidden;
-  height: 500px;
-}
-
-.print-modal .modal-header {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  border-bottom: none;
+  width: 900px;
+  max-width: 95vw;
   padding: 0;
-  z-index: 10;
-}
-
-.print-modal .modal-title {
-  display: none;
-}
-
-.print-preview-pane {
-  flex: 1;
-  background-color: #f3f4f6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 32px;
-}
-
-.barcode-preview-paper {
-  background-color: white;
-  width: 100%;
-  max-width: 300px;
-  height: 100%;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
 }
 
-.barcode-text {
-  font-family: monospace;
-  font-size: 14px;
-  margin-bottom: 12px;
-  color: #000;
-  font-weight: 600;
-}
-
-.barcode-image {
-  width: 100%;
-  height: 60px;
-  background: repeating-linear-gradient(
-    90deg,
-    #000,
-    #000 2px,
-    #fff 2px,
-    #fff 4px,
-    #000 4px,
-    #000 8px,
-    #fff 8px,
-    #fff 10px
-  );
+.print-modal-body {
+  display: flex;
+  height: 500px;
+  border-top: 1px solid var(--border-color);
 }
 
 .print-settings-pane {
   width: 320px;
-  background-color: white;
   display: flex;
   flex-direction: column;
-}
-
-.print-settings-header {
-  padding: 24px 24px 16px;
-}
-
-.print-settings-header h2 {
-  font-size: 20px;
-  font-weight: 600;
-  margin: 0;
-  color: var(--text-main);
-}
-
-.print-settings-body {
-  padding: 0 24px;
-  flex: 1;
+  padding: 20px;
+  background-color: white;
+  border-right: 1px solid var(--border-color);
   overflow-y: auto;
 }
 
-.print-form-group {
+.specimen-selection-section {
+  margin-bottom: 24px;
+}
+
+.specimen-selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.specimen-selection-header h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.select-all-label {
   display: flex;
   align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.specimen-list-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 150px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.specimen-compact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.specimen-compact-item:hover {
+  background-color: #f8fafc;
+}
+
+.specimen-compact-item.selected {
+  border-color: var(--primary);
+  background-color: #f0fdf4;
+}
+
+.specimen-compact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.specimen-compact-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.specimen-compact-id {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.print-form-group {
   margin-bottom: 16px;
 }
 
 .print-form-group label {
-  width: 100px;
+  display: block;
   font-size: 13px;
-  color: var(--text-secondary);
   font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
 }
 
 .print-form-group select,
-.print-form-group input[type="number"] {
-  flex: 1;
+.print-form-group input {
+  width: 100%;
   padding: 8px 12px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 13px;
+  color: var(--text-primary);
   outline: none;
   background-color: white;
 }
 
-.print-form-group select {
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  background-size: 14px;
-  padding-right: 32px;
-}
-
-.print-options-group {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.print-options-group .print-form-group {
-  align-items: flex-start;
-  flex-direction: column;
-}
-
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--text-main);
-  cursor: pointer;
-  width: 100%;
-}
-
-.checkbox-label input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--primary);
-  cursor: pointer;
+.print-form-group select:focus,
+.print-form-group input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
 }
 
 .print-settings-footer {
-  padding: 16px 24px;
   display: flex;
-  justify-content: flex-end;
   gap: 12px;
-  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.print-settings-footer button {
+  flex: 1;
 }
 
 .btn-print-action {
@@ -165,12 +143,82 @@
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 8px 24px;
-  font-size: 14px;
-  font-weight: 600;
+  padding: 10px 16px;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .btn-print-action:hover {
-  opacity: 0.9;
+  background-color: var(--primary-dark);
+}
+
+.btn-print-action:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.print-preview-pane {
+  flex: 1;
+  background-color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  overflow-y: auto;
+  gap: 20px;
+}
+
+.barcode-preview-paper {
+  width: 300px;
+  height: 150px;
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  position: relative;
+}
+
+.barcode-text {
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.barcode-image {
+  width: 100%;
+  height: 60px;
+  background-image: repeating-linear-gradient(
+    to right,
+    #000,
+    #000 2px,
+    #fff 2px,
+    #fff 4px,
+    #000 4px,
+    #000 5px,
+    #fff 5px,
+    #fff 8px,
+    #000 8px,
+    #000 12px,
+    #fff 12px,
+    #fff 14px
+  );
+}
+
+.barcode-specimen-name {
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 8px;
+  color: #333;
+}
+
+.no-preview {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-top: 100px;
 }

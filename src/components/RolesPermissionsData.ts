@@ -51,7 +51,7 @@ export const PERMISSION_MODULES = [
     permissions: [
       { name: 'View Collection Queue', code: 'collection.view.list', roles: ['technician', 'clinic_admin', 'platform_admin'], dependency: null },
       { name: 'Collect Sample', code: 'collection.execute', roles: ['technician', 'clinic_admin'], dependency: null },
-      { name: 'Print Barcode', code: 'collection.print_barcode', roles: ['technician', 'clinic_admin'], dependency: null },
+      { name: 'Print Barcode', code: 'collection.print_barcode', roles: ['technician', 'clinic_admin', 'receptionist'], dependency: null },
     ]
   },
   {

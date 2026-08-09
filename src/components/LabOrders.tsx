@@ -4,6 +4,7 @@ import LabOrderFormModal from './LabOrderFormModal';
 import LabOrderDetail from './LabOrderDetail';
 import AddOnTestModal from './AddOnTestModal';
 import PrintModal from './PrintModal';
+import PrintBarcodeModal from './PrintBarcodeModal';
 import PatientFormModal from './PatientFormModal';
 import ActionReasonModal from './ActionReasonModal';
 import './LabOrders.css';
@@ -42,6 +43,7 @@ export default function LabOrders() {
   const [cancelOrder, setCancelOrder] = useState<any>(null);
   const [undoOrder, setUndoOrder] = useState<any>(null);
   const [createInitialData, setCreateInitialData] = useState<any>(null);
+  const [printBarcodeOrder, setPrintBarcodeOrder] = useState<string | null>(null);
 
   useEffect(() => {
     const handleNavigate = (e: Event) => {
@@ -463,6 +465,18 @@ export default function LabOrders() {
                             <XCircle size={14} className={order.status === 'Pending Collection' ? 'text-danger' : ''} /> 
                             <span className={order.status === 'Pending Collection' ? 'text-danger' : ''}>Cancel order</span>
                           </button>
+                          <button 
+                            className={`dropdown-item ${order.status !== 'Pending Collection' ? 'disabled' : ''}`}
+                            style={order.status !== 'Pending Collection' ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                            onClick={() => { 
+                              if (order.status === 'Pending Collection') {
+                                setPrintBarcodeOrder(order.id); setActiveDropdown(null); 
+                              }
+                            }}
+                            disabled={order.status !== 'Pending Collection'}
+                          >
+                            <Printer size={14} /> Print / Reprint Specimen Labels
+                          </button>
 
                           {/* Generic Actions */}
                           {order.status !== 'Cancelled' && (
@@ -497,6 +511,7 @@ export default function LabOrders() {
           setIsCreateOpen(false);
           setIsRegisterOpen(true);
         }}
+        onPrintLabels={(id) => setPrintBarcodeOrder(id)}
       />
 
       <LabOrderFormModal 
@@ -504,6 +519,7 @@ export default function LabOrders() {
         onClose={() => setEditingOrder(null)} 
         mode="edit" 
         initialData={editingOrder}
+        onPrintLabels={(id) => setPrintBarcodeOrder(id)}
       />
 
       <LabOrderFormModal 
@@ -515,9 +531,8 @@ export default function LabOrders() {
           setDuplicateOrder(null);
           setIsRegisterOpen(true);
         }}
+        onPrintLabels={(id) => setPrintBarcodeOrder(id)}
       />
-
-
 
       <AddOnTestModal 
         isOpen={!!addonOrder} 
@@ -525,11 +540,21 @@ export default function LabOrders() {
         order={addonOrder} 
       />
 
-      <PrintModal 
-        isOpen={!!printingOrder} 
-        onClose={() => setPrintingOrder(null)} 
-        order={printingOrder} 
-      />
+      {printingOrder && (
+        <PrintModal 
+          isOpen={!!printingOrder} 
+          onClose={() => setPrintingOrder(null)} 
+          order={printingOrder} 
+        />
+      )}
+
+      {printBarcodeOrder && (
+        <PrintBarcodeModal
+          orderId={printBarcodeOrder}
+          onClose={() => setPrintBarcodeOrder(null)}
+          onPrint={() => setPrintBarcodeOrder(null)}
+        />
+      )}
 
       <PatientFormModal 
         isOpen={isRegisterOpen}

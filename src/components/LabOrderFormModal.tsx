@@ -12,9 +12,10 @@ interface LabOrderFormModalProps {
   mode: 'create' | 'edit';
   initialData?: any;
   onRegisterPatient?: () => void;
+  onPrintLabels?: (orderId: string) => void;
 }
 
-export default function LabOrderFormModal({ isOpen, onClose, mode, initialData, onRegisterPatient }: LabOrderFormModalProps) {
+export default function LabOrderFormModal({ isOpen, onClose, mode, initialData, onRegisterPatient, onPrintLabels }: LabOrderFormModalProps) {
   const { categories: testCategories, packages: clinicPackages } = useClinicConfig();
   
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({
@@ -481,7 +482,9 @@ export default function LabOrderFormModal({ isOpen, onClose, mode, initialData, 
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px', color: '#10b981' }}>
               <CheckCircle2 size={48} strokeWidth={1.5} />
             </div>
-            <h3 style={{ fontSize: '20px', fontWeight: 600, color: '#0f172a', textAlign: 'center', marginBottom: '12px' }}>Lab Order {isEdit ? 'Updated' : 'Created'} Successfully!</h3>
+            <h3 style={{ fontSize: '20px', fontWeight: 600, color: '#0f172a', textAlign: 'center', marginBottom: '8px' }}>Lab Order {isEdit ? 'Updated' : 'Created'} Successfully</h3>
+            <p style={{ fontSize: '15px', color: '#475569', marginBottom: '4px' }}>Order ID: <span style={{ fontWeight: 600, fontFamily: 'monospace' }}>{initialData?.id || 'CLN2023-NEW-001'}</span></p>
+            <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '20px' }}>Required specimens: <span style={{ fontWeight: 600 }}>3</span></p>
             
             <div style={{ backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px', width: '100%', marginBottom: '24px', fontSize: '13px', color: '#475569', display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
@@ -494,17 +497,31 @@ export default function LabOrderFormModal({ isOpen, onClose, mode, initialData, 
               </div>
             </div>
 
-            <button 
-              type="button"
-              className="btn-primary"
-              style={{ width: '100%', padding: '10px', justifyContent: 'center', fontSize: '14px' }}
-              onClick={() => {
-                setShowSuccessModal(false);
-                onClose();
-              }}
-            >
-              Done
-            </button>
+            <div style={{ display: 'flex', gap: '12px', width: '100%' }}>
+              <button 
+                type="button"
+                className="btn-secondary"
+                style={{ flex: 1, padding: '10px', justifyContent: 'center', fontSize: '14px' }}
+                onClick={() => {
+                  setShowSuccessModal(false);
+                  onClose();
+                }}
+              >
+                Done
+              </button>
+              <button 
+                type="button"
+                className="btn-primary"
+                style={{ flex: 1, padding: '10px', justifyContent: 'center', fontSize: '14px' }}
+                onClick={() => {
+                  if (onPrintLabels) onPrintLabels(initialData?.id || 'CLN2023-NEW-001');
+                  setShowSuccessModal(false);
+                  onClose();
+                }}
+              >
+                Print Specimen Labels
+              </button>
+            </div>
           </div>
         </div>
       )}

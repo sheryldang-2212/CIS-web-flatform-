@@ -18,9 +18,17 @@ export default function Login({ onLoginSuccess, onNavigate, mockClinics }: Login
   // Step management: 'credentials' -> 'select-clinic'
   const [step, setStep] = useState<'credentials' | 'select-clinic'>('credentials');
   const [selectedClinicId, setSelectedClinicId] = useState('');
+  const [availableClinics, setAvailableClinics] = useState<any[]>([]);
   
   // Modal state for unactivated account
   const [showUnactivatedModal, setShowUnactivatedModal] = useState(false);
+
+  // Mock data to demonstrate different user scenarios
+  const MOCK_USERS: Record<string, string[]> = {
+    'admin@healthhub.com': ['clinic-1', 'clinic-2'], // Multiple clinics -> shows Select Clinic
+    'doctor@healthhub.com': ['clinic-1'],            // 1 clinic -> skips Select Clinic
+    'staff@healthhub.com': ['clinic-2']              // 1 clinic -> skips Select Clinic
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,18 +45,31 @@ export default function Login({ onLoginSuccess, onNavigate, mockClinics }: Login
       return;
     }
 
+    // Determine user's clinics
+    // Default to giving access to all clinics for unknown emails in demo, 
+    // or you could restrict it. Let's default to all for general testing.
+    const userClinicIds = MOCK_USERS[email] || mockClinics.map(c => c.id);
+    const userClinics = mockClinics.filter(c => userClinicIds.includes(c.id));
+
+    if (userClinics.length === 0) {
+      setError('No clinics assigned to this account.');
+      return;
+    }
+
+    setAvailableClinics(userClinics);
+
     // Default success path -> move to clinic selection if there are multiple
-    if (mockClinics.length > 1) {
+    if (userClinics.length > 1) {
       setStep('select-clinic');
-      setSelectedClinicId(mockClinics[0].id);
+      setSelectedClinicId(userClinics[0].id);
     } else {
       // Direct login if only 1 clinic
-      onLoginSuccess(mockClinics[0], mockClinics[0].roles[0] || 'Receptionist');
+      onLoginSuccess(userClinics[0], userClinics[0].roles[0] || 'Receptionist');
     }
   };
 
   const handleContinue = () => {
-    const clinic = mockClinics.find(c => c.id === selectedClinicId);
+    const clinic = availableClinics.find(c => c.id === selectedClinicId);
     if (clinic) {
       onLoginSuccess(clinic, clinic.roles[0] || 'Receptionist');
     }
@@ -115,6 +136,14 @@ export default function Login({ onLoginSuccess, onNavigate, mockClinics }: Login
           <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '12px', color: '#6b7280' }}>
             Trouble signing in? <span className="auth-link">Contact your Admin</span>
           </div>
+          
+          {/* Demo helper */}
+          <div style={{ marginTop: '32px', padding: '16px', backgroundColor: '#f8f9fa', borderRadius: '8px', fontSize: '12px', color: '#6b7280' }}>
+            <strong>Demo Accounts:</strong><br />
+            - <i>admin@healthhub.com</i> (Multiple clinics - shows Select Clinic)<br />
+            - <i>doctor@healthhub.com</i> (1 clinic - skips Select Clinic)<br />
+            - <i>staff@healthhub.com</i> (1 clinic - skips Select Clinic)
+          </div>
         </div>
       )}
 
@@ -132,7 +161,7 @@ export default function Login({ onLoginSuccess, onNavigate, mockClinics }: Login
               value={selectedClinicId}
               onChange={(e) => setSelectedClinicId(e.target.value)}
             >
-              {mockClinics.map(clinic => (
+              {availableClinics.map(clinic => (
                 <option key={clinic.id} value={clinic.id}>{clinic.name}</option>
               ))}
             </select>

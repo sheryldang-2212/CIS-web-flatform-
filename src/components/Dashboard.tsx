@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ClipboardList, Clock, BriefcaseMedical, CheckCircle2, Stethoscope, AlertCircle, Calendar, Activity, Users as UsersIcon, ShieldCheck, Package, History, UserPlus, Settings, Lock, Key, ChevronRight, Eye, Droplet, Printer, Truck, FileText } from 'lucide-react';
 import PatientFormModal from './PatientFormModal';
 import LabOrderFormModal from './LabOrderFormModal';
+import PrintBarcodeModal from './PrintBarcodeModal';
 import './Dashboard.css';
 
 interface DashboardProps {
@@ -12,6 +13,7 @@ interface DashboardProps {
 export default function Dashboard({ currentRole, setActiveTab }: DashboardProps) {
   const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
   const [isLabOrderModalOpen, setIsLabOrderModalOpen] = useState(false);
+  const [printBarcodeOrder, setPrintBarcodeOrder] = useState<string | null>(null);
 
   const renderReceptionistDashboard = () => {
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -458,7 +460,7 @@ export default function Dashboard({ currentRole, setActiveTab }: DashboardProps)
           </button>
 
           <button className="quick-action-btn" onClick={() => {}}>
-            <div className="action-icon" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>
+            <div className="action-icon" style={{ backgroundColor: 'rgba(10, 185, 129, 0.1)', color: '#10b981' }}>
               <FileText size={20} />
             </div>
             <span>View All Results</span>
@@ -620,7 +622,16 @@ export default function Dashboard({ currentRole, setActiveTab }: DashboardProps)
           setIsLabOrderModalOpen(false);
           setIsPatientModalOpen(true);
         }}
+        onPrintLabels={(id) => setPrintBarcodeOrder(id)}
       />
+
+      {printBarcodeOrder && (
+        <PrintBarcodeModal
+          orderId={printBarcodeOrder}
+          onClose={() => setPrintBarcodeOrder(null)}
+          onPrint={() => setPrintBarcodeOrder(null)}
+        />
+      )}
     </div>
   );
 }

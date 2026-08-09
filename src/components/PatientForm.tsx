@@ -36,20 +36,80 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
   const [nationalId, setNationalId] = useState(parsedInitialData?.nationalId || '');
   const [email, setEmail] = useState(parsedInitialData?.email || '');
   const [isDocumentReviewed, setIsDocumentReviewed] = useState(initialData?.identityVerification === 'Verified' || false);
+  
+  const [gender, setGender] = useState(parsedInitialData?.gender || '');
+  const [height, setHeight] = useState(parsedInitialData?.height || '');
+  const [weight, setWeight] = useState(parsedInitialData?.weight || '');
+  
+  const [genderError, setGenderError] = useState('');
+  const [heightError, setHeightError] = useState('');
+  const [weightError, setWeightError] = useState('');
+  
+  // Track if any field in the form has been edited
+  const [isDirty, setIsDirty] = useState(false);
+
+  const validateNumber = (val: string) => {
+    if (!val) return false;
+    const num = parseFloat(val);
+    if (isNaN(num) || num <= 0) return false;
+    // check max 1 decimal
+    if (val.includes('.')) {
+      const parts = val.split('.');
+      if (parts[1].length > 1) return false;
+    }
+    return true;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    let hasError = false;
+
+    if (!gender || gender === 'Select') {
+      setGenderError('Gender is required.');
+      hasError = true;
+    } else {
+      setGenderError('');
+    }
+
+    if (!height) {
+      setHeightError('Height is required.');
+      hasError = true;
+    } else if (!validateNumber(height)) {
+      setHeightError('Please enter a valid height.');
+      hasError = true;
+    } else {
+      setHeightError('');
+    }
+
+    if (!weight) {
+      setWeightError('Weight is required.');
+      hasError = true;
+    } else if (!validateNumber(weight)) {
+      setWeightError('Please enter a valid weight.');
+      hasError = true;
+    } else {
+      setWeightError('');
+    }
+
+    if (hasError) return;
+
     if (onSubmitSuccess) {
       onSubmitSuccess(
         email || 'patient@example.com', 
         isDocumentReviewed, 
-        { nationalId, email } // Simplified data for mockup
+        { nationalId, email, gender, height: parseFloat(height), weight: parseFloat(weight) } // Added fields
       );
     }
   };
 
+  const handleFormChange = () => {
+    if (!isDirty) {
+      setIsDirty(true);
+    }
+  };
+
   return (
-    <form className="patient-form" onSubmit={handleSubmit} noValidate>
+    <form className="patient-form" onSubmit={handleSubmit} onChange={handleFormChange} noValidate>
       {isEdit && initialData?.identityVerification === 'Verified' && (
         <div style={{ backgroundColor: '#fffbeb', border: '1px solid #fde68a', borderRadius: '8px', padding: '12px', marginBottom: '20px', display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
           <span style={{ color: '#d97706', fontSize: '13px', fontWeight: 600 }}>Warning: Changing the patient's Name, Date of Birth, or ID/Passport will reset their Identity Verification status to Unverified.</span>
@@ -102,7 +162,7 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
           </div>
         </div>
 
-        <div className="form-row-2">
+        <div className="form-row-3">
           <div className="form-group">
             <label>Date of Birth <span className="required">*</span></label>
             <div className="input-with-icon">
@@ -111,16 +171,48 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
             </div>
           </div>
           <div className="form-group">
-            <label>Gender</label>
+            <label>Gender <span className="required">*</span></label>
             <div className="select-wrapper">
-              <select defaultValue={parsedInitialData?.gender || "Select"}>
-                <option disabled>Select</option>
-                <option>Male</option>
-                <option>Female</option>
-                <option>Other</option>
+              <select 
+                value={gender || "Select"}
+                onChange={(e) => { setGender(e.target.value); setGenderError(''); }}
+                className={genderError ? 'input-error' : ''}
+              >
+                <option disabled value="Select">Select</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
               </select>
               <ChevronDown size={16} className="select-icon" />
             </div>
+            {genderError && <span className="error-text">{genderError}</span>}
+          </div>
+        </div>
+
+        <div className="form-row-2">
+          <div className="form-group">
+            <label>Height (cm) <span className="required">*</span></label>
+            <input 
+              type="number" 
+              step="0.1" 
+              placeholder="e.g. 175.5" 
+              value={height}
+              onChange={(e) => { setHeight(e.target.value); setHeightError(''); }}
+              className={heightError ? 'input-error' : ''}
+            />
+            {heightError && <span className="error-text">{heightError}</span>}
+          </div>
+          <div className="form-group">
+            <label>Weight (kg) <span className="required">*</span></label>
+            <input 
+              type="number" 
+              step="0.1" 
+              placeholder="e.g. 70.2" 
+              value={weight}
+              onChange={(e) => { setWeight(e.target.value); setWeightError(''); }}
+              className={weightError ? 'input-error' : ''}
+            />
+            {weightError && <span className="error-text">{weightError}</span>}
           </div>
         </div>
 
@@ -275,7 +367,11 @@ export default function PatientForm({ mode, initialData, onSubmitSuccess, onCanc
 
       <div className="modal-actions" style={{ paddingBottom: '24px' }}>
         <button type="button" className="btn-cancel" onClick={onCancel}>Cancel</button>
-        <button type="submit" className="btn-primary" disabled={!nationalId}>
+        <button 
+          type="submit" 
+          className="btn-primary" 
+          disabled={!nationalId || (isEdit && !isDirty)}
+        >
           {submitText}
         </button>
       </div>
