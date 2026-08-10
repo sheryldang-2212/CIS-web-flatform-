@@ -328,9 +328,7 @@ export default function LabOrderTracking() {
                         Pick
                       </button>
                     )}
-                    {['Picked Up', 'Sent to Lab', 'Received by Lab', 'In Analysis'].includes(order.status) && (
-                      <button className="btn-lot-secondary">View Order</button>
-                    )}
+
 
                     
                     <div className="lot-action-menu-container">

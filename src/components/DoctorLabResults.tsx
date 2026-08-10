@@ -144,10 +144,11 @@ export default function DoctorLabResults() {
                   </div>
                 </td>
                 <td className="tests-cell">
-                  <div className="test-pills-container">
+                  <div className="test-pills-container custom-tooltip-container">
                     <span className="test-pill">Complete Metabolic Panel</span>
                     <span className="test-pill">TSH</span>
                     <span className="test-pill">Vitamin D</span>
+                    <div className="custom-tooltip">Complete Metabolic Panel, TSH, Vitamin D</div>
                   </div>
                 </td>
                 <td>
@@ -191,11 +192,12 @@ export default function DoctorLabResults() {
                   </div>
                 </td>
                 <td className="tests-cell">
-                  <div className="test-pills-container">
+                  <div className="test-pills-container custom-tooltip-container">
                     <span className="test-pill">Total Cholesterol</span>
                     <span className="test-pill">LDL</span>
                     <span className="test-pill">HDL</span>
                     <span className="test-pill">+1</span>
+                    <div className="custom-tooltip">Total Cholesterol, LDL, HDL, Triglycerides</div>
                   </div>
                 </td>
                 <td>
