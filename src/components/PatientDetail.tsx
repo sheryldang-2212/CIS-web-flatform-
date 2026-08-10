@@ -9,6 +9,7 @@ interface PatientDetailProps {
   patient: any;
   onEdit: () => void;
   onBack: () => void;
+  currentRole?: string;
 }
 
 // --- Mock Data for Labs ---
@@ -23,7 +24,7 @@ const mockLabOrders = [
   { id: 'ORD-20260710-03', tests: 'Lipid Panel, CBC', date: '10/07/2026', status: 'Completed' },
 ];
 
-export default function PatientDetail({ patient, onEdit, onBack }: PatientDetailProps) {
+export default function PatientDetail({ patient, onEdit, onBack, currentRole }: PatientDetailProps) {
   const [selectedResultToReview, setSelectedResultToReview] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<string>('medical_history');
   const [activeHistoryView, setActiveHistoryView] = useState<string>('main');
@@ -68,7 +69,7 @@ export default function PatientDetail({ patient, onEdit, onBack }: PatientDetail
           <ArrowLeft size={20} />
           <span>Back to Patients</span>
         </button>
-        <button className="btn-secondary" onClick={onEdit}>
+        <button className="btn-secondary" onClick={onEdit} disabled={currentRole === 'Technician'}>
           <Edit2 size={16} /> Edit Patient
         </button>
       </div>
@@ -206,7 +207,7 @@ export default function PatientDetail({ patient, onEdit, onBack }: PatientDetail
 
         {/* RIGHT COLUMN: Main Content */}
         <div className="patient-main-content">
-          {localPatient.identityVerification === 'Unverified' && (
+          {currentRole !== 'Technician' && localPatient.identityVerification === 'Unverified' && (
             <div className="identity-verification-banner">
               <div className="ivb-content">
                 <ShieldAlert size={20} className="ivb-icon" />

@@ -3,6 +3,9 @@ import { ClipboardList, Clock, BriefcaseMedical, CheckCircle2, Stethoscope, Aler
 import PatientFormModal from './PatientFormModal';
 import LabOrderFormModal from './LabOrderFormModal';
 import PrintBarcodeModal from './PrintBarcodeModal';
+import CollectSampleModal from './CollectSampleModal';
+import LabOrderDetail from './LabOrderDetail';
+import { Search } from 'lucide-react';
 import './Dashboard.css';
 
 interface DashboardProps {
@@ -14,6 +17,13 @@ export default function Dashboard({ currentRole, setActiveTab }: DashboardProps)
   const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
   const [isLabOrderModalOpen, setIsLabOrderModalOpen] = useState(false);
   const [printBarcodeOrder, setPrintBarcodeOrder] = useState<string | null>(null);
+  const [queueSearchTerm, setQueueSearchTerm] = useState('');
+  const [collectSampleOrder, setCollectSampleOrder] = useState<any>(null);
+  const [completedLabsSearchTerm, setCompletedLabsSearchTerm] = useState('');
+  const [completedLabOrder, setCompletedLabOrder] = useState<any>(null);
+  
+  const todayStr = new Date().toISOString().split('T')[0];
+  const [techDateRange, setTechDateRange] = useState({ start: todayStr, end: todayStr });
 
   const renderReceptionistDashboard = () => {
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -246,9 +256,82 @@ export default function Dashboard({ currentRole, setActiveTab }: DashboardProps)
     </>
   );
 
-  const renderTechnicianDashboard = () => (
+  const renderTechnicianDashboard = () => {
+    const mockTechQueue = [
+      { id: 'ORD007', name: 'James Wilson', mrn: 'MRN020', tests: 'Vitamin D, B12', status: 'pending', priority: 'routine', date: '2026-08-09T10:00:00' },
+      { id: 'ORD006', name: 'Sarah Connor', mrn: 'MRN018', tests: 'Urinalysis, Microalbumin', status: 'pending', priority: 'routine', date: '2026-08-09T09:45:00' },
+      { id: 'ORD005', name: 'David Lee', mrn: 'MRN015', tests: 'Lipid Panel, TSH', status: 'pending', priority: 'routine', date: '2026-08-09T09:30:00' },
+      { id: 'ORD004', name: 'Emma Clark', mrn: 'MRN012', tests: 'CBC, HbA1c...', status: 'pending', priority: 'routine', date: '2026-08-09T09:15:00' },
+      { id: 'ORD003', name: 'Michael Thompson', mrn: 'MRN007', tests: 'MRI Brain, Neurological Panel', status: 'pending', priority: 'urgent', date: '2026-08-09T09:00:00' },
+      { id: 'ORD002', name: 'Lisa Brown', mrn: 'MRN004', tests: 'Peak Flow, IgE Level', status: 'pending', priority: 'routine', date: '2026-08-09T08:45:00' },
+      { id: 'ORD001', name: 'John Smith', mrn: 'MRN001', tests: 'Complete Blood Count, HbA1c...', status: 'pending', priority: 'routine', date: '2026-08-09T08:30:00' },
+    ];
+
+    const filteredQueue = mockTechQueue.filter(item => {
+      const matchSearch = item.name.toLowerCase().includes(queueSearchTerm.toLowerCase()) || 
+                          item.mrn.toLowerCase().includes(queueSearchTerm.toLowerCase());
+      if (!matchSearch) return false;
+      if (techDateRange.start && techDateRange.end) {
+        const itemDate = item.date.split('T')[0];
+        if (itemDate < techDateRange.start || itemDate > techDateRange.end) return false;
+      }
+      return true;
+    });
+
+    const mockCompletedLabs = [
+      { id: 'CLN2023-20260710-EMP001-002', name: 'Emily Johnson', mrn: 'MRN002', patientName: 'Emily Johnson', tests: 'Glucose, HbA1c', status: 'Completed', priority: 'routine', date: '2026-08-09T08:00:00' },
+      { id: 'CLN2023-20260701-EMP003-002', name: 'David Wilson', mrn: 'MRN003', patientName: 'David Wilson', tests: 'Troponin, ECG', status: 'Completed', priority: 'urgent', date: '2026-08-09T07:30:00' },
+      { id: 'CLN2023-20260701-EMP001-003', name: 'John Smith', mrn: 'MRN001', patientName: 'John Smith', tests: 'Complete Blood Count', status: 'Completed', priority: 'routine', date: '2026-08-09T07:00:00' },
+      { id: 'CLN2023-20260701-EMP001-004', name: 'William Turner', mrn: 'MRN005', patientName: 'William Turner', tests: 'Thyroid Panel', status: 'Completed', priority: 'routine', date: '2026-08-08T16:00:00' },
+      { id: 'CLN2023-20260701-EMP005-001', name: 'Michael Thompson', mrn: 'MRN007', patientName: 'Michael Thompson', tests: 'MRI Brain', status: 'Completed', priority: 'urgent', date: '2026-08-08T15:30:00' },
+      { id: 'CLN2023-20260701-EMP006-001', name: 'Emma Clark', mrn: 'MRN012', patientName: 'Emma Clark', tests: 'CBC, HbA1c', status: 'Completed', priority: 'routine', date: '2026-08-08T14:00:00' },
+      { id: 'CLN2023-20260701-EMP007-001', name: 'Sarah Connor', mrn: 'MRN018', patientName: 'Sarah Connor', tests: 'Urinalysis', status: 'Completed', priority: 'routine', date: '2026-08-08T13:00:00' }
+    ];
+
+    const filteredCompletedLabs = mockCompletedLabs.filter(item => {
+      const matchSearch = item.name.toLowerCase().includes(completedLabsSearchTerm.toLowerCase()) || 
+                          item.id.toLowerCase().includes(completedLabsSearchTerm.toLowerCase());
+      if (!matchSearch) return false;
+      if (techDateRange.start && techDateRange.end) {
+        const itemDate = item.date.split('T')[0];
+        if (itemDate < techDateRange.start || itemDate > techDateRange.end) return false;
+      }
+      return true;
+    });
+
+    if (completedLabOrder) {
+      return (
+        <LabOrderDetail 
+          order={completedLabOrder}
+          onBack={() => setCompletedLabOrder(null)}
+          onEdit={() => {}}
+          onPrint={() => setPrintBarcodeOrder(completedLabOrder.id)}
+        />
+      );
+    }
+
+    return (
     <>
-      <h1 className="page-title">Technician Dashboard</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <h1 className="page-title" style={{ marginBottom: 0 }}>Technician Dashboard</h1>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'white', padding: '6px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
+          <Calendar size={16} className="text-muted" />
+          <span style={{ fontSize: '13px', color: '#64748b', fontWeight: 500, marginRight: '4px' }}>Date Range:</span>
+          <input 
+            type="date" 
+            value={techDateRange.start}
+            onChange={(e) => setTechDateRange(prev => ({ ...prev, start: e.target.value }))}
+            style={{ padding: '4px 8px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '13px', color: '#334155' }}
+          />
+          <span style={{ color: '#94a3b8' }}>-</span>
+          <input 
+            type="date" 
+            value={techDateRange.end}
+            onChange={(e) => setTechDateRange(prev => ({ ...prev, end: e.target.value }))}
+            style={{ padding: '4px 8px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '13px', color: '#334155' }}
+          />
+        </div>
+      </div>
 
       <div className="summary-cards">
         <div className="summary-card">
@@ -292,124 +375,96 @@ export default function Dashboard({ currentRole, setActiveTab }: DashboardProps)
         </div>
       </div>
 
-      <div className="tech-dashboard-grid mt-6">
+      <div className="tech-dashboard-grid mt-6" style={{ alignItems: 'stretch' }}>
         {/* Sample Collection Queue */}
-        <div className="premium-widget">
+        <div className="premium-widget" style={{ height: '100%' }}>
           <div className="premium-widget-header" style={{ paddingBottom: '16px' }}>
-            <div className="premium-widget-title">
-              <ClipboardList size={20} style={{ color: '#6b7280' }} />
-              <span>Sample Collection Queue</span>
-            </div>
-            <span style={{ fontSize: '12px', color: '#6b7280', display: 'block', marginTop: '4px' }}>
-              Orders awaiting sample collection
-            </span>
-          </div>
-          
-          <div className="recent-orders-list" style={{ borderTop: '1px solid var(--border-color)' }}>
-            <div className="tech-queue-item">
-              <div className="tech-queue-info">
-                <div className="tech-queue-header">
-                  <Clock size={14} className="text-muted" />
-                  <span className="tech-queue-name">John Smith</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+              <div>
+                <div className="premium-widget-title">
+                  <ClipboardList size={20} style={{ color: '#6b7280' }} />
+                  <span>Sample Collection Queue</span>
                 </div>
-                <div className="tech-queue-tests">Complete Blood Count, HbA1c...</div>
-                <div className="tech-queue-mrn">MRN: MRN001</div>
+                <span style={{ fontSize: '12px', color: '#6b7280', display: 'block', marginTop: '4px' }}>
+                  Orders awaiting sample collection
+                </span>
               </div>
-              <div className="tech-queue-badges">
-                <span className="status-pill outline status-pending">pending</span>
-                <span className="badge-routine">routine</span>
-              </div>
-            </div>
-
-            <div className="tech-queue-item">
-              <div className="tech-queue-info">
-                <div className="tech-queue-header">
-                  <AlertCircle size={14} className="text-danger" />
-                  <span className="tech-queue-name">Robert Davis</span>
-                </div>
-                <div className="tech-queue-tests">Troponin, ECG...</div>
-                <div className="tech-queue-mrn">MRN: MRN003</div>
-              </div>
-              <div className="tech-queue-badges">
-                <span className="status-pill outline status-pending" style={{ color: '#6366f1' }}>In progress</span>
-                <span className="badge-urgent">urgent</span>
-              </div>
-            </div>
-
-            <div className="tech-queue-item">
-              <div className="tech-queue-info">
-                <div className="tech-queue-header">
-                  <Clock size={14} className="text-muted" />
-                  <span className="tech-queue-name">Lisa Brown</span>
-                </div>
-                <div className="tech-queue-tests">Peak Flow, IgE Level</div>
-                <div className="tech-queue-mrn">MRN: MRN004</div>
-              </div>
-              <div className="tech-queue-badges">
-                <span className="status-pill outline status-pending">pending</span>
-                <span className="badge-routine">routine</span>
-              </div>
-            </div>
-            
-            <div className="tech-queue-item">
-              <div className="tech-queue-info">
-                <div className="tech-queue-header">
-                  <AlertCircle size={14} className="text-danger" />
-                  <span className="tech-queue-name">Michael Thompson</span>
-                </div>
-                <div className="tech-queue-tests">MRI Brain, Neurological Panel</div>
-                <div className="tech-queue-mrn">MRN: MRN007</div>
-              </div>
-              <div className="tech-queue-badges">
-                <span className="status-pill outline status-pending">pending</span>
-                <span className="badge-urgent">urgent</span>
-              </div>
-            </div>
-            
-            <div className="tech-queue-item">
-              <div className="tech-queue-info">
-                <div className="tech-queue-header">
-                  <Clock size={14} className="text-muted" />
-                  <span className="tech-queue-name">Emma Clark</span>
-                </div>
-                <div className="tech-queue-tests">CBC, HbA1c...</div>
-                <div className="tech-queue-mrn">MRN: MRN012</div>
-              </div>
-              <div className="tech-queue-badges">
-                <span className="status-pill outline status-pending">pending</span>
-                <span className="badge-routine">routine</span>
+              <div className="search-input-wrapper" style={{ width: '200px', position: 'relative' }}>
+                <Search size={14} className="search-icon" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                <input 
+                  type="text" 
+                  placeholder="Search queue..." 
+                  value={queueSearchTerm}
+                  onChange={(e) => setQueueSearchTerm(e.target.value)}
+                  style={{ width: '100%', padding: '6px 12px 6px 32px', border: '1px solid #e2e8f0', borderRadius: '6px', fontSize: '13px' }}
+                />
               </div>
             </div>
           </div>
           
-          <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border-color)' }}>
-            <button className="btn-primary w-full justify-center" style={{ backgroundColor: '#cba028', border: 'none' }} onClick={() => setActiveTab('Sample Collection Queue')}>
-              <ClipboardList size={16} /> Start Sample Collection
-            </button>
+          <div className="recent-orders-list" style={{ borderTop: '1px solid var(--border-color)', flex: 1, overflowY: 'auto', maxHeight: '450px' }}>
+            {filteredQueue.length > 0 ? filteredQueue.map(item => (
+              <div 
+                key={item.id} 
+                className="tech-queue-item hover-effect cursor-pointer" 
+                style={{ cursor: 'pointer' }}
+                onClick={() => setCollectSampleOrder(item)}
+              >
+                <div className="tech-queue-info">
+                  <div className="tech-queue-header">
+                    <Clock size={14} className="text-muted" />
+                    <span className="tech-queue-name">{item.name}</span>
+                  </div>
+                  <div className="tech-queue-tests">{item.tests}</div>
+                  <div className="tech-queue-mrn">MRN: {item.mrn}</div>
+                </div>
+                <div className="tech-queue-badges">
+                  <span className="status-pill outline status-pending">pending</span>
+                  <span className={item.priority === 'urgent' ? 'badge-urgent' : 'badge-routine'}>{item.priority}</span>
+                </div>
+              </div>
+            )) : (
+              <div style={{ padding: '24px', textAlign: 'center', color: '#64748b', fontSize: '14px' }}>
+                No pending collections found.
+              </div>
+            )}
           </div>
         </div>
 
         {/* Labs Completed */}
-        <div className="premium-widget">
+        <div className="premium-widget" style={{ height: '100%' }}>
           <div className="premium-widget-header" style={{ paddingBottom: '16px' }}>
-            <div className="premium-widget-title">
-              <CheckCircle2 size={20} style={{ color: '#6b7280' }} />
-              <span>Labs Completed</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+              <div>
+                <div className="premium-widget-title">
+                  <CheckCircle2 size={20} style={{ color: '#6b7280' }} />
+                  <span>Labs Completed</span>
+                </div>
+                <span style={{ fontSize: '12px', color: '#6b7280', display: 'block', marginTop: '4px' }}>
+                  Completed lab orders returned from the lab
+                </span>
+              </div>
+              <div className="search-input-wrapper" style={{ width: '200px', position: 'relative' }}>
+                <Search size={14} className="search-icon" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                <input 
+                  type="text" 
+                  placeholder="Search completed..." 
+                  value={completedLabsSearchTerm}
+                  onChange={(e) => setCompletedLabsSearchTerm(e.target.value)}
+                  style={{ width: '100%', padding: '6px 12px 6px 32px', border: '1px solid #e2e8f0', borderRadius: '6px', fontSize: '13px' }}
+                />
+              </div>
             </div>
-            <span style={{ fontSize: '12px', color: '#6b7280', display: 'block', marginTop: '4px' }}>
-              Completed lab orders returned from the lab
-            </span>
           </div>
           
-          <div className="recent-orders-list" style={{ borderTop: '1px solid var(--border-color)' }}>
-            {[
-              { name: 'Emily Johnson', id: 'CLN2023-20260710-EMP001-002' },
-              { name: 'David Wilson', id: 'CLN2023-20260701-EMP003-002' },
-              { name: 'John Smith', id: 'CLN2023-20260701-EMP001-003' },
-              { name: 'William Turner', id: 'CLN2023-20260701-EMP001-004' },
-              { name: 'Michael Thompson', id: 'CLN2023-20260701-EMP005-001' }
-            ].map(lab => (
-              <div key={lab.id} className="tech-queue-item" style={{ padding: '20.5px 24px' }}>
+          <div className="recent-orders-list" style={{ borderTop: '1px solid var(--border-color)', flex: 1, overflowY: 'auto', maxHeight: '450px' }}>
+            {filteredCompletedLabs.length > 0 ? filteredCompletedLabs.map(lab => (
+              <div 
+                key={lab.id} 
+                className="tech-queue-item hover-effect cursor-pointer" 
+                style={{ cursor: 'pointer' }}
+                onClick={() => setCompletedLabOrder(lab)}
+              >
                 <div className="tech-queue-info">
                   <div className="tech-queue-header">
                     <CheckCircle2 size={14} className="text-success" />
@@ -418,57 +473,20 @@ export default function Dashboard({ currentRole, setActiveTab }: DashboardProps)
                   <div className="tech-queue-mrn" style={{ marginLeft: '22px' }}>{lab.id}</div>
                 </div>
                 <div className="tech-queue-badges">
-                  <span className="badge-routine" style={{ backgroundColor: 'transparent', color: '#111' }}>Completed</span>
+                  <span className="badge-routine" style={{ backgroundColor: 'transparent', color: '#111' }}>COMPLETED</span>
                 </div>
               </div>
-            ))}
+            )) : (
+              <div style={{ padding: '24px', textAlign: 'center', color: '#64748b', fontSize: '14px' }}>
+                No completed labs found.
+              </div>
+            )}
           </div>
-
-          <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border-color)' }}>
-            <button className="btn-secondary w-full justify-center" onClick={() => setActiveTab('Lab Order Tracking')}>
-              <Eye size={16} /> View Lab Coordination
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="admin-section-card mt-6">
-        <div className="section-header">
-          <h2>Quick Actions</h2>
-          <p className="page-subtitle mt-1" style={{ fontSize: '13px' }}>Common laboratory tasks</p>
-        </div>
-        <div className="quick-actions-grid">
-          <button className="quick-action-btn" onClick={() => setActiveTab('Sample Collection Queue')}>
-            <div className="action-icon" style={{ backgroundColor: 'rgba(203, 160, 40, 0.1)', color: '#cba028' }}>
-              <Droplet size={20} />
-            </div>
-            <span>Record Sample</span>
-          </button>
-          
-          <button className="quick-action-btn" onClick={() => setActiveTab('Sample Collection Queue')}>
-            <div className="action-icon" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' }}>
-              <Printer size={20} />
-            </div>
-            <span>Print Barcodes</span>
-          </button>
-
-          <button className="quick-action-btn" onClick={() => setActiveTab('Lab Order Tracking')}>
-            <div className="action-icon" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b' }}>
-              <Truck size={20} />
-            </div>
-            <span>Update Tracking</span>
-          </button>
-
-          <button className="quick-action-btn" onClick={() => {}}>
-            <div className="action-icon" style={{ backgroundColor: 'rgba(10, 185, 129, 0.1)', color: '#10b981' }}>
-              <FileText size={20} />
-            </div>
-            <span>View All Results</span>
-          </button>
         </div>
       </div>
     </>
   );
+};
 
   const renderAdminDashboard = () => (
     <div className="admin-dashboard-container">
@@ -630,6 +648,17 @@ export default function Dashboard({ currentRole, setActiveTab }: DashboardProps)
           orderId={printBarcodeOrder}
           onClose={() => setPrintBarcodeOrder(null)}
           onPrint={() => setPrintBarcodeOrder(null)}
+        />
+      )}
+
+      {collectSampleOrder && (
+        <CollectSampleModal
+          order={{...collectSampleOrder, patientName: collectSampleOrder.name}}
+          onClose={() => setCollectSampleOrder(null)}
+          onPrintBarcode={() => {
+            setPrintBarcodeOrder(collectSampleOrder.id);
+          }}
+          onComplete={() => setCollectSampleOrder(null)}
         />
       )}
     </div>

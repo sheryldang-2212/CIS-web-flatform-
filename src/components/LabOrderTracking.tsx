@@ -170,6 +170,21 @@ export default function LabOrderTracking() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Global search tab auto-switch
+  useEffect(() => {
+    if (searchQuery) {
+      const lowerQuery = searchQuery.toLowerCase();
+      const firstMatch = orders.find(o => 
+        o.id.toLowerCase().includes(lowerQuery) || 
+        o.patientName.toLowerCase().includes(lowerQuery) ||
+        o.patientId.toLowerCase().includes(lowerQuery)
+      );
+      if (firstMatch && firstMatch.tab !== activeTab) {
+        setActiveTab(firstMatch.tab);
+      }
+    }
+  }, [searchQuery]);
+
   const handleCopyId = (id: string) => {
     navigator.clipboard.writeText(id);
     // Ideally a small toast here
@@ -268,16 +283,7 @@ export default function LabOrderTracking() {
         <table className="lot-table">
           <thead>
             <tr>
-              {isAwaitingPickup && (
-                <th style={{ width: '40px', paddingRight: '0' }}>
-                  <input 
-                    type="checkbox" 
-                    className="lot-table-checkbox" 
-                    checked={allSelected}
-                    onChange={(e) => handleToggleSelectAll(e, filteredOrders)}
-                  />
-                </th>
-              )}
+
               <th>Lab Order ID</th>
               <th>Patient</th>
               <th>Tests</th>
@@ -291,22 +297,13 @@ export default function LabOrderTracking() {
           <tbody>
             {filteredOrders.length === 0 ? (
               <tr>
-                <td colSpan={isAwaitingPickup ? 9 : 8} style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+                <td colSpan={8} style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
                   No orders found.
                 </td>
               </tr>
             ) : filteredOrders.map(order => (
               <tr key={order.id} className={selectedOrderIds.has(order.id) ? 'row-selected' : ''}>
-                {isAwaitingPickup && (
-                  <td style={{ paddingRight: '0' }}>
-                    <input 
-                      type="checkbox" 
-                      className="lot-table-checkbox" 
-                      checked={selectedOrderIds.has(order.id)}
-                      onChange={() => handleToggleSelectOrder(order.id)}
-                    />
-                  </td>
-                )}
+
                 <td>
                   <div className="lot-id-cell">
                     <span style={{ fontSize: '13px', color: 'var(--text-muted)', fontFamily: 'monospace', fontWeight: 500 }}>{order.id}</span>
@@ -361,14 +358,7 @@ export default function LabOrderTracking() {
                     {['Picked Up', 'Sent to Lab', 'Received by Lab', 'In Analysis'].includes(order.status) && (
                       <button className="btn-lot-secondary">View Order</button>
                     )}
-                    {['Result Available', 'Doctor Review Pending', 'Approved', 'Released'].includes(order.status) && (
-                      <button 
-                        className="btn-lot-primary"
-                        onClick={() => setSelectedResultToReview(order)}
-                      >
-                        View Result
-                      </button>
-                    )}
+
                     
                     <div className="lot-action-menu-container">
                       <button 
@@ -381,15 +371,12 @@ export default function LabOrderTracking() {
                       {activeActionMenu === order.id && (
                         <div className="lot-action-menu">
                           <button className="lot-action-item" onClick={() => setActiveActionMenu(null)}><Eye size={14} /> View Order</button>
-                          <button className="lot-action-item" onClick={() => setActiveActionMenu(null)}><Printer size={14} /> Print Label</button>
                           {order.status === 'Ready for Pickup' && (
                             <button className="lot-action-item text-danger" onClick={() => handleUndoCollection(order.id)}>
                               <Undo2 size={14} /> Undo Collection
                             </button>
                           )}
-                          {['Approved', 'Released'].includes(order.status) && (
-                            <button className="lot-action-item" onClick={() => setActiveActionMenu(null)}><Printer size={14} /> Print/Export</button>
-                          )}
+
                         </div>
                       )}
                     </div>
@@ -455,17 +442,7 @@ export default function LabOrderTracking() {
       </div>
 
       <div className="lot-content-card">
-        {selectedOrderIds.size > 0 && activeTab === 'Awaiting Pickup' && (
-          <div className="lot-bulk-actions">
-            <div className="lot-bulk-info">
-              <CheckCircle size={16} /> {selectedOrderIds.size} orders selected
-            </div>
-            <div className="lot-bulk-buttons">
-              <button className="btn-lot-primary" onClick={handleBatchMarkPickedUp}>Mark as Picked Up</button>
-              <button className="btn-lot-secondary" onClick={() => setSelectedOrderIds(new Set())}>Clear Selection</button>
-            </div>
-          </div>
-        )}
+
 
         <div className="lot-tabs-container">
           <div className="lot-tabs">

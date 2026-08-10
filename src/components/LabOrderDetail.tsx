@@ -8,9 +8,10 @@ interface LabOrderDetailProps {
   onEdit: () => void;
   onPrint: () => void;
   onCancel?: () => void;
+  currentRole?: string;
 }
 
-export default function LabOrderDetail({ order, onBack, onEdit, onPrint, onCancel }: LabOrderDetailProps) {
+export default function LabOrderDetail({ order, onBack, onEdit, onPrint, onCancel, currentRole }: LabOrderDetailProps) {
   const [activeTab, setActiveTab] = useState<'info' | 'history'>('info');
   const [openCategories, setOpenCategories] = useState<string[]>(['Hematology', 'Hormones', 'Infectious Diseases']);
 
@@ -43,7 +44,12 @@ export default function LabOrderDetail({ order, onBack, onEdit, onPrint, onCance
         <div className="lab-order-actions">
           {order.status === 'Pending Collection' && (
             <>
-              <button className="btn-secondary" onClick={onEdit}>
+              <button 
+                className="btn-secondary" 
+                onClick={onEdit}
+                disabled={currentRole === 'Technician'}
+                style={currentRole === 'Technician' ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+              >
                 <Edit2 size={14} style={{ marginRight: '6px' }} /> Edit Order
               </button>
               {onCancel && (

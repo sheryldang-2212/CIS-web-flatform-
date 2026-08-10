@@ -150,6 +150,14 @@
   border-bottom: none;
 }
 
+.clickable-row {
+  transition: background-color 0.2s ease;
+}
+
+.clickable-row:hover {
+  background-color: var(--bg-color, #f9fafb);
+}
+
 .col-patient .patient-name {
   font-size: 14px;
   font-weight: 600;

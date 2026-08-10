@@ -18,7 +18,7 @@ const initialMockLabOrders = [
   { id: 'ORD005', patientName: 'Kittisak Boonyarattana', idNumber: 'ORD-DWT-20260710-000005', priority: 'STAT', status: 'Cancelled', assignedTo: '-', date: 'Jul 10, 2026, 11:20 AM', tests: ['Troponin I', 'CK-MB'] },
 ];
 
-export default function LabOrders() {
+export default function LabOrders({ currentRole }: { currentRole?: string }) {
   const [orders, setOrders] = useState(initialMockLabOrders);
   
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -121,6 +121,7 @@ export default function LabOrders() {
           setCancelOrder(viewingOrder);
           setViewingOrder(null);
         }}
+        currentRole={currentRole}
       />
     );
   }

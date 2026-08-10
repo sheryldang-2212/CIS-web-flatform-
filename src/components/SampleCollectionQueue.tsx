@@ -2,9 +2,12 @@ import { useState, useRef, useEffect } from 'react';
 import { ClipboardList, Clock, BriefcaseMedical, Flag, Search, MoreVertical, Eye, Printer, Droplet, FileText, Calendar } from 'lucide-react';
 import CollectSampleModal from './CollectSampleModal';
 import PrintBarcodeModal from './PrintBarcodeModal';
-import PatientDetailModal from './PatientDetailModal';
+import PatientDetail from './PatientDetail';
 import LabOrderDetail from './LabOrderDetail';
+import { initialMockPatients } from './Patients';
 import './SampleCollectionQueue.css';
+
+const todayStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
 const mockOrders = [
   {
@@ -17,7 +20,7 @@ const mockOrders = [
     extraTests: 12,
     allTests: ['HbA1c', 'Fasting Glucose', 'Creatinine', 'BUN', 'Lipid Profile', 'CBC', 'TSH', 'Free T4', 'AST', 'ALT', 'ALP', 'Total Protein', 'Albumin', 'Globulin', 'Bilirubin Total', 'Uric Acid'],
     status: 'Pending Collection',
-    date: 'Jul 10, 2026, 09:15 AM'
+    date: `${todayStr}, 09:15 AM`
   },
   {
     id: 'CLN2023-20260710-EMP002-002',
@@ -29,7 +32,7 @@ const mockOrders = [
     extraTests: 0,
     allTests: ['CBC', 'CD4', 'CRP', 'Ferritin'],
     status: 'Pending Collection',
-    date: 'Jul 10, 2026, 10:30 AM'
+    date: `${todayStr}, 10:30 AM`
   },
   {
     id: 'CLN2023-20260710-EMP002-003',
@@ -69,10 +72,10 @@ const mockOrders = [
   }
 ];
 
-export default function SampleCollectionQueue() {
+export default function SampleCollectionQueue({ currentRole }: { currentRole?: string }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('All');
-  const [dateFilter, setDateFilter] = useState<'All' | 'Today' | 'Custom'>('All');
+  const [dateFilter, setDateFilter] = useState<'All' | 'Today' | 'Custom'>('Today');
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [appliedDateRange, setAppliedDateRange] = useState({ start: '', end: '' });
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -80,7 +83,7 @@ export default function SampleCollectionQueue() {
   
   const [selectedOrderForCollection, setSelectedOrderForCollection] = useState<any>(null);
   const [selectedOrderForPrint, setSelectedOrderForPrint] = useState<string | null>(null);
-  const [selectedPatientForDetail, setSelectedPatientForDetail] = useState<any>(null);
+  const [viewingPatientForPage, setViewingPatientForPage] = useState<any>(null);
   const [selectedOrderForDetail, setSelectedOrderForDetail] = useState<any>(null);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -102,6 +105,18 @@ export default function SampleCollectionQueue() {
         onBack={() => setSelectedOrderForDetail(null)}
         onEdit={() => {}}
         onPrint={() => {}}
+        currentRole={currentRole}
+      />
+    );
+  }
+
+  if (viewingPatientForPage) {
+    return (
+      <PatientDetail 
+        patient={viewingPatientForPage}
+        onBack={() => setViewingPatientForPage(null)}
+        onEdit={() => {}}
+        currentRole={currentRole}
       />
     );
   }
@@ -115,7 +130,9 @@ export default function SampleCollectionQueue() {
     if (priorityFilter !== 'All' && order.priority !== priorityFilter) return false;
     
     if (dateFilter === 'Today') {
-      // Mock logic
+      const today = new Date();
+      const orderDate = new Date(order.date);
+      if (today.toDateString() !== orderDate.toDateString()) return false;
     } else if (dateFilter === 'Custom' && appliedDateRange.start && appliedDateRange.end) {
        const start = new Date(appliedDateRange.start);
        const end = new Date(appliedDateRange.end);
@@ -125,6 +142,10 @@ export default function SampleCollectionQueue() {
     }
     return true;
   });
+
+  if (dateFilter === 'Today') {
+    filteredOrders.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }
 
   return (
     <div className="queue-container" onClick={() => setActiveFilterDropdown(null)}>
@@ -275,7 +296,7 @@ export default function SampleCollectionQueue() {
           <button 
             className="btn-reset" 
             onClick={() => {
-              setDateFilter('All');
+              setDateFilter('Today');
               setDateRange({ start: '', end: '' });
               setAppliedDateRange({ start: '', end: '' });
               setSearchQuery('');
@@ -301,7 +322,12 @@ export default function SampleCollectionQueue() {
           </thead>
           <tbody>
             {filteredOrders.map(order => (
-              <tr key={order.id}>
+              <tr 
+                key={order.id} 
+                onClick={() => setSelectedOrderForDetail(order)}
+                style={{ cursor: 'pointer' }}
+                className="clickable-row"
+              >
                 <td className="col-order-id">
                   <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>{order.id}</span>
                 </td>
@@ -349,7 +375,7 @@ export default function SampleCollectionQueue() {
                   </div>
                 </td>
                 
-                <td className="col-actions">
+                <td className="col-actions" onClick={(e) => e.stopPropagation()}>
                   <div className="order-actions">
                     <button 
                       className="btn-icon-square"
@@ -383,15 +409,29 @@ export default function SampleCollectionQueue() {
                             className="action-dropdown-item"
                             onClick={() => {
                               setActiveDropdown(null);
-                              setSelectedPatientForDetail({
+                              const fullPatient = initialMockPatients.find(p => p.name === order.patient.name) || {
+                                id: 'MRN000',
                                 name: order.patient.name,
                                 idNumber: order.patient.id,
-                                age: '38 years',
-                                gender: 'Male',
-                                dob: '14/03/1988',
-                                contact: '082-614-7293\nnatthawut.s@gmail.com',
-                                insurance: 'Thai Life\nTL-385190247'
-                              });
+                                gender: 'Unknown',
+                                age: 'Unknown',
+                                dob: 'Unknown',
+                                contact: 'Unknown',
+                                allergy: false,
+                                insurance: 'Unknown',
+                                lastVisit: 'Unknown',
+                                createdAt: new Date().toISOString().split('T')[0],
+                                consentStatus: 'Not Linked',
+                                consentDetail: 'None',
+                                identityVerification: 'Unverified',
+                                registrationSource: 'Clinic',
+                                documentType: null,
+                                verifiedBy: null,
+                                verifiedAt: null,
+                                verificationMethod: null,
+                                verifiedClinic: null
+                              };
+                              setViewingPatientForPage(fullPatient);
                             }}
                           >
                             <Eye size={14} />
@@ -443,16 +483,6 @@ export default function SampleCollectionQueue() {
           }}
         />
       )}
-
-      {selectedPatientForDetail && (
-        <PatientDetailModal
-          isOpen={true}
-          onClose={() => setSelectedPatientForDetail(null)}
-          patient={selectedPatientForDetail}
-          onEdit={() => {}}
-        />
-      )}
-
 
     </div>
   );
