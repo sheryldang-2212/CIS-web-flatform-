@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Printer, Undo2, CheckCircle, Eye, Search, Copy, MoreVertical, RefreshCw, Calendar } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Undo2, Eye, Search, Copy, MoreVertical, RefreshCw, Calendar } from 'lucide-react';
 import LabResultReviewModal from './LabResultReviewModal';
 import './LabOrderTracking.css';
 
@@ -190,33 +190,7 @@ export default function LabOrderTracking() {
     // Ideally a small toast here
   };
 
-  const handleToggleSelectAll = (e: React.ChangeEvent<HTMLInputElement>, filteredOrders: any[]) => {
-    if (e.target.checked) {
-      setSelectedOrderIds(new Set(filteredOrders.map(o => o.id)));
-    } else {
-      setSelectedOrderIds(new Set());
-    }
-  };
 
-  const handleToggleSelectOrder = (id: string) => {
-    const newSelected = new Set(selectedOrderIds);
-    if (newSelected.has(id)) {
-      newSelected.delete(id);
-    } else {
-      newSelected.add(id);
-    }
-    setSelectedOrderIds(newSelected);
-  };
-  
-  const handleBatchMarkPickedUp = () => {
-    setOrders(prev => prev.map(o => {
-      if (selectedOrderIds.has(o.id)) {
-        return { ...o, status: 'Picked Up', tab: 'In Progress' };
-      }
-      return o;
-    }));
-    setSelectedOrderIds(new Set());
-  };
 
   const handleUndoCollection = (id: string) => {
     if (window.confirm('Are you sure you want to undo collection for this order?')) {
@@ -275,8 +249,7 @@ export default function LabOrderTracking() {
        });
     }
 
-    const allSelected = filteredOrders.length > 0 && selectedOrderIds.size === filteredOrders.length;
-    const isAwaitingPickup = activeTab === 'Awaiting Pickup';
+
 
     return (
       <div className="lot-table-wrapper">

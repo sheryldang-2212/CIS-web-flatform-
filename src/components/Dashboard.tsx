@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ClipboardList, Clock, BriefcaseMedical, CheckCircle2, Stethoscope, AlertCircle, Calendar, Activity, Users as UsersIcon, ShieldCheck, Package, History, UserPlus, Settings, Lock, Key, ChevronRight, Eye, Droplet, Printer, Truck, FileText } from 'lucide-react';
+import { ClipboardList, Clock, BriefcaseMedical, CheckCircle2, Stethoscope, AlertCircle, Calendar, Activity, Users as UsersIcon, ShieldCheck, Package, History, UserPlus, Settings, Lock, Key, ChevronRight } from 'lucide-react';
 import PatientFormModal from './PatientFormModal';
 import LabOrderFormModal from './LabOrderFormModal';
 import PrintBarcodeModal from './PrintBarcodeModal';
