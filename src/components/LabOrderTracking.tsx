@@ -394,20 +394,20 @@ export default function LabOrderTracking() {
         </div>
         <div className="lot-summary-card" onClick={() => setActiveTab('In Progress')}>
           <div className="lot-summary-content">
-             <span className="lot-summary-title">In Transit</span>
-             <span className="lot-summary-value">{orders.filter(o => ['Picked Up', 'Sent to Lab'].includes(o.status)).length}</span>
-          </div>
-        </div>
-        <div className="lot-summary-card" onClick={() => setActiveTab('In Progress')}>
-          <div className="lot-summary-content">
-             <span className="lot-summary-title">Lab Processing</span>
-             <span className="lot-summary-value">{orders.filter(o => ['Received by Lab', 'In Analysis'].includes(o.status)).length}</span>
+             <span className="lot-summary-title">In Progress</span>
+             <span className="lot-summary-value">{orders.filter(o => o.tab === 'In Progress').length}</span>
           </div>
         </div>
         <div className="lot-summary-card" onClick={() => setActiveTab('Result & Review')}>
           <div className="lot-summary-content">
-             <span className="lot-summary-title">Pending Review</span>
-             <span className="lot-summary-value">{orders.filter(o => o.status === 'Doctor Review Pending').length}</span>
+             <span className="lot-summary-title">Result & Review</span>
+             <span className="lot-summary-value">{orders.filter(o => o.tab === 'Result & Review').length}</span>
+          </div>
+        </div>
+        <div className="lot-summary-card" onClick={() => setActiveTab('Closed')}>
+          <div className="lot-summary-content">
+             <span className="lot-summary-title">Closed</span>
+             <span className="lot-summary-value">{orders.filter(o => o.tab === 'Closed').length}</span>
           </div>
         </div>
       </div>
