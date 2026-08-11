@@ -80,9 +80,7 @@ export default function CollectSampleModal({ order, onClose, onPrintBarcode, onC
                       Required Samples
                       <AlertCircle size={14} className="text-warning" />
                     </div>
-                    <label style={{ fontSize: '13px', fontWeight: 500, color: 'var(--primary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <input type="checkbox" defaultChecked style={{ accentColor: 'var(--primary)' }} /> Select All
-                    </label>
+
                   </div>
                   
                   <div className="sample-tube-list">
@@ -92,7 +90,7 @@ export default function CollectSampleModal({ order, onClose, onPrintBarcode, onC
                         <div className="tube-name">Serum (SST) - 5mL</div>
                         <div className="tube-tests">Tests: BUN, Creatinine</div>
                       </div>
-                      <div className="tube-checkbox"><input type="checkbox" defaultChecked /></div>
+
                     </div>
                     
                     <div className="sample-tube">
@@ -101,7 +99,7 @@ export default function CollectSampleModal({ order, onClose, onPrintBarcode, onC
                         <div className="tube-name">EDTA - 3mL</div>
                         <div className="tube-tests">Tests: HbA1c</div>
                       </div>
-                      <div className="tube-checkbox"><input type="checkbox" defaultChecked /></div>
+
                     </div>
 
                     <div className="sample-tube">
@@ -110,7 +108,7 @@ export default function CollectSampleModal({ order, onClose, onPrintBarcode, onC
                         <div className="tube-name">Fluoride Oxalate - 2mL</div>
                         <div className="tube-tests">Tests: Fasting Glucose</div>
                       </div>
-                      <div className="tube-checkbox"><input type="checkbox" defaultChecked /></div>
+
                     </div>
                   </div>
                 </div>

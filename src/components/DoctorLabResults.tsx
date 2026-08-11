@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Printer, Download, FileText, AlertTriangle, Clock, Eye, CheckCircle, XCircle, MoreVertical, TrendingUp, TrendingDown } from 'lucide-react';
+import { Search, Printer, Download, FileText, AlertTriangle, Clock, Eye, CheckCircle, XCircle, MoreVertical, TrendingUp, TrendingDown, ChevronDown, Calendar } from 'lucide-react';
 import ActionReasonModal from './ActionReasonModal';
 import LabResultReviewModal from './LabResultReviewModal';
 import './DoctorLabResults.css';
@@ -10,6 +10,20 @@ export default function DoctorLabResults() {
   const [viewingResult, setViewingResult] = useState<any>(null);
   const [approvingResult, setApprovingResult] = useState<any>(null);
   const [rejectingResult, setRejectingResult] = useState<any>(null);
+
+  // New state variables for filter
+  const [searchQuery, setSearchQuery] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState('All');
+  const [dateFilter, setDateFilter] = useState<'All' | 'Today' | 'Custom'>('All');
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  const [appliedDateRange, setAppliedDateRange] = useState({ start: '', end: '' });
+  const [assignedFilter, setAssignedFilter] = useState('All');
+  const [activeFilterDropdown, setActiveFilterDropdown] = useState<string | null>(null);
+
+  const toggleFilterDropdown = (filter: string) => {
+    setActiveFilterDropdown(activeFilterDropdown === filter ? null : filter);
+    setActiveDropdown(null);
+  };
 
   const handleApprove = (reason: string) => {
     console.log("Approved with note:", reason);
@@ -96,23 +110,147 @@ export default function DoctorLabResults() {
         <h2 className="dlr-section-title">Laboratory Results</h2>
         <p className="dlr-section-subtitle">Review and manage patient lab results</p>
 
-        <div className="dlr-filters">
-          <div className="dlr-search">
-            <Search size={16} className="dlr-search-icon" />
-            <input type="text" placeholder="Search by patient name, MRN, or findings..." />
+        <div className="filters-bar dlr-custom-filters" style={{ padding: '0 0 20px 0', borderBottom: 'none' }}>
+          <div className="filters-left" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div className="search-filter">
+              <Search size={18} className="text-muted" />
+              <input 
+                type="text" 
+                placeholder="Search by ID or Patient Name..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            
+
           </div>
-          <div className="dlr-filter-group">
-            <select className="dlr-select">
-              <option>All Statuses</option>
-              <option>Pending Review</option>
-              <option>Approved</option>
-            </select>
-            <select className="dlr-select">
-              <option>All Priorities</option>
-              <option>Routine</option>
-              <option>Urgent</option>
-              <option>STAT</option>
-            </select>
+          
+          <div className="filters-right">
+            <div className="toggle-group">
+              <button 
+                type="button"
+                className={`toggle-btn ${dateFilter === 'All' ? 'active' : ''}`}
+                onClick={() => { setDateFilter('All'); setAppliedDateRange({ start: '', end: '' }); }}
+              >All</button>
+              <button 
+                type="button"
+                className={`toggle-btn ${dateFilter === 'Today' ? 'active' : ''}`}
+                onClick={() => { setDateFilter('Today'); setAppliedDateRange({ start: '', end: '' }); }}
+              >Today</button>
+            </div>
+
+            <div className="filter-dropdown-container date-filter-container">
+              <button 
+                className={`dropdown-trigger ${dateFilter === 'Custom' ? 'active' : ''}`} 
+                style={{ minWidth: '160px', justifyContent: 'space-between' }}
+                onClick={() => toggleFilterDropdown('date')}
+              >
+                <span className="text-muted">
+                  {appliedDateRange.start && appliedDateRange.end ? `${appliedDateRange.start} ~ ${appliedDateRange.end}` : 'Date range'}
+                </span>
+                <Calendar size={14} className="text-muted" />
+              </button>
+              {activeFilterDropdown === 'date' && (
+                <div className="filter-dropdown-menu date-range-menu">
+                  <div className="date-range-header">
+                    <span className="font-medium text-sm">Select Date Range</span>
+                  </div>
+                  <div className="date-range-body">
+                    <div className="date-input-group">
+                      <label>Start Date</label>
+                      <input 
+                        type="date" 
+                        className="date-input" 
+                        value={dateRange.start} 
+                        onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })} 
+                      />
+                    </div>
+                    <div className="date-input-separator">to</div>
+                    <div className="date-input-group">
+                      <label>End Date</label>
+                      <input 
+                        type="date" 
+                        className="date-input" 
+                        value={dateRange.end} 
+                        onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })} 
+                      />
+                    </div>
+                  </div>
+                  <div className="date-range-footer">
+                    <button 
+                      className="btn-secondary btn-sm" 
+                      onClick={() => {
+                        setDateRange({ start: '', end: '' });
+                        setAppliedDateRange({ start: '', end: '' });
+                        setDateFilter('All');
+                        setActiveFilterDropdown(null);
+                      }}
+                    >
+                      Clear
+                    </button>
+                    <button 
+                      className="btn-primary btn-sm" 
+                      onClick={() => {
+                        setAppliedDateRange(dateRange);
+                        setDateFilter('Custom');
+                        setActiveFilterDropdown(null);
+                      }}
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="filter-dropdown-container">
+              <span className="filter-label">Assigned to:</span>
+              <button className="dropdown-trigger" onClick={() => toggleFilterDropdown('assigned')}>
+                {assignedFilter} <ChevronDown size={14} />
+              </button>
+              {activeFilterDropdown === 'assigned' && (
+                <div className="filter-dropdown-menu" style={{ right: 0, left: 'auto' }}>
+                  {['All', 'Dr. James Wilson', 'Dr. Sarah Chen', 'Unassigned'].map(doc => (
+                    <button 
+                      key={doc} 
+                      className={`dropdown-item ${assignedFilter === doc ? 'active' : ''}`}
+                      onClick={() => { setAssignedFilter(doc); setActiveFilterDropdown(null); }}
+                    >
+                      {doc}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            <div className="filter-dropdown-container">
+              <span className="filter-label">Priority:</span>
+              <button className="dropdown-trigger" onClick={() => toggleFilterDropdown('priority')}>
+                {priorityFilter} <ChevronDown size={14} />
+              </button>
+              {activeFilterDropdown === 'priority' && (
+                <div className="filter-dropdown-menu" style={{ right: 0, left: 'auto' }}>
+                  {['All', 'STAT', 'Urgent', 'Routine'].map(prio => (
+                    <button 
+                      key={prio} 
+                      className={`dropdown-item ${priorityFilter === prio ? 'active' : ''}`}
+                      onClick={() => { setPriorityFilter(prio); setActiveFilterDropdown(null); }}
+                    >
+                      {prio}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <button className="btn-reset" onClick={() => {
+              setDateFilter('All');
+              setDateRange({ start: '', end: '' });
+              setAppliedDateRange({ start: '', end: '' });
+              setSearchQuery('');
+              setAssignedFilter('All');
+              setPriorityFilter('All');
+            }}>Reset</button>
           </div>
         </div>
 
