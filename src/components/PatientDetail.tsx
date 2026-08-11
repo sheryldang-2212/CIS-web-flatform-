@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Edit2, ChevronRight, AlertTriangle, Activity, ArrowLeft, Phone, Mail, MapPin, Shield, PhoneCall, HeartPulse, FileText, Pill, Link2, Lock, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { Edit2, AlertTriangle, ArrowLeft, Phone, Mail, MapPin, Shield, PhoneCall, Link2, Lock, ShieldAlert, CheckCircle2, ChevronDown, ChevronUp, Printer, Download, Search, Calendar, User } from 'lucide-react';
 import LabResultReviewModal from './LabResultReviewModal';
 import LabOrderDetail from './LabOrderDetail';
 import VerifyIdentityModal from './VerifyIdentityModal';
@@ -26,11 +26,17 @@ const mockLabOrders = [
 
 export default function PatientDetail({ patient, onEdit, onBack, currentRole }: PatientDetailProps) {
   const [selectedResultToReview, setSelectedResultToReview] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<string>('medical_history');
-  const [activeHistoryView, setActiveHistoryView] = useState<string>('main');
+  const [activeTab, setActiveTab] = useState<string>('information');
+  const [openAccordions, setOpenAccordions] = useState<string[]>(['general_health']);
   const [viewingLabOrder, setViewingLabOrder] = useState<any>(null);
   const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
   const [localPatient, setLocalPatient] = useState(patient);
+
+  const toggleAccordion = (section: string) => {
+    setOpenAccordions(prev => 
+      prev.includes(section) ? prev.filter(s => s !== section) : [...prev, section]
+    );
+  };
 
   if (!localPatient) return null;
 
@@ -67,11 +73,16 @@ export default function PatientDetail({ patient, onEdit, onBack, currentRole }: 
       <div className="patient-detail-header-bar">
         <button className="btn-back-page" onClick={onBack}>
           <ArrowLeft size={20} />
-          <span>Back to Patients</span>
+          <span>Patient detail</span>
         </button>
-        <button className="btn-secondary" onClick={onEdit} disabled={currentRole === 'Technician'}>
-          <Edit2 size={16} /> Edit Patient
-        </button>
+        <div className="header-actions">
+          <button className="btn-secondary-outline" onClick={onEdit} disabled={currentRole === 'Technician'}>
+            <Edit2 size={14} /> Edit patient
+          </button>
+          <button className="btn-secondary-outline">
+            <Printer size={14} /> Print
+          </button>
+        </div>
       </div>
 
       <div className="patient-detail-grid">
@@ -207,241 +218,228 @@ export default function PatientDetail({ patient, onEdit, onBack, currentRole }: 
 
         {/* RIGHT COLUMN: Main Content */}
         <div className="patient-main-content">
-          {currentRole !== 'Technician' && localPatient.identityVerification === 'Unverified' && (
-            <div className="identity-verification-banner">
-              <div className="ivb-content">
-                <ShieldAlert size={20} className="ivb-icon" />
-                <div>
-                  <h4 className="ivb-title">Identity verification required</h4>
-                  <p className="ivb-desc">This patient has not been verified at the clinic. Please review the patient's original National ID or Passport.</p>
-                </div>
-              </div>
-              <button className="btn-primary btn-sm" onClick={onEdit}>
-                Verify Identity
-              </button>
-            </div>
-          )}
-
           <div className="patient-tabs">
             <button 
-              className={`patient-tab-btn ${activeTab === 'medical_history' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('medical_history'); setActiveHistoryView('main'); }}
+              className={`patient-tab-btn ${activeTab === 'information' ? 'active' : ''}`}
+              onClick={() => setActiveTab('information')}
             >
-              Medical History
+              Information
             </button>
             <button 
-              className={`patient-tab-btn ${activeTab === 'lab_orders' ? 'active' : ''}`}
-              onClick={() => setActiveTab('lab_orders')}
+              className={`patient-tab-btn ${activeTab === 'history_log' ? 'active' : ''}`}
+              onClick={() => setActiveTab('history_log')}
             >
-              Lab Orders ({mockLabOrders.length})
+              History Log
             </button>
           </div>
 
           <div className="tab-panel">
-            {activeTab === 'medical_history' && (
-              <>
-                {activeHistoryView === 'main' ? (
-                  <>
-                    <div className="panel-header">
-                      <h3 className="panel-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        Medical History Overview
-                        <Lock size={16} className="text-muted" />
-                      </h3>
-                    </div>
-                    <div className="medical-history-grid">
-                      <div className="mh-card" onClick={() => setActiveHistoryView('general_health')}>
-                        <div className="mh-card-header">
-                          <span className="mh-card-title"><HeartPulse size={18} className="mh-card-icon" /> General Health</span>
-                          <ChevronRight size={18} className="text-muted" />
-                        </div>
-                        <div className="mh-card-summary">
-                          Blood Type, Height, Weight, BMI data.
-                        </div>
-                        <span className="mh-alert-tag"><AlertTriangle size={12}/> Needs Update</span>
-                      </div>
-                      
-                      <div className="mh-card" onClick={() => setActiveHistoryView('lifestyle')}>
-                        <div className="mh-card-header">
-                          <span className="mh-card-title"><Activity size={18} className="mh-card-icon" /> Lifestyle</span>
-                          <ChevronRight size={18} className="text-muted" />
-                        </div>
-                        <div className="mh-card-summary">
-                          Habits, nutrition, activity, sleep and stress.
-                        </div>
-                        <span className="mh-alert-tag"><AlertTriangle size={12}/> Needs Update</span>
-                      </div>
-
-                      <div className="mh-card" onClick={() => setActiveHistoryView('medical_conditions')}>
-                        <div className="mh-card-header">
-                          <span className="mh-card-title"><FileText size={18} className="mh-card-icon" /> Conditions</span>
-                          <ChevronRight size={18} className="text-muted" />
-                        </div>
-                        <div className="mh-card-summary">
-                          Cardiovascular, Metabolic, Endocrine and others.
-                        </div>
-                      </div>
-
-                      <div className="mh-card" onClick={() => setActiveHistoryView('allergies')}>
-                        <div className="mh-card-header">
-                          <span className="mh-card-title"><Pill size={18} className="mh-card-icon" /> Allergies</span>
-                          <ChevronRight size={18} className="text-muted" />
-                        </div>
-                        <div className="mh-card-summary">
-                          Medication, Food, Environmental allergens.
-                        </div>
-                        {patient.allergy && (
-                          <span className="mh-alert-tag"><AlertTriangle size={12}/> Allergies Found</span>
-                        )}
+            {activeTab === 'information' && (
+              <div className="info-tab-content">
+                {currentRole !== 'Technician' && localPatient.identityVerification === 'Unverified' ? (
+                  <div className="identity-verification-banner">
+                    <div className="ivb-content">
+                      <AlertTriangle size={20} className="ivb-icon-warning" />
+                      <div>
+                        <h4 className="ivb-title">Identity verification required</h4>
+                        <p className="ivb-desc">This patient has not been verified at the clinic. Please review the patient's original National ID or Passport.</p>
                       </div>
                     </div>
-                  </>
-                ) : activeHistoryView === 'general_health' ? (
-                  <div className="mh-subview">
-                    <div className="mh-subview-header">
-                      <button className="mh-back-btn" onClick={() => setActiveHistoryView('main')}><ArrowLeft size={16}/> Back</button>
-                      <h4 className="mh-subview-title">General Health</h4>
-                    </div>
-                    <div className="mh-detail-row">
-                      <span className="mh-detail-label">Blood Type</span>
-                      <span className="mh-detail-value">-</span>
-                    </div>
-                    <div className="mh-detail-row">
-                      <span className="mh-detail-label">Weight</span>
-                      <span className="mh-detail-value">70 kg</span>
-                    </div>
-                    <div className="mh-detail-row">
-                      <span className="mh-detail-label">Height</span>
-                      <span className="mh-detail-value">175 cm</span>
-                    </div>
-                    <div className="mh-detail-row">
-                      <span className="mh-detail-label">BMI</span>
-                      <span className="mh-detail-value">22.9</span>
-                    </div>
-                  </div>
-                ) : activeHistoryView === 'lifestyle' ? (
-                  <div className="mh-subview">
-                    <div className="mh-subview-header">
-                      <button className="mh-back-btn" onClick={() => setActiveHistoryView('main')}><ArrowLeft size={16}/> Back</button>
-                      <h4 className="mh-subview-title">Lifestyle</h4>
-                    </div>
-                    <div className="mh-detail-stacked">
-                      <span className="mh-stacked-title">Health Goal</span>
-                      <span className="mh-stacked-value">None</span>
-                    </div>
-                    <div className="mh-detail-stacked">
-                      <span className="mh-stacked-title">Activity</span>
-                      <span className="mh-stacked-value">None</span>
-                    </div>
-                    <div className="mh-detail-stacked">
-                      <span className="mh-stacked-title">Nutrition</span>
-                      <span className="mh-stacked-value">None</span>
-                    </div>
-                    <div className="mh-detail-stacked">
-                      <span className="mh-stacked-title">Smoking Status</span>
-                      <span className="mh-stacked-value">None</span>
-                    </div>
-                    <div className="mh-detail-stacked">
-                      <span className="mh-stacked-title">Alcohol Consumption</span>
-                      <span className="mh-stacked-value">None</span>
-                    </div>
-                  </div>
-                ) : activeHistoryView === 'medical_conditions' ? (
-                  <div className="mh-subview">
-                    <div className="mh-subview-header">
-                      <button className="mh-back-btn" onClick={() => setActiveHistoryView('main')}><ArrowLeft size={16}/> Back</button>
-                      <h4 className="mh-subview-title">Medical Conditions</h4>
-                    </div>
-                    <div className="mh-detail-stacked">
-                      <span className="mh-stacked-title">Cardiovascular Health</span>
-                      <span className="mh-stacked-value">High Blood Pressure, High Cholesterol, Prediabetes, Stroke</span>
-                    </div>
-                    <div className="mh-detail-stacked">
-                      <span className="mh-stacked-title">Metabolic</span>
-                      <span className="mh-stacked-value">None</span>
-                    </div>
-                    <div className="mh-detail-stacked">
-                      <span className="mh-stacked-title">Hematologic</span>
-                      <span className="mh-stacked-value">None</span>
-                    </div>
-                    <div className="mh-detail-stacked">
-                      <span className="mh-stacked-title">Endocrine</span>
-                      <span className="mh-stacked-value">None</span>
-                    </div>
+                    <button className="btn-primary btn-sm" onClick={() => setIsVerifyModalOpen(true)}>
+                      Verify Identity
+                    </button>
                   </div>
                 ) : (
-                  <div className="mh-subview">
-                    <div className="mh-subview-header">
-                      <button className="mh-back-btn" onClick={() => setActiveHistoryView('main')}><ArrowLeft size={16}/> Back</button>
-                      <h4 className="mh-subview-title">Allergies</h4>
+                  <div className="identity-verification-success">
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <h4 className="ivb-title-success">Identity Verification</h4>
+                      <p className="ivb-desc-success">Verified by <strong>Brady Hampson</strong> at <strong>10 Aug 2026, 09:41</strong></p>
                     </div>
-                    <div className="mh-detail-stacked">
-                      <span className="mh-stacked-title">Medication Allergies</span>
-                      <span className="mh-stacked-value">Penicillin, Clindamycin</span>
-                    </div>
-                    <div className="mh-detail-stacked">
-                      <span className="mh-stacked-title" style={{ fontSize: '13px' }}>Symptom</span>
-                      <span className="mh-stacked-value">Mild (rash, itching)</span>
-                    </div>
-                    <div className="mh-detail-stacked">
-                      <span className="mh-stacked-title">Food Allergies</span>
-                      <span className="mh-stacked-value">None</span>
-                    </div>
-                    <div className="mh-detail-stacked">
-                      <span className="mh-stacked-title">Environmental</span>
-                      <span className="mh-stacked-value">None</span>
-                    </div>
+                    <span className="badge-verified">Verified</span>
                   </div>
                 )}
-              </>
+
+                <div className="medical-history-section mt-6">
+                  <h3 className="section-title mb-4">Medical History</h3>
+                  <div className="mh-accordion-container">
+                    
+                    {/* General Health Accordion */}
+                    <div className="mh-accordion">
+                      <button className="mh-accordion-header" onClick={() => toggleAccordion('general_health')}>
+                        <span>General Health</span>
+                        {openAccordions.includes('general_health') ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      </button>
+                      {openAccordions.includes('general_health') && (
+                        <div className="mh-accordion-content">
+                          <p className="mh-accordion-desc">Blood Type, Height, Weight, BMI data.</p>
+                          <div className="mh-accordion-grid">
+                            <div className="mh-detail-col">
+                              <span className="mh-detail-label">Blood Type</span>
+                              <span className="mh-detail-value">—</span>
+                            </div>
+                            <div className="mh-detail-col">
+                              <span className="mh-detail-label">Weight</span>
+                              <span className="mh-detail-value">70 kg</span>
+                            </div>
+                            <div className="mh-detail-col">
+                              <span className="mh-detail-label">Height</span>
+                              <span className="mh-detail-value">175 cm</span>
+                            </div>
+                            <div className="mh-detail-col">
+                              <span className="mh-detail-label">BMI</span>
+                              <span className="mh-detail-value">22.9</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Lifestyle Accordion */}
+                    <div className="mh-accordion">
+                      <button className="mh-accordion-header" onClick={() => toggleAccordion('lifestyle')}>
+                        <span>Lifestyle</span>
+                        {openAccordions.includes('lifestyle') ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      </button>
+                      {openAccordions.includes('lifestyle') && (
+                        <div className="mh-accordion-content">
+                          <p className="mh-accordion-desc">Habits, nutrition, activity, sleep and stress.</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Conditions Accordion */}
+                    <div className="mh-accordion">
+                      <button className="mh-accordion-header" onClick={() => toggleAccordion('conditions')}>
+                        <span>Conditions</span>
+                        {openAccordions.includes('conditions') ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      </button>
+                      {openAccordions.includes('conditions') && (
+                        <div className="mh-accordion-content">
+                          <p className="mh-accordion-desc">Cardiovascular, Metabolic, Endocrine and others.</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Allergies Accordion */}
+                    <div className="mh-accordion">
+                      <button className="mh-accordion-header" onClick={() => toggleAccordion('allergies')}>
+                        <span>Allergies</span>
+                        {openAccordions.includes('allergies') ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      </button>
+                      {openAccordions.includes('allergies') && (
+                        <div className="mh-accordion-content">
+                          <p className="mh-accordion-desc">Medication, Food, Environmental allergens.</p>
+                        </div>
+                      )}
+                    </div>
+
+                  </div>
+                </div>
+
+                <div className="lab-orders-section mt-6">
+                  <h3 className="section-title mb-4" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    Lab Orders <span className="count-badge-small">{mockLabOrders.length}</span>
+                  </h3>
+                  
+                  {mockLabOrders.length === 0 ? (
+                    <div className="empty-state-box">
+                      <p className="text-muted m-0">No lab orders available</p>
+                    </div>
+                  ) : (
+                    <div className="table-container rounded-table">
+                      <table className="data-table pd-table">
+                        <thead>
+                          <tr>
+                            <th>Lab Order ID</th>
+                            <th>Tests / Package</th>
+                            <th>Date</th>
+                            <th>Current Status</th>
+                            <th style={{ width: '80px' }}></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {mockLabOrders.map((order) => (
+                            <tr key={order.id}>
+                              <td className="font-medium text-sm">{order.id}</td>
+                              <td className="text-sm">
+                                <div className="tests-chips-list">
+                                  {order.tests.split(',').map(t => (
+                                    <span key={t} className="test-chip-pd">{t.trim()}</span>
+                                  ))}
+                                  {order.tests.includes('CBC') && <span className="test-chip-pd more">+12</span>}
+                                </div>
+                              </td>
+                              <td className="text-sm text-muted">{order.date}</td>
+                              <td>
+                                <span className={`pd-status-pill ${order.status === 'Completed' ? 'status-completed' : 'status-pending'}`}>
+                                  {order.status}
+                                </span>
+                              </td>
+                              <td>
+                                <div className="action-buttons-row">
+                                  <button className="btn-icon-only text-muted" title="Download">
+                                    <Download size={16} />
+                                  </button>
+                                  <button className="btn-icon-only text-muted" title="Print" onClick={() => setViewingLabOrder(order)}>
+                                    <Printer size={16} />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </div>
             )}
 
-            {activeTab === 'lab_orders' && (
-              <>
-                <div className="panel-header">
-                  <h3 className="panel-title">Lab Orders</h3>
+            {activeTab === 'history_log' && (
+              <div className="history-tab">
+                <div className="history-filters" style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
+                  <div className="search-filter history-search" style={{ flex: 1 }}>
+                    <Search size={16} className="text-muted" />
+                    <input type="text" placeholder="Search patients, appointments, labs..." />
+                  </div>
+                  <div className="filter-dropdown date-filter">
+                    <button className="dropdown-trigger" style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #d1d5db', backgroundColor: 'white', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <span className="text-muted" style={{ fontSize: '14px' }}>Date range</span>
+                      <Calendar size={14} className="text-muted" />
+                    </button>
+                  </div>
                 </div>
-                {mockLabOrders.length === 0 ? (
-                  <div className="empty-state-box">
-                    <p className="text-muted m-0">No lab orders available</p>
+                <div className="history-content">
+                  <div className="timeline-pd">
+                    <div className="timeline-item-pd">
+                      <div className="timeline-icon-pd edit-bg">
+                        <Edit2 size={14} />
+                      </div>
+                      <div className="timeline-content-pd">
+                        <div className="timeline-main-pd">
+                          <span className="timeline-title-pd">Edit Patient</span>
+                          <span className="timeline-desc-pd">Edited by: Sarah Chen (Receptionist) • 10 Aug 2026, 09:41</span>
+                        </div>
+                        <div className="timeline-changes-pd">
+                          <span className="change-item">Phone Number : +66 89-123-4567 → +66 82-555-9005</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="timeline-item-pd mt-6">
+                      <div className="timeline-icon-pd add-bg">
+                        <User size={14} />
+                      </div>
+                      <div className="timeline-content-pd">
+                        <div className="timeline-main-pd">
+                          <span className="timeline-title-pd">Patient Created</span>
+                          <span className="timeline-desc-pd">10 Aug 2026, 09:41</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                ) : (
-                  <div className="table-container">
-                    <table className="data-table">
-                      <thead>
-                        <tr>
-                          <th>Lab Order ID</th>
-                          <th>Tests / Package</th>
-                          <th>Ordered Date</th>
-                          <th>Current Status</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {mockLabOrders.map((order) => (
-                          <tr key={order.id}>
-                            <td className="font-medium">{order.id}</td>
-                            <td>{order.tests}</td>
-                            <td>{order.date}</td>
-                            <td>
-                              <span className={`status-pill ${order.status === 'Completed' ? 'status-completed' : 'status-in-progress'}`}>
-                                {order.status}
-                              </span>
-                            </td>
-                            <td>
-                              <button 
-                                className="btn-secondary-small" 
-                                onClick={() => setViewingLabOrder(order)}
-                              >
-                                View Details
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </>
+                </div>
+              </div>
             )}
           </div>
         </div>

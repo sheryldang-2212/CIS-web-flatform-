@@ -99,7 +99,7 @@ function App() {
         />
         <div className="content-area" style={{ flex: 1, overflowY: 'auto', padding: '24px', backgroundColor: '#f8f9fa' }}>
           {activeTab === 'Dashboard' && currentRole !== 'Doctor' && <Dashboard currentRole={currentRole} setActiveTab={setActiveTab} />}
-          {activeTab === 'Dashboard' && currentRole === 'Doctor' && <DoctorDashboard />}
+          {activeTab === 'Dashboard' && currentRole === 'Doctor' && <DoctorDashboard setActiveTab={setActiveTab} />}
           {activeTab === 'Patients' && currentRole !== 'Doctor' && <Patients />}
           {activeTab === 'Patients' && currentRole === 'Doctor' && <Patients isDoctor={true} />}
           {activeTab === 'Lab Results' && currentRole === 'Doctor' && <DoctorLabResults />}

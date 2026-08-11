@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ClipboardList, Clock, BriefcaseMedical, CheckCircle2, Stethoscope, AlertCircle, Calendar, Activity, Users as UsersIcon, ShieldCheck, Package, History, UserPlus, Settings, Lock, Key, ChevronRight } from 'lucide-react';
+import { ClipboardList, Clock, BriefcaseMedical, CheckCircle2, Stethoscope, AlertCircle, Calendar, Users as UsersIcon, ShieldCheck, Package, History, UserPlus, Settings, Lock, Key, ChevronRight, FlaskConical } from 'lucide-react';
 import PatientFormModal from './PatientFormModal';
 import LabOrderFormModal from './LabOrderFormModal';
 import PrintBarcodeModal from './PrintBarcodeModal';
@@ -24,203 +24,170 @@ export default function Dashboard({ currentRole, setActiveTab }: DashboardProps)
   
   const todayStr = new Date().toISOString().split('T')[0];
   const [techDateRange, setTechDateRange] = useState({ start: todayStr, end: todayStr });
+  const [doctorDateRange, setDoctorDateRange] = useState({ start: todayStr, end: todayStr });
 
   const renderReceptionistDashboard = () => {
-    const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    
     return (
-      <>
-        <h1 className="premium-greeting">Good morning, Sarah</h1>
-        <p className="premium-subtitle">{today} • Manage patient registration and lab orders</p>
-        
-        <div className="premium-summary-cards">
-          <div className="premium-summary-card">
-            <div className="premium-card-header">
-              <span className="premium-card-label">Today's Orders</span>
-              <div className="premium-icon-box" style={{ backgroundColor: '#fef3c7', color: '#d97706' }}>
-                <ClipboardList size={20} />
-              </div>
-            </div>
-            <span className="premium-card-value">12</span>
-            <span className="premium-card-trend" style={{ color: '#059669' }}>
-              <Activity size={14} /> Lab orders created today
-            </span>
-          </div>
-
-          <div className="premium-summary-card">
-            <div className="premium-card-header">
-              <span className="premium-card-label">Pending Collection</span>
-              <div className="premium-icon-box" style={{ backgroundColor: '#fee2e2', color: '#dc2626' }}>
-                <Clock size={20} />
-              </div>
-            </div>
-            <span className="premium-card-value">5</span>
-            <span className="premium-card-trend" style={{ color: '#6b7280' }}>
-              <Activity size={14} /> Awaiting technician
-            </span>
-          </div>
-
-          <div className="premium-summary-card">
-            <div className="premium-card-header">
-              <span className="premium-card-label">In Progress</span>
-              <div className="premium-icon-box" style={{ backgroundColor: '#e0e7ff', color: '#4f46e5' }}>
-                <Activity size={20} />
-              </div>
-            </div>
-            <span className="premium-card-value">8</span>
-            <span className="premium-card-trend" style={{ color: '#6b7280' }}>
-              <Activity size={14} /> Sent to lab
-            </span>
-          </div>
-
-          <div className="premium-summary-card">
-            <div className="premium-card-header">
-              <span className="premium-card-label">Completed</span>
-              <div className="premium-icon-box" style={{ backgroundColor: '#dcfce3', color: '#16a34a' }}>
-                <CheckCircle2 size={20} />
-              </div>
-            </div>
-            <span className="premium-card-value">24</span>
-            <span className="premium-card-trend" style={{ color: '#16a34a' }}>
-              <Activity size={14} /> Results available
-            </span>
+      <div className="receptionist-dashboard">
+        <div className="rec-header">
+          <h1 className="page-title mb-0">Receptionist Dashboard</h1>
+          <div className="rec-date-range">
+            <span className="text-muted">Date range:</span>
+            <span>07/06/2026 - 07/06/2026</span>
+            <Calendar size={14} className="text-muted" />
           </div>
         </div>
 
-        <div className="premium-grid">
-          {/* Recent Lab Orders Widget */}
-          <div className="premium-widget">
-            <div className="premium-widget-header">
-              <div className="premium-widget-title">
-                <ClipboardList size={20} style={{ color: '#cba028' }} />
-                <span>Recent Lab Orders</span>
+        <div className="rec-action-cards">
+          <div className="rec-action-card">
+            <div className="rec-action-content">
+              <div className="rec-action-icon-wrapper">
+                <UserPlus size={24} className="text-yellow" />
               </div>
-              <button 
-                className="text-primary text-sm font-semibold hover:underline" 
-                style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                onClick={() => setActiveTab('Lab Orders')}
-              >
-                View All
-              </button>
-            </div>
-            <div className="premium-recent-orders">
-              <div className="order-item">
-                <div className="order-patient-info">
-                  <div className="order-avatar">ON</div>
-                  <div className="order-details">
-                    <span className="order-name">Olivia Nguyen</span>
-                    <span className="order-tests">Vitamin D, Vitamin B12</span>
-                  </div>
-                </div>
-                <div className="order-status status-pending">
-                  <div className="status-dot"></div>
-                  pending
-                </div>
-              </div>
-              
-              <div className="order-item">
-                <div className="order-patient-info">
-                  <div className="order-avatar">IR</div>
-                  <div className="order-details">
-                    <span className="order-name">Isabella Reed</span>
-                    <span className="order-tests">Troponin, CBC...</span>
-                  </div>
-                </div>
-                <div className="order-status status-pending">
-                  <div className="status-dot"></div>
-                  pending
-                </div>
-              </div>
-
-              <div className="order-item">
-                <div className="order-patient-info">
-                  <div className="order-avatar">EC</div>
-                  <div className="order-details">
-                    <span className="order-name">Emma Clark</span>
-                    <span className="order-tests">CBC, HbA1c...</span>
-                  </div>
-                </div>
-                <div className="order-status status-pending">
-                  <div className="status-dot"></div>
-                  pending
-                </div>
-              </div>
-
-              <div className="order-item">
-                <div className="order-patient-info">
-                  <div className="order-avatar">WT</div>
-                  <div className="order-details">
-                    <span className="order-name">William Turner</span>
-                    <span className="order-tests">TSH, Free T4...</span>
-                  </div>
-                </div>
-                <div className="order-status status-pending">
-                  <div className="status-dot"></div>
-                  pending
-                </div>
-              </div>
-
-              <div className="order-item">
-                <div className="order-patient-info">
-                  <div className="order-avatar">AF</div>
-                  <div className="order-details">
-                    <span className="order-name">Ava Foster</span>
-                    <span className="order-tests">Glucose, HbA1c...</span>
-                  </div>
-                </div>
-                <div className="order-status status-pending">
-                  <div className="status-dot"></div>
-                  pending
-                </div>
+              <div className="rec-action-text">
+                <h3>Register New Patient</h3>
+                <p>Add a new patient profile to the system</p>
               </div>
             </div>
+            <button className="btn-rec-action" onClick={() => setIsPatientModalOpen(true)}>
+              + Register New Patient
+            </button>
           </div>
 
-          {/* Quick Actions Widget */}
-          <div className="premium-widget">
-            <div className="premium-widget-header">
-              <div className="premium-widget-title">
-                <UsersIcon size={20} style={{ color: '#cba028' }} />
-                <span>Quick Actions</span>
+          <div className="rec-action-card">
+            <div className="rec-action-content">
+              <div className="rec-action-icon-wrapper">
+                <FlaskConical size={24} className="text-yellow" />
+              </div>
+              <div className="rec-action-text">
+                <h3>Create Lab Order</h3>
+                <p>Generate a new lab request</p>
               </div>
             </div>
-            <div className="premium-quick-actions">
-              
-              <button className="quick-action-btn" onClick={() => setIsPatientModalOpen(true)}>
-                <div className="qa-icon"><UsersIcon size={24} /></div>
-                <div className="qa-text">
-                  <span className="qa-title">Register New Patient</span>
-                  <span className="qa-desc">Add a new patient profile to the system</span>
-                </div>
-              </button>
-
-              <button className="quick-action-btn" onClick={() => setIsLabOrderModalOpen(true)}>
-                <div className="qa-icon"><BriefcaseMedical size={24} /></div>
-                <div className="qa-text">
-                  <span className="qa-title">Create Lab Order</span>
-                  <span className="qa-desc">Generate a new lab request</span>
-                </div>
-              </button>
-              
-              <button className="quick-action-btn" onClick={() => setActiveTab('Patients')}>
-                <div className="qa-icon"><Activity size={24} /></div>
-                <div className="qa-text">
-                  <span className="qa-title">View All Patients</span>
-                  <span className="qa-desc">Search and manage patient directory</span>
-                </div>
-              </button>
-
-            </div>
+            <button className="btn-rec-action" onClick={() => setIsLabOrderModalOpen(true)}>
+              + Create Lab Order
+            </button>
           </div>
         </div>
-      </>
+
+        <div className="rec-summary-cards">
+          <div className="rec-summary-card">
+            <div className="rec-summary-header">
+              <ClipboardList size={20} className="text-yellow" />
+              <span className="rec-summary-label">Today's Orders</span>
+            </div>
+            <div className="rec-summary-value text-yellow">15</div>
+          </div>
+          <div className="rec-summary-card">
+            <div className="rec-summary-header">
+              <Clock size={20} className="text-orange" />
+              <span className="rec-summary-label">Pending Collection</span>
+            </div>
+            <div className="rec-summary-value text-orange">6</div>
+          </div>
+          <div className="rec-summary-card">
+            <div className="rec-summary-header">
+              <BriefcaseMedical size={20} className="text-blue" />
+              <span className="rec-summary-label">In Progress</span>
+            </div>
+            <div className="rec-summary-value text-blue">5</div>
+          </div>
+          <div className="rec-summary-card">
+            <div className="rec-summary-header">
+              <CheckCircle2 size={20} className="text-green" />
+              <span className="rec-summary-label">Completed</span>
+            </div>
+            <div className="rec-summary-value text-green">3</div>
+          </div>
+        </div>
+
+        <div className="rec-recent-orders-section">
+          <div className="rec-recent-header">
+            <h2>Recent Lab Orders</h2>
+            <span className="rec-badge-count">10</span>
+          </div>
+
+          <div className="rec-recent-grid">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="rec-order-card">
+                <div className="rec-order-top">
+                  <span className="rec-order-name">Olivia Nguyen</span>
+                  <span className={`rec-status-badge ${i === 5 ? 'ready' : i === 6 ? 'sent' : 'pending'}`}>
+                    {i === 5 ? 'Ready for Pickup' : i === 6 ? 'Sent to Lab' : 'Pending Collection'}
+                  </span>
+                </div>
+                <div className="rec-order-tests">
+                  <span className="rec-test-chip">HbA1c</span>
+                  <span className="rec-test-chip">Fasting Glucose</span>
+                  <span className="rec-test-chip">Creatinine</span>
+                  <span className="rec-test-chip">BUN</span>
+                  <span className="rec-test-chip more">+12</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     );
   };
 
   const renderDoctorDashboard = () => (
-    <>
-      <h1 className="page-title">Doctor Dashboard</h1>
-      <p className="page-subtitle mb-6">Your schedule and patient updates for today.</p>
+    <div className="doctor-dashboard-container">
+      <div className="rec-header" style={{ marginBottom: '24px' }}>
+        <div>
+          <h1 className="page-title mb-0">Doctor Dashboard</h1>
+          <p className="page-subtitle mt-1 text-muted">Review lab results and manage patient care</p>
+        </div>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'white', padding: '8px 16px', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
+          <Calendar size={16} className="text-muted" />
+          <span style={{ fontSize: '13px', color: '#64748b', fontWeight: 500, marginRight: '4px' }}>Date range:</span>
+          <input 
+            type="date" 
+            value={doctorDateRange.start}
+            onChange={(e) => setDoctorDateRange(prev => ({ ...prev, start: e.target.value }))}
+            style={{ border: 'none', outline: 'none', fontSize: '13px', color: '#334155', background: 'transparent' }}
+          />
+          <span style={{ color: '#94a3b8' }}>-</span>
+          <input 
+            type="date" 
+            value={doctorDateRange.end}
+            onChange={(e) => setDoctorDateRange(prev => ({ ...prev, end: e.target.value }))}
+            style={{ border: 'none', outline: 'none', fontSize: '13px', color: '#334155', background: 'transparent' }}
+          />
+        </div>
+      </div>
+
+      <div className="rec-action-cards" style={{ marginBottom: '24px' }}>
+        <div className="rec-action-card">
+          <div className="rec-action-content">
+            <div className="rec-action-icon-wrapper">
+              <FlaskConical size={24} className="text-yellow" />
+            </div>
+            <div className="rec-action-text">
+              <h3>Create Lab Order</h3>
+              <p>Order new tests for a patient</p>
+            </div>
+          </div>
+          <button className="btn-rec-action" onClick={() => setIsLabOrderModalOpen(true)}>
+            + New Lab Order
+          </button>
+        </div>
+
+        <div className="rec-action-card">
+          <div className="rec-action-content">
+            <div className="rec-action-icon-wrapper" style={{ background: '#e0f2fe' }}>
+              <ClipboardList size={24} style={{ color: '#0284c7' }} />
+            </div>
+            <div className="rec-action-text">
+              <h3>Review Lab Results</h3>
+              <p>Check pending results and reports</p>
+            </div>
+          </div>
+          <button className="btn-rec-action" style={{ background: '#0284c7' }} onClick={() => setActiveTab('Lab Results')}>
+            View Lab Results
+          </button>
+        </div>
+      </div>
 
       <div className="summary-cards">
         <div className="summary-card">
@@ -253,7 +220,7 @@ export default function Dashboard({ currentRole, setActiveTab }: DashboardProps)
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 
   const renderTechnicianDashboard = () => {

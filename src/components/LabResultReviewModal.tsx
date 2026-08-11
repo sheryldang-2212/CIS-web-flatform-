@@ -157,8 +157,14 @@ export default function LabResultReviewModal({ result: _result, onClose }: LabRe
         </div>
         
         <div className="review-footer">
-          <button className="btn-review-secondary"><FileText size={16} /> View PDF</button>
-          <button className="btn-review-close" onClick={onClose}>Close</button>
+          <div className="footer-left">
+            <button className="btn-review-secondary"><FileText size={16} /> View PDF</button>
+          </div>
+          <div className="footer-right">
+            <button className="btn-review-close" onClick={onClose}>Cancel</button>
+            <button className="btn-review-reject" onClick={onClose}>Reject</button>
+            <button className="btn-review-approve" onClick={onClose}>Approve Result</button>
+          </div>
         </div>
       </div>
     </div>

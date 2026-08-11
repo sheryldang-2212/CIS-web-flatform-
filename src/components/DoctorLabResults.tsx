@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Printer, Download, FileText, AlertTriangle, Clock, Eye, CheckCircle, XCircle, MoreVertical } from 'lucide-react';
+import { Search, Printer, Download, FileText, AlertTriangle, Clock, Eye, CheckCircle, XCircle, MoreVertical, TrendingUp, TrendingDown } from 'lucide-react';
 import ActionReasonModal from './ActionReasonModal';
 import LabResultReviewModal from './LabResultReviewModal';
 import './DoctorLabResults.css';
@@ -42,37 +42,53 @@ export default function DoctorLabResults() {
         <div className="dlr-kpi-card">
           <div className="dlr-kpi-header">
             <span>Total Results</span>
-            <FileText size={16} className="dlr-kpi-icon" />
+            <div className="dlr-kpi-icon-wrapper blue">
+              <FileText size={16} className="dlr-kpi-icon" />
+            </div>
           </div>
           <div className="dlr-kpi-value">20</div>
-          <div className="dlr-kpi-desc">All lab results</div>
+          <div className="dlr-kpi-trend positive">
+            <TrendingUp size={12} /> <span>+5%</span> from last week
+          </div>
         </div>
 
         <div className="dlr-kpi-card">
           <div className="dlr-kpi-header">
             <span>Pending Review</span>
-            <Clock size={16} className="dlr-kpi-icon" />
+            <div className="dlr-kpi-icon-wrapper yellow">
+              <Clock size={16} className="dlr-kpi-icon" />
+            </div>
           </div>
           <div className="dlr-kpi-value warning">10</div>
-          <div className="dlr-kpi-desc">Need attention</div>
+          <div className="dlr-kpi-trend negative">
+            <TrendingUp size={12} /> <span>+2</span> this week
+          </div>
         </div>
 
         <div className="dlr-kpi-card">
           <div className="dlr-kpi-header">
             <span>Critical Values</span>
-            <AlertTriangle size={16} className="dlr-kpi-icon" />
+            <div className="dlr-kpi-icon-wrapper red">
+              <AlertTriangle size={16} className="dlr-kpi-icon" />
+            </div>
           </div>
           <div className="dlr-kpi-value danger">14</div>
-          <div className="dlr-kpi-desc">Immediate action</div>
+          <div className="dlr-kpi-trend positive">
+            <TrendingDown size={12} /> <span>-3</span> from yesterday
+          </div>
         </div>
 
         <div className="dlr-kpi-card">
           <div className="dlr-kpi-header">
             <span>Abnormal Results</span>
-            <AlertTriangle size={16} className="dlr-kpi-icon" />
+            <div className="dlr-kpi-icon-wrapper orange">
+              <AlertTriangle size={16} className="dlr-kpi-icon" />
+            </div>
           </div>
           <div className="dlr-kpi-value info">14</div>
-          <div className="dlr-kpi-desc">Outside normal range</div>
+          <div className="dlr-kpi-trend neutral">
+            <span>0</span> change today
+          </div>
         </div>
       </div>
 
@@ -100,7 +116,7 @@ export default function DoctorLabResults() {
           </div>
         </div>
 
-        <div className="dlr-bulk-actions">
+        <div className={`dlr-bulk-actions ${selectAll ? 'active' : ''}`}>
           <label className="dlr-checkbox-label">
             <input 
               type="checkbox" 
@@ -108,9 +124,9 @@ export default function DoctorLabResults() {
               checked={selectAll} 
               onChange={() => setSelectAll(!selectAll)} 
             />
-            Select results to bulk approve (10 approvable)
+            <span className="bulk-text">Select results to bulk approve <strong>(10 approvable)</strong></span>
           </label>
-          <button className="btn-primary" disabled={!selectAll} style={{ opacity: selectAll ? 1 : 0.5 }}>
+          <button className="btn-primary bulk-btn" disabled={!selectAll} style={{ opacity: selectAll ? 1 : 0.5 }}>
             <CheckCircle size={16} style={{ marginRight: '6px' }} /> Approve Selected
           </button>
         </div>

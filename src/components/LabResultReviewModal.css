@@ -217,12 +217,23 @@
 
 .review-footer {
   display: flex;
-  justify-content: flex-end;
-  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
   padding: 20px 24px;
   border-top: 1px solid var(--border-color);
   background-color: white;
   border-radius: 0 0 12px 12px;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .btn-review-secondary {
@@ -256,4 +267,36 @@
 
 .btn-review-close:hover {
   background-color: #e5e7eb;
+}
+
+.btn-review-reject {
+  background-color: white;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-review-reject:hover {
+  background-color: #fef2f2;
+}
+
+.btn-review-approve {
+  background-color: #cba028;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-review-approve:hover {
+  background-color: #b58d20;
 }
