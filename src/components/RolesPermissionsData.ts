@@ -27,6 +27,7 @@ export const PERMISSION_MODULES = [
       { name: 'View Patient Detail', code: 'patient.view.detail', roles: ['receptionist', 'doctor', 'clinic_admin', 'platform_admin'], dependency: null },
       { name: 'Register Patient', code: 'patient.create', roles: ['receptionist', 'clinic_admin', 'platform_admin'], dependency: null },
       { name: 'Edit Patient', code: 'patient.edit', roles: ['receptionist', 'clinic_admin', 'platform_admin'], dependency: 'Requires View Detail' },
+      { name: 'Delete Patient', code: 'patient.delete', roles: ['clinic_admin', 'platform_admin'], dependency: null },
     ]
   },
   {
@@ -42,6 +43,7 @@ export const PERMISSION_MODULES = [
       { name: 'Add-on Test', code: 'laborder.addon', roles: ['doctor', 'clinic_admin'], dependency: 'Rule-based' },
       { name: 'Print Lab Order', code: 'laborder.print', roles: ['receptionist', 'doctor', 'clinic_admin'], dependency: null },
       { name: 'Cancel Lab Order', code: 'laborder.cancel', roles: ['receptionist', 'doctor', 'clinic_admin', 'platform_admin'], dependency: null },
+      { name: 'Delete Lab Order', code: 'laborder.delete', roles: ['clinic_admin', 'platform_admin'], dependency: null },
     ]
   },
   {
@@ -63,6 +65,8 @@ export const PERMISSION_MODULES = [
       { name: 'Enter Results', code: 'result.enter', roles: ['technician', 'clinic_admin'], dependency: null },
       { name: 'Approve Results', code: 'result.approve', roles: ['doctor', 'clinic_admin'], dependency: null },
       { name: 'Print Results', code: 'result.print', roles: ['receptionist', 'doctor', 'clinic_admin'], dependency: null },
+      { name: 'Edit Results', code: 'result.edit', roles: ['clinic_admin'], dependency: null },
+      { name: 'Delete Results', code: 'result.delete', roles: ['clinic_admin', 'platform_admin'], dependency: null },
     ]
   },
   {
@@ -82,6 +86,7 @@ export const PERMISSION_MODULES = [
       { name: 'View User List', code: 'user.view.list', roles: ['clinic_admin', 'platform_admin'], dependency: null },
       { name: 'Create User', code: 'user.create', roles: ['clinic_admin', 'platform_admin'], dependency: null },
       { name: 'Edit User', code: 'user.edit', roles: ['clinic_admin', 'platform_admin'], dependency: null },
+      { name: 'Delete User', code: 'user.delete', roles: ['clinic_admin', 'platform_admin'], dependency: null },
     ]
   },
   {
@@ -90,7 +95,9 @@ export const PERMISSION_MODULES = [
     icon: Key,
     permissions: [
       { name: 'View Roles', code: 'role.view', roles: ['clinic_admin', 'platform_admin'], dependency: null },
-      { name: 'Manage Roles', code: 'role.manage', roles: ['platform_admin'], dependency: null },
+      { name: 'Create Role', code: 'role.create', roles: ['platform_admin'], dependency: null },
+      { name: 'Edit Role', code: 'role.edit', roles: ['platform_admin'], dependency: null },
+      { name: 'Delete Role', code: 'role.delete', roles: ['platform_admin'], dependency: null },
     ]
   },
   {
@@ -108,7 +115,13 @@ export const PERMISSION_MODULES = [
     icon: Package,
     permissions: [
       { name: 'View Services', code: 'services.view', roles: ['clinic_admin', 'platform_admin'], dependency: null },
-      { name: 'Manage Services', code: 'services.manage', roles: ['clinic_admin', 'platform_admin'], dependency: null },
+      { name: 'Create Service', code: 'services.create', roles: ['clinic_admin', 'platform_admin'], dependency: null },
+      { name: 'Edit Service', code: 'services.edit', roles: ['clinic_admin', 'platform_admin'], dependency: null },
+      { name: 'Delete Service', code: 'services.delete', roles: ['clinic_admin', 'platform_admin'], dependency: null },
+      { name: 'View Packages', code: 'packages.view', roles: ['clinic_admin', 'platform_admin'], dependency: null },
+      { name: 'Create Package', code: 'packages.create', roles: ['clinic_admin', 'platform_admin'], dependency: null },
+      { name: 'Edit Package', code: 'packages.edit', roles: ['clinic_admin', 'platform_admin'], dependency: null },
+      { name: 'Delete Package', code: 'packages.delete', roles: ['clinic_admin', 'platform_admin'], dependency: null },
     ]
   },
   {
@@ -117,7 +130,7 @@ export const PERMISSION_MODULES = [
     icon: Settings2,
     permissions: [
       { name: 'View Operations', code: 'labops.view', roles: ['clinic_admin', 'platform_admin'], dependency: null },
-      { name: 'Manage Operations', code: 'labops.manage', roles: ['clinic_admin', 'platform_admin'], dependency: null },
+      { name: 'Edit Operations', code: 'labops.edit', roles: ['clinic_admin', 'platform_admin'], dependency: null },
     ]
   },
   {
@@ -126,7 +139,7 @@ export const PERMISSION_MODULES = [
     icon: Lock,
     permissions: [
       { name: 'View Security Settings', code: 'security.view', roles: ['clinic_admin', 'platform_admin'], dependency: null },
-      { name: 'Manage Security', code: 'security.manage', roles: ['clinic_admin', 'platform_admin'], dependency: null },
+      { name: 'Edit Security Settings', code: 'security.edit', roles: ['clinic_admin', 'platform_admin'], dependency: null },
     ]
   },
   {
@@ -136,6 +149,7 @@ export const PERMISSION_MODULES = [
     permissions: [
       { name: 'View Audit Logs', code: 'audit.view', roles: ['clinic_admin', 'platform_admin'], dependency: null },
       { name: 'Export Audit Logs', code: 'audit.export', roles: ['clinic_admin', 'platform_admin'], dependency: null },
+      { name: 'Delete Audit Logs', code: 'audit.delete', roles: ['platform_admin'], dependency: null },
     ]
   },
   {
@@ -149,7 +163,8 @@ export const PERMISSION_MODULES = [
       { name: 'View Imported Patient Monitoring', code: 'patient_data.monitoring.view', roles: ['clinic_admin', 'platform_admin'], dependency: null },
       { name: 'Review Possible Duplicates', code: 'patient_data.duplicates.review', roles: ['clinic_admin', 'platform_admin'], dependency: null },
       { name: 'Reassign Imported Patient Clinic', code: 'patient_data.reassign', roles: ['platform_admin'], dependency: null },
-      { name: 'View Verification Audit History', code: 'patient_data.audit.view', roles: ['clinic_admin', 'platform_admin'], dependency: null }
+      { name: 'View Verification Audit History', code: 'patient_data.audit.view', roles: ['clinic_admin', 'platform_admin'], dependency: null },
+      { name: 'Delete Patient Data', code: 'patient_data.delete', roles: ['platform_admin'], dependency: null }
     ]
   }
 ];
