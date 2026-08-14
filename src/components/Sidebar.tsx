@@ -1,4 +1,4 @@
-import { LayoutGrid, Users, FlaskConical, PanelLeftClose, Settings, Shield, Lock, Box, Activity, FileKey, Database } from 'lucide-react';
+import { LayoutGrid, Users, FlaskConical, PanelLeftClose, Settings, Shield, Lock, Box, Activity, FileKey, Database, BarChart3, Bell, MessageSquare } from 'lucide-react';
 import './Sidebar.css';
 
 interface SidebarProps {
@@ -9,8 +9,59 @@ interface SidebarProps {
 }
 
 const getNavGroups = (role: string) => {
+  if (role === 'Platform Admin') {
+    return [
+      {
+        groupName: null,
+        items: [
+          { name: 'Dashboard', icon: LayoutGrid }
+        ]
+      },
+      {
+        groupName: 'PEOPLE & ACCESS',
+        items: [
+          { name: 'Staff Management', icon: Users },
+          { name: 'Roles & Permissions', icon: Shield }
+        ]
+      },
+      {
+        groupName: 'PATIENT DATA MANAGEMENT',
+        items: [
+          { name: 'Patient Data', icon: Database }
+        ]
+      },
+      {
+        groupName: 'SYSTEM CONFIGURATION',
+        items: [
+          { name: 'System Settings', icon: Settings },
+          { name: 'Reference Ranges', icon: Activity, locked: true },
+          { name: 'Laboratory Settings', icon: FlaskConical, locked: true }
+        ]
+      },
+      {
+        groupName: 'REPORTS & ANALYTICS',
+        items: [
+          { name: 'Reports & Analytics', icon: BarChart3 }
+        ]
+      },
+      {
+        groupName: 'COMMUNICATION',
+        items: [
+          { name: 'Announcements', icon: MessageSquare },
+          { name: 'Notification Monitoring', icon: Bell, locked: true }
+        ]
+      },
+      {
+        groupName: 'SECURITY & COMPLIANCE',
+        items: [
+          { name: 'Audit Logs', icon: FileKey }
+        ]
+      }
+    ];
+  }
+
   // Let's assume Admin role has the new structure as requested
-  if (role === 'Admin') {
+  if (role === 'Admin' || role === 'Clinic Admin') {
     return [
       {
         groupName: null,

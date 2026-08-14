@@ -27,7 +27,8 @@ export default function Login({ onLoginSuccess, onNavigate, mockClinics }: Login
   const MOCK_USERS: Record<string, string[]> = {
     'admin@healthhub.com': ['clinic-1', 'clinic-2'], // Multiple clinics -> shows Select Clinic
     'doctor@healthhub.com': ['clinic-1'],            // 1 clinic -> skips Select Clinic
-    'staff@healthhub.com': ['clinic-2']              // 1 clinic -> skips Select Clinic
+    'staff@healthhub.com': ['clinic-2'],             // 1 clinic -> skips Select Clinic
+    'platform@healthhub.com': ['clinic-1', 'clinic-2'] // Platform admin
   };
 
   const handleLogin = (e: React.FormEvent) => {
@@ -57,6 +58,12 @@ export default function Login({ onLoginSuccess, onNavigate, mockClinics }: Login
     }
 
     setAvailableClinics(userClinics);
+
+    // Platform Admin shortcut for demo
+    if (email === 'platform@healthhub.com') {
+      onLoginSuccess(userClinics[0], 'Platform Admin');
+      return;
+    }
 
     // Default success path -> move to clinic selection if there are multiple
     if (userClinics.length > 1) {
@@ -142,7 +149,8 @@ export default function Login({ onLoginSuccess, onNavigate, mockClinics }: Login
             <strong>Demo Accounts:</strong><br />
             - <i>admin@healthhub.com</i> (Multiple clinics - shows Select Clinic)<br />
             - <i>doctor@healthhub.com</i> (1 clinic - skips Select Clinic)<br />
-            - <i>staff@healthhub.com</i> (1 clinic - skips Select Clinic)
+            - <i>staff@healthhub.com</i> (1 clinic - skips Select Clinic)<br />
+            - <i>platform@healthhub.com</i> (Platform Admin access)
           </div>
         </div>
       )}

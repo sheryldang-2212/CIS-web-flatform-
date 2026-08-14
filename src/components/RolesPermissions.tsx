@@ -7,11 +7,18 @@ import './RolesPermissions.css';
 
 import { ROLES_LIST, PERMISSION_MODULES } from './RolesPermissionsData';
 
-export default function RolesPermissions() {
+interface RolesPermissionsProps {
+  currentRole?: string;
+  currentClinic?: any;
+  mockClinics?: any[];
+}
+
+export default function RolesPermissions({ currentRole, currentClinic, mockClinics }: RolesPermissionsProps) {
   const [activeRole, setActiveRole] = useState(ROLES_LIST[0]);
   const [expandedModules, setExpandedModules] = useState<string[]>(['dashboard', 'patient_management', 'lab_orders']);
   const [roleActive, setRoleActive] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedClinicId, setSelectedClinicId] = useState<string>(currentClinic?.id || (mockClinics && mockClinics.length > 0 ? mockClinics[0].id : 'all'));
 
   const toggleModule = (moduleId: string) => {
     if (expandedModules.includes(moduleId)) {
@@ -38,6 +45,20 @@ export default function RolesPermissions() {
           <h1>Roles & Permissions</h1>
           <p>Configure permissions by role. Users may have multiple roles within each clinic.</p>
         </div>
+        {currentRole === 'Platform Admin' && mockClinics && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '13px', fontWeight: 500, color: '#64748b' }}>Clinic Context:</span>
+            <select 
+              value={selectedClinicId}
+              onChange={(e) => setSelectedClinicId(e.target.value)}
+              style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '14px', outline: 'none' }}
+            >
+              {mockClinics.map((clinic: any) => (
+                <option key={clinic.id} value={clinic.id}>{clinic.name}</option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
       <div className="rp-content">

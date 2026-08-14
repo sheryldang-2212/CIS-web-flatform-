@@ -5,6 +5,7 @@ export const ROLES_LIST = [
   { id: 'technician', name: 'Technician', icon: Microscope, scope: 'Clinic' },
   { id: 'doctor', name: 'Doctor', icon: Stethoscope, scope: 'Clinic' },
   { id: 'clinic_admin', name: 'Clinic Admin', icon: Shield, scope: 'Clinic' },
+  { id: 'platform_admin', name: 'Platform Admin', icon: Settings, scope: 'Platform' },
 ];
 
 export const PERMISSION_MODULES = [

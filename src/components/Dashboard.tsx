@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ClipboardList, Clock, BriefcaseMedical, CheckCircle2, Stethoscope, AlertCircle, Calendar, Users as UsersIcon, ShieldCheck, Package, History, UserPlus, Settings, Lock, Key, ChevronRight, FlaskConical } from 'lucide-react';
+import { ClipboardList, Clock, BriefcaseMedical, CheckCircle2, Stethoscope, AlertCircle, Calendar, Users as UsersIcon, ShieldCheck, Package, History, UserPlus, Settings, Lock, Key, ChevronRight, FlaskConical, Building2, Server, MoreHorizontal } from 'lucide-react';
 import PatientFormModal from './PatientFormModal';
 import LabOrderFormModal from './LabOrderFormModal';
 import PrintBarcodeModal from './PrintBarcodeModal';
@@ -585,6 +585,128 @@ export default function Dashboard({ currentRole, setActiveTab }: DashboardProps)
       </div>
     </div>
   );
+  const renderPlatformAdminDashboard = () => (
+    <div className="admin-dashboard-container">
+      <div className="admin-dashboard-header">
+        <div>
+          <h1 className="page-title mb-0">Multi-Clinic Overview</h1>
+          <p className="page-subtitle mt-1">Global view of all managed clinics on the Health Hub platform.</p>
+        </div>
+        <div className="admin-status-badge">
+          <span className="status-indicator online"></span>
+          Platform Status: 100% Uptime
+        </div>
+      </div>
+      
+      <div className="admin-metrics-grid">
+        <div className="admin-metric-card">
+          <div className="metric-icon-wrapper" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' }}>
+            <Building2 size={24} />
+          </div>
+          <div className="metric-content">
+            <span className="metric-label">Total Active Clinics</span>
+            <span className="metric-value text-blue-600">45</span>
+            <span className="metric-trend positive">↑ 3 this month</span>
+          </div>
+        </div>
+        
+        <div className="admin-metric-card">
+          <div className="metric-icon-wrapper" style={{ backgroundColor: 'rgba(139, 92, 246, 0.1)', color: '#8b5cf6' }}>
+            <UsersIcon size={24} />
+          </div>
+          <div className="metric-content">
+            <span className="metric-label">Platform Users</span>
+            <span className="metric-value text-purple-600">1,204</span>
+            <span className="metric-trend positive">↑ 56 this month</span>
+          </div>
+        </div>
+        
+        <div className="admin-metric-card">
+          <div className="metric-icon-wrapper" style={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', color: '#22c55e' }}>
+            <FlaskConical size={24} />
+          </div>
+          <div className="metric-content">
+            <span className="metric-label">Total Lab Orders (YTD)</span>
+            <span className="metric-value text-green-600">84,500</span>
+            <span className="metric-trend positive">On track</span>
+          </div>
+        </div>
+
+        <div className="admin-metric-card">
+          <div className="metric-icon-wrapper" style={{ backgroundColor: 'rgba(107, 114, 128, 0.1)', color: '#6b7280' }}>
+            <Server size={24} />
+          </div>
+          <div className="metric-content">
+            <span className="metric-label">API Usage Limit</span>
+            <span className="metric-value text-gray-700">42%</span>
+            <span className="metric-trend neutral">Normal</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="platform-clinics-section mt-6">
+        <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-main)', margin: 0 }}>Managed Clinics</h2>
+          <div className="search-input-wrapper" style={{ width: '250px', position: 'relative' }}>
+            <Search size={14} className="search-icon" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+            <input 
+              type="text" 
+              placeholder="Search clinics..." 
+              style={{ width: '100%', padding: '8px 12px 8px 32px', border: '1px solid #e2e8f0', borderRadius: '6px', fontSize: '13px', outline: 'none' }}
+            />
+          </div>
+        </div>
+        
+        <div className="platform-table-container">
+          <table className="platform-table">
+            <thead>
+              <tr>
+                <th>Clinic Name</th>
+                <th>Status</th>
+                <th>Users</th>
+                <th>Tier</th>
+                <th>Last Active</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { name: 'Downtown Medical Center', status: 'Active', users: 45, tier: 'Enterprise', lastActive: '2 mins ago' },
+                { name: 'Uptown Family Care', status: 'Active', users: 12, tier: 'Standard', lastActive: '15 mins ago' },
+                { name: 'Westside Clinic', status: 'Suspended', users: 8, tier: 'Standard', lastActive: '2 days ago' },
+                { name: 'City Hospital Annex', status: 'Active', users: 124, tier: 'Enterprise', lastActive: 'Just now' },
+                { name: 'Northgate Pediatrics', status: 'Active', users: 22, tier: 'Standard', lastActive: '1 hour ago' },
+              ].map((clinic, i) => (
+                <tr key={i}>
+                  <td style={{ fontWeight: 500, color: '#0f172a' }}>{clinic.name}</td>
+                  <td>
+                    <span className={`status-pill ${clinic.status === 'Active' ? 'status-ready' : 'status-pending'}`} style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '12px', backgroundColor: clinic.status === 'Active' ? '#dcfce7' : '#fef08a', color: clinic.status === 'Active' ? '#166534' : '#854d0e', fontWeight: 500, display: 'inline-block' }}>
+                      {clinic.status}
+                    </span>
+                  </td>
+                  <td>{clinic.users}</td>
+                  <td>
+                    <span style={{ fontSize: '12px', padding: '2px 6px', borderRadius: '4px', border: '1px solid #e2e8f0', color: '#475569' }}>
+                      {clinic.tier}
+                    </span>
+                  </td>
+                  <td style={{ color: '#64748b' }}>{clinic.lastActive}</td>
+                  <td style={{ textAlign: 'right' }}>
+                    <button className="icon-btn" title="Manage" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#64748b' }}>
+                      <Settings size={16} />
+                    </button>
+                    <button className="icon-btn" title="More" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#64748b' }}>
+                      <MoreHorizontal size={16} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="dashboard-container">
@@ -592,6 +714,8 @@ export default function Dashboard({ currentRole, setActiveTab }: DashboardProps)
       {currentRole === 'Doctor' && renderDoctorDashboard()}
       {currentRole === 'Technician' && renderTechnicianDashboard()}
       {currentRole === 'Admin' && renderAdminDashboard()}
+      {currentRole === 'Clinic Admin' && renderAdminDashboard()}
+      {currentRole === 'Platform Admin' && renderPlatformAdminDashboard()}
       {/* Modals for Quick Actions */}
       <PatientFormModal 
         isOpen={isPatientModalOpen}

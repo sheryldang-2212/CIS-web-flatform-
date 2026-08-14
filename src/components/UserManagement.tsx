@@ -14,14 +14,33 @@ const MOCK_USERS = [
   { id: '8', name: 'Robert Johnson', email: 'robert.johnson@urgentcare.com', phone: '+1234567899', clinic: 'Emergency Care Center', role: ['Technician'], status: 'Active', lastLogin: 'Jan 15, 2024 06:00', hasKey: false },
 ];
 
-export default function UserManagement() {
+interface UserManagementProps {
+  currentRole?: string;
+  currentClinic?: any;
+  mockClinics?: any[];
+}
+
+export default function UserManagement({ currentRole, currentClinic, mockClinics }: UserManagementProps) {
   const [showUserForm, setShowUserForm] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [selectedClinicId, setSelectedClinicId] = useState<string>(currentClinic?.id || 'all');
+
+  // Filter users based on selected clinic
+  let filteredUsers = MOCK_USERS;
+  if (currentRole === 'Platform Admin' && selectedClinicId !== 'all') {
+    const selectedClinicName = mockClinics?.find(c => c.id === selectedClinicId)?.name;
+    filteredUsers = MOCK_USERS.filter(user => user.clinic === selectedClinicName);
+  } else if (currentRole !== 'Platform Admin' && currentClinic) {
+    // If not Platform Admin, only show users from current clinic
+    filteredUsers = MOCK_USERS.filter(user => user.clinic === currentClinic.name);
+  }
+
+  // Recalculate stats based on filtered users
   const stats = [
-    { label: 'Receptionist', value: 2 },
-    { label: 'Doctor', value: 3 },
-    { label: 'Technician', value: 2 },
-    { label: 'Admin', value: 2 },
+    { label: 'Receptionist', value: filteredUsers.filter(u => u.role.includes('Receptionist')).length },
+    { label: 'Doctor', value: filteredUsers.filter(u => u.role.includes('Doctor')).length },
+    { label: 'Technician', value: filteredUsers.filter(u => u.role.includes('Technician')).length },
+    { label: 'Admin', value: filteredUsers.filter(u => u.role.includes('Admin') || u.role.includes('Clinic Admin')).length },
   ];
 
   const handleEditUser = (user: any) => {
@@ -41,6 +60,23 @@ export default function UserManagement() {
           <h1>User Management</h1>
           <p>Manage users, permissions, and security settings</p>
         </div>
+        
+        {currentRole === 'Platform Admin' && mockClinics && (
+          <div style={{ marginLeft: 'auto', marginRight: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '13px', fontWeight: 500, color: '#64748b' }}>Clinic:</span>
+            <select 
+              value={selectedClinicId}
+              onChange={(e) => setSelectedClinicId(e.target.value)}
+              style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '14px', outline: 'none' }}
+            >
+              <option value="all">All Clinics</option>
+              {mockClinics.map((clinic: any) => (
+                <option key={clinic.id} value={clinic.id}>{clinic.name}</option>
+              ))}
+            </select>
+          </div>
+        )}
+
         <div className="um-actions">
           <button className="um-btn-secondary">
             <Settings size={16} /> Bulk Actions
@@ -101,7 +137,7 @@ export default function UserManagement() {
                   </tr>
                 </thead>
                 <tbody>
-                  {MOCK_USERS.map((user) => (
+                  {filteredUsers.map((user) => (
                     <tr key={user.id}>
                       <td><input type="checkbox" className="um-user-checkbox" /></td>
                       <td>
@@ -113,7 +149,12 @@ export default function UserManagement() {
                           <span className="um-user-phone">{user.phone}</span>
                         </div>
                       </td>
-                      <td><span className="um-cell-text">{user.email}</span></td>
+                      <td>
+                        <span className="um-cell-text">{user.email}</span>
+                        {currentRole === 'Platform Admin' && (
+                          <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>{user.clinic}</div>
+                        )}
+                      </td>
                       <td>
                         <div className="um-roles-cell">
                           {user.role.slice(0, 1).map(r => (

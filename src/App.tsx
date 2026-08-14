@@ -18,14 +18,16 @@ import AuditLogs from './components/AuditLogs';
 import DoctorDashboard from './components/DoctorDashboard';
 import DoctorLabResults from './components/DoctorLabResults';
 import PatientDataManagement from './components/PatientDataManagement';
+import ReportsAnalytics from './components/ReportsAnalytics';
+import SystemAnnouncements from './components/SystemAnnouncements';
 import Login from './components/Login';
 import ForgotPassword from './components/ForgotPassword';
 import CreatePassword from './components/CreatePassword';
 import './App.css';
 
 const MOCK_CLINICS = [
-  { id: 'clinic-1', name: 'Downtown Clinic', roles: ['Receptionist', 'Doctor', 'Technician', 'Admin'] },
-  { id: 'clinic-2', name: 'Uptown Hospital', roles: ['Doctor', 'Admin'] }
+  { id: 'clinic-1', name: 'Downtown Clinic', roles: ['Receptionist', 'Doctor', 'Technician', 'Admin', 'Platform Admin'] },
+  { id: 'clinic-2', name: 'Uptown Hospital', roles: ['Doctor', 'Admin', 'Platform Admin'] }
 ];
 
 function App() {
@@ -106,8 +108,8 @@ function App() {
           {activeTab === 'Lab Orders' && <LabOrders />}
           {activeTab === 'Sample Collection Queue' && <SampleCollectionQueue />}
           {activeTab === 'Lab Order Tracking' && <LabOrderTracking />}
-          {activeTab === 'Staff Management' && <UserManagement />}
-          {activeTab === 'Roles & Permissions' && <RolesPermissions />}
+          {activeTab === 'Staff Management' && <UserManagement currentRole={currentRole} currentClinic={currentClinic} mockClinics={MOCK_CLINICS} />}
+          {activeTab === 'Roles & Permissions' && <RolesPermissions currentRole={currentRole} currentClinic={currentClinic} mockClinics={MOCK_CLINICS} />}
           {activeTab === 'Clinic Settings' && <ClinicSettings />}
           {activeTab === 'Services & Packages' && <ServicesAndPackages />}
           
@@ -131,6 +133,12 @@ function App() {
             <div className="fadeIn" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <PatientDataManagement />
             </div>
+          )}
+          {activeTab === 'Reports & Analytics' && (
+            <ReportsAnalytics />
+          )}
+          {activeTab === 'Announcements' && (
+            <SystemAnnouncements />
           )}
         </div>
       </main>
