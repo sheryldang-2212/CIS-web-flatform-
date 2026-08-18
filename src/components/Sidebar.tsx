@@ -14,47 +14,34 @@ const getNavGroups = (role: string) => {
       {
         groupName: null,
         items: [
-          { name: 'Dashboard', icon: LayoutGrid }
+          { name: 'Platform Dashboard', icon: LayoutGrid }
+        ]
+      },
+      {
+        groupName: 'CLINIC MANAGEMENT',
+        items: [
+          { name: 'Clinics', icon: Box }
         ]
       },
       {
         groupName: 'PEOPLE & ACCESS',
         items: [
-          { name: 'Staff Management', icon: Users },
+          { name: 'Global Users', icon: Users },
           { name: 'Roles & Permissions', icon: Shield }
         ]
       },
       {
-        groupName: 'PATIENT DATA MANAGEMENT',
+        groupName: 'CONFIGURATION',
         items: [
-          { name: 'Patient Data', icon: Database }
+          { name: 'Feature Flags', icon: Settings },
+          { name: 'LIS Mapping', icon: FlaskConical }
         ]
       },
       {
-        groupName: 'SYSTEM CONFIGURATION',
+        groupName: 'MONITORING & LOGS',
         items: [
-          { name: 'System Settings', icon: Settings },
-          { name: 'Reference Ranges', icon: Activity, locked: true },
-          { name: 'Laboratory Settings', icon: FlaskConical, locked: true }
-        ]
-      },
-      {
-        groupName: 'REPORTS & ANALYTICS',
-        items: [
-          { name: 'Reports & Analytics', icon: BarChart3 }
-        ]
-      },
-      {
-        groupName: 'COMMUNICATION',
-        items: [
-          { name: 'Announcements', icon: MessageSquare },
-          { name: 'Notification Monitoring', icon: Bell, locked: true }
-        ]
-      },
-      {
-        groupName: 'SECURITY & COMPLIANCE',
-        items: [
-          { name: 'Audit Logs', icon: FileKey }
+          { name: 'Integration Monitoring', icon: Activity },
+          { name: 'Platform Audit Logs', icon: FileKey }
         ]
       }
     ];

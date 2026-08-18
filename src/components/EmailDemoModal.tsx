@@ -3,13 +3,27 @@ import './EmailDemoModal.css';
 
 interface EmailDemoModalProps {
   email: string;
+  subject?: string;
+  greeting?: string;
+  body1?: React.ReactNode;
+  body2?: string;
+  buttonText?: string;
   onClose: () => void;
   onAccept?: () => void;
 }
 
-export default function EmailDemoModal({ email, onClose, onAccept }: EmailDemoModalProps) {
+export default function EmailDemoModal({ 
+  email, 
+  subject = "Invitation to join Health Hub", 
+  greeting = "Dear User,",
+  body1 = "You have been registered by the clinic staff.",
+  body2 = "To access your account, please accept this invitation to set up your profile.",
+  buttonText = "Accept Invitation & Setup Account",
+  onClose, 
+  onAccept 
+}: EmailDemoModalProps) {
   return (
-    <div className="modal-overlay email-demo-overlay" onClick={onClose}>
+    <div className="modal-overlay email-demo-overlay" onClick={onClose} style={{ zIndex: 9999 }}>
       <div className="email-client-container" onClick={e => e.stopPropagation()}>
         <div className="email-client-header">
           <div className="window-controls">
@@ -33,7 +47,7 @@ export default function EmailDemoModal({ email, onClose, onAccept }: EmailDemoMo
             </div>
             <div className="email-meta-row">
               <span className="meta-label">Subject:</span>
-              <span className="meta-value font-semibold">Invitation to join Downtown Clinic on Health Hub</span>
+              <span className="meta-value font-semibold">{subject}</span>
             </div>
           </div>
           
@@ -42,17 +56,17 @@ export default function EmailDemoModal({ email, onClose, onAccept }: EmailDemoMo
               <h2 className="text-primary">HEALTH HUB</h2>
             </div>
             
-            <p>Dear Patient,</p>
-            <p>You have been registered at <strong>Downtown Clinic</strong> by the clinic staff.</p>
-            <p>To access your lab results, appointment schedules, and communicate securely with your doctor, please accept this invitation to set up your patient portal account.</p>
+            <p>{greeting}</p>
+            <p>{body1}</p>
+            <p>{body2}</p>
             
             <div className="email-action-box">
               <button className="btn-email-primary" onClick={onAccept}>
-                Accept Invitation & Setup Account
+                {buttonText}
               </button>
               <p className="email-fallback-text">
                 Or copy and paste this link into your browser:<br/>
-                <a href="#">https://patient.healthhub.com/invite/accept?token=DEMO12345</a>
+                <a href="#">https://app.healthhub.com/invite/accept?token=DEMO12345</a>
               </p>
             </div>
             
@@ -60,7 +74,7 @@ export default function EmailDemoModal({ email, onClose, onAccept }: EmailDemoMo
             
             <p className="email-signoff">
               Best regards,<br/>
-              The Downtown Clinic Team
+              Health Hub Administration
             </p>
           </div>
         </div>

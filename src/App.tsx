@@ -23,6 +23,13 @@ import SystemAnnouncements from './components/SystemAnnouncements';
 import Login from './components/Login';
 import ForgotPassword from './components/ForgotPassword';
 import CreatePassword from './components/CreatePassword';
+import PlatformDashboard from './components/PlatformDashboard';
+import PlatformClinics from './components/PlatformClinics';
+import GlobalUserManagement from './components/GlobalUserManagement';
+import FeatureFlagManagement from './components/FeatureFlagManagement';
+import LISMappingManagement from './components/LISMappingManagement';
+import IntegrationMonitoring from './components/IntegrationMonitoring';
+import './components/PlatformAdmin.css';
 import './App.css';
 
 const MOCK_CLINICS = [
@@ -140,6 +147,15 @@ function App() {
           {activeTab === 'Announcements' && (
             <SystemAnnouncements />
           )}
+
+          {/* Platform Admin Tabs */}
+          {activeTab === 'Platform Dashboard' && <PlatformDashboard />}
+          {activeTab === 'Clinics' && <PlatformClinics />}
+          {activeTab === 'Global Users' && <GlobalUserManagement />}
+          {activeTab === 'Feature Flags' && <FeatureFlagManagement />}
+          {activeTab === 'LIS Mapping' && <LISMappingManagement />}
+          {activeTab === 'Integration Monitoring' && <IntegrationMonitoring />}
+          {activeTab === 'Platform Audit Logs' && <div className="fadeIn"><AuditLogs /></div>}
         </div>
       </main>
 

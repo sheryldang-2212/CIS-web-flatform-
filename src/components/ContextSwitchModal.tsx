@@ -46,23 +46,40 @@ export default function ContextSwitchModal({
           </p>
           
           <div className="context-split-view">
-            {/* Left Side: Clinics */}
+            {/* Left Side: Clinics & Platform */}
             <div className="context-pane">
               <div className="pane-header">
                 <Building2 size={16} />
-                <span>1. Select Clinic</span>
+                <span>1. Select Workspace</span>
               </div>
               <div className="pane-list">
+                {/* Platform Administration Option */}
+                {mockClinics.some(c => c.roles.includes('Platform Admin')) && (
+                  <button
+                    className={`pane-list-item ${selectedClinic?.id === 'platform' ? 'active' : ''}`}
+                    onClick={() => {
+                      setSelectedClinic({ id: 'platform', name: 'Platform Administration', roles: ['Platform Admin'] });
+                      setSelectedRole('Platform Admin');
+                    }}
+                  >
+                    <div className="item-content">
+                      <span className="item-name font-medium">Platform Administration</span>
+                    </div>
+                    {selectedClinic?.id === 'platform' && <Check size={16} className="text-primary check-icon" />}
+                  </button>
+                )}
+                
+                {/* Clinic Options */}
                 {mockClinics.map(clinic => (
                   <button
                     key={clinic.id}
-                    className={`pane-list-item ${selectedClinic.id === clinic.id ? 'active' : ''}`}
+                    className={`pane-list-item ${selectedClinic?.id === clinic.id ? 'active' : ''}`}
                     onClick={() => handleClinicChange(clinic)}
                   >
                     <div className="item-content">
                       <span className="item-name">{clinic.name}</span>
                     </div>
-                    {selectedClinic.id === clinic.id && <Check size={16} className="text-primary check-icon" />}
+                    {selectedClinic?.id === clinic.id && <Check size={16} className="text-primary check-icon" />}
                   </button>
                 ))}
               </div>
