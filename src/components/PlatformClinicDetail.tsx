@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Building2, CheckCircle2, AlertTriangle, XCircle, Clock, ShieldAlert, Check, X, Shield, Users, Settings, Activity, History, MoreVertical, Save, RefreshCw, Edit2 } from 'lucide-react';
+import { ArrowLeft, Building2, CheckCircle2, AlertTriangle, XCircle, Clock, ShieldAlert, X, Users, Settings, Activity, History, MoreVertical, Save, RefreshCw, Edit2 } from 'lucide-react';
+import AssignAdminModal from './AssignAdminModal';
 import './PlatformAdmin.css';
 
 interface PlatformClinicDetailProps {
@@ -18,6 +19,18 @@ export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, o
   const [errorMsg, setErrorMsg] = useState('');
   const [duplicateWarning, setDuplicateWarning] = useState(false);
   const [showCancelMenu, setShowCancelMenu] = useState(false);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [showRemoveConfirm, setShowRemoveConfirm] = useState<string | null>(null);
+  
+  const [admins, setAdmins] = useState<any[]>(
+    clinic.admin && clinic.admin !== 'Not Assigned' ? [
+      { id: '1', name: 'Primary Admin', email: clinic.admin, accountStatus: 'Active', assignmentStatus: 'Assigned', otherRoles: 'None', assignedDate: clinic.created }
+    ] : []
+  );
+
+  const [activities, setActivities] = useState<any[]>([
+    { id: 'a1', title: 'Clinic Created', meta: `By ${clinic.createdBy || 'System Admin'} • ${clinic.created}`, desc: `Initial setup pending for ${clinic.name}.` }
+  ]);
 
   useEffect(() => {
     setEditForm(clinic);
@@ -84,6 +97,82 @@ export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, o
       setIsEditing(false);
       setIsSaving(false);
     }, 800);
+  };
+
+  const handleAssignAdmin = async (data: { email: string; name: string; isNew: boolean }) => {
+    return new Promise<void>((resolve, reject) => {
+      setTimeout(() => {
+        if (data.email === 'concurrent@test.com') {
+          reject(new Error('This user was just assigned by another administrator. Please refresh.'));
+          return;
+        }
+
+        const newAdmin = {
+          id: Date.now().toString(),
+          name: data.name,
+          email: data.email,
+          accountStatus: data.isNew ? 'Invitation Pending' : 'Active',
+          assignmentStatus: 'Assigned',
+          otherRoles: data.isNew ? 'None' : 'Doctor (Other Clinic)',
+          assignedDate: new Date().toISOString().split('T')[0]
+        };
+
+        const updatedAdmins = [...admins, newAdmin];
+        setAdmins(updatedAdmins);
+        
+        // Update counts
+        const activeCount = updatedAdmins.filter(a => a.accountStatus === 'Active' && a.assignmentStatus === 'Assigned').length;
+        const pendingCount = updatedAdmins.filter(a => a.accountStatus === 'Invitation Pending' && a.assignmentStatus === 'Assigned').length;
+        
+        if (onUpdateClinic) {
+          onUpdateClinic({
+            ...clinic,
+            admin: activeCount > 0 ? updatedAdmins.find(a => a.accountStatus === 'Active')?.email : clinic.admin,
+            activeAdmins: activeCount,
+            pendingAdmins: pendingCount
+          });
+        }
+
+        // Add audit log
+        setActivities([{
+          id: `a${Date.now()}`,
+          title: 'Clinic Administrator Assigned',
+          meta: `By Current User • ${new Date().toISOString().split('T')[0]}`,
+          desc: `Assigned ${data.email} as Clinic Admin. ${data.isNew ? `Activation link was sent to ${data.email}.` : ''}`
+        }, ...activities]);
+
+        setShowAssignModal(false);
+        resolve();
+      }, 600);
+    });
+  };
+
+  const handleRemoveAdmin = () => {
+    if (!showRemoveConfirm) return;
+    
+    const updatedAdmins = admins.map(a => a.id === showRemoveConfirm ? { ...a, assignmentStatus: 'Removed' } : a);
+    setAdmins(updatedAdmins);
+    
+    const activeCount = updatedAdmins.filter(a => a.accountStatus === 'Active' && a.assignmentStatus === 'Assigned').length;
+    const pendingCount = updatedAdmins.filter(a => a.accountStatus === 'Invitation Pending' && a.assignmentStatus === 'Assigned').length;
+    
+    if (onUpdateClinic) {
+      onUpdateClinic({
+        ...clinic,
+        admin: activeCount > 0 ? updatedAdmins.find(a => a.accountStatus === 'Active' && a.assignmentStatus === 'Assigned')?.email : 'Not Assigned',
+        activeAdmins: activeCount,
+        pendingAdmins: pendingCount
+      });
+    }
+    
+    setActivities([{
+      id: `a${Date.now()}`,
+      title: 'Clinic Administrator Removed',
+      meta: `By Current User • ${new Date().toISOString().split('T')[0]}`,
+      desc: `Removed administrator access for the user.`
+    }, ...activities]);
+    
+    setShowRemoveConfirm(null);
   };
 
   const renderStatusBadge = (status: string) => {
@@ -383,8 +472,23 @@ export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, o
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
               <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0 }}>Clinic Administrators</h3>
-              <button className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Users size={16} /> Assign Admin</button>
+              <button 
+                className="btn-primary" 
+                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                onClick={() => setShowAssignModal(true)}
+                disabled={clinic.status === 'Cancelled'}
+              >
+                <Users size={16} /> Assign Admin
+              </button>
             </div>
+            {clinic.status === 'Suspended' && (
+              <div style={{ backgroundColor: '#fffbeb', border: '1px solid #fde68a', padding: '12px 16px', borderRadius: '8px', display: 'flex', alignItems: 'flex-start', marginBottom: '16px' }}>
+                <AlertTriangle style={{ color: '#d97706', marginRight: '12px', flexShrink: 0, marginTop: '2px' }} size={16} />
+                <p style={{ color: '#b45309', fontSize: '13px', margin: 0 }}>
+                  This clinic is Suspended. Administrators can be assigned but they will not be able to access the clinic until it is Reactivated.
+                </p>
+              </div>
+            )}
             <div className="table-container">
               <table className="data-table">
                 <thead>
@@ -396,15 +500,27 @@ export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, o
                   </tr>
                 </thead>
                 <tbody>
-                  {clinic.admin !== 'Not Assigned' ? (
-                    <tr>
-                      <td style={{ fontWeight: 500 }}>Primary Admin</td>
-                      <td>{clinic.admin}</td>
-                      <td><span className="status-badge success"><CheckCircle2 size={12} className="mr-1" /> Active</span></td>
-                      <td>
-                        <button style={{ color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 500, fontSize: '13px' }}>Remove</button>
-                      </td>
-                    </tr>
+                  {admins.filter(a => a.assignmentStatus === 'Assigned').length > 0 ? (
+                    admins.filter(a => a.assignmentStatus === 'Assigned').map(admin => (
+                      <tr key={admin.id}>
+                        <td style={{ fontWeight: 500 }}>{admin.name}</td>
+                        <td>{admin.email}</td>
+                        <td>
+                          <span className={`status-badge ${admin.accountStatus === 'Active' ? 'success' : 'warning'}`}>
+                            {admin.accountStatus === 'Active' ? <CheckCircle2 size={12} className="mr-1" /> : <Clock size={12} className="mr-1" />}
+                            {admin.accountStatus}
+                          </span>
+                        </td>
+                        <td>
+                          <button 
+                            style={{ color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 500, fontSize: '13px' }}
+                            onClick={() => setShowRemoveConfirm(admin.id)}
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    ))
                   ) : (
                     <tr>
                       <td colSpan={4} style={{ textAlign: 'center', padding: '32px 0', color: '#64748b' }}>No administrators assigned yet.</td>
@@ -457,15 +573,46 @@ export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, o
         {activeTab === 'Activity History' && (
           <div className="detail-card">
             <h3 style={{ marginBottom: '24px' }}>Audit Log</h3>
-            <div className="timeline-item">
-              <div className="timeline-dot"></div>
-              <div className="timeline-title">Clinic Created</div>
-              <div className="timeline-meta">By System Admin • {clinic.created}</div>
-              <div className="timeline-desc">Initial setup pending for {clinic.name}.</div>
+            <div className="timeline" style={{ position: 'relative', paddingLeft: '16px', borderLeft: '2px solid #e2e8f0', marginLeft: '8px' }}>
+              {activities.map((act, i) => (
+                <div key={act.id} className="timeline-item" style={{ position: 'relative', marginBottom: i === activities.length - 1 ? 0 : '24px' }}>
+                  <div className="timeline-dot" style={{ position: 'absolute', width: '12px', height: '12px', backgroundColor: '#4f46e5', borderRadius: '50%', left: '-23px', top: '4px', border: '2px solid #fff' }}></div>
+                  <div className="timeline-title" style={{ fontWeight: 700, fontSize: '14px', color: '#111827' }}>{act.title}</div>
+                  <div className="timeline-meta" style={{ fontSize: '12px', color: '#64748b', margin: '4px 0' }}>{act.meta}</div>
+                  <div className="timeline-desc" style={{ fontSize: '13px', color: '#475569' }}>{act.desc}</div>
+                </div>
+              ))}
             </div>
           </div>
         )}
       </div>
+      
+      {showAssignModal && (
+        <AssignAdminModal 
+          clinicName={clinic.name} 
+          onClose={() => setShowAssignModal(false)} 
+          onAssign={handleAssignAdmin} 
+        />
+      )}
+
+      {showRemoveConfirm && (
+        <div className="modal-overlay" onClick={() => setShowRemoveConfirm(null)} style={{ zIndex: 1000 }}>
+          <div className="modal-content !max-w-sm" onClick={e => e.stopPropagation()}>
+            <div className="modal-body">
+              <h3 className="text-lg font-bold mb-2">Remove Administrator</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Are you sure you want to remove this administrator? They will immediately lose access to manage this organization.
+              </p>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={() => setShowRemoveConfirm(null)}>Cancel</button>
+              <button className="btn-primary" style={{ backgroundColor: '#dc2626', borderColor: '#dc2626' }} onClick={handleRemoveAdmin}>
+                Yes, Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {showUnsavedModal && (
         <div className="modal-overlay" onClick={() => setShowUnsavedModal(false)} style={{ zIndex: 1000 }}>
           <div className="modal-content !max-w-md" onClick={e => e.stopPropagation()}>

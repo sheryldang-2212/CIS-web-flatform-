@@ -10,7 +10,7 @@ const MOCK_GLOBAL_USERS = [
 ];
 
 export default function GlobalUserManagement() {
-  const [users, setUsers] = useState(MOCK_GLOBAL_USERS);
+  const [users] = useState(MOCK_GLOBAL_USERS);
   const [searchTerm, setSearchTerm] = useState('');
   
   const filteredUsers = users.filter(u => 

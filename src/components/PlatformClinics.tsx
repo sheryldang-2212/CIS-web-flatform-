@@ -49,8 +49,6 @@ export default function PlatformClinics() {
   };
 
   const checkDuplicates = () => {
-    const email = newClinic.contactEmail.trim().toLowerCase();
-    const phone = newClinic.contactPhone.trim();
     const name = newClinic.name.trim().toLowerCase();
     
     // Check against existing clinics
