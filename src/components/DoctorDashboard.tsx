@@ -1,146 +1,187 @@
 import { useState } from 'react';
-import { CheckCircle, FileText, AlertTriangle, FileSearch, Calendar, Users, ClipboardList } from 'lucide-react';
-import LabOrderFormModal from './LabOrderFormModal';
-import PatientFormModal from './PatientFormModal';
+import { ArrowRight, AlertCircle, Clock, CheckCircle2, ChevronRight, FileText, FileWarning } from 'lucide-react';
 import './DoctorDashboard.css';
-import './Dashboard.css';
 
 interface DoctorDashboardProps {
   setActiveTab: (tab: string) => void;
 }
 
 export default function DoctorDashboard({ setActiveTab }: DoctorDashboardProps) {
-  const todayStr = new Date().toISOString().split('T')[0];
-  const [doctorDateRange, setDoctorDateRange] = useState({ start: todayStr, end: todayStr });
-  const [isLabOrderModalOpen, setIsLabOrderModalOpen] = useState(false);
-  const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
+  const [filter, setFilter] = useState('All');
+  
   return (
-    <div className="doctor-dashboard">
-      <div className="dd-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+    <div className="doc-dash-container">
+      {/* Header */}
+      <div className="doc-dash-header">
         <div>
-          <h1 style={{ margin: 0 }}>Doctor Dashboard</h1>
-          <p style={{ margin: '4px 0 0 0', color: 'var(--text-muted)' }}>Review lab results and manage patient care</p>
+          <h1 className="doc-dash-title">Doctor Dashboard</h1>
+          <p className="doc-dash-subtitle">Review results requiring your attention</p>
         </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'white', padding: '8px 16px', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
-          <Calendar size={16} className="text-muted" />
-          <span style={{ fontSize: '13px', color: '#64748b', fontWeight: 500, marginRight: '4px' }}>Date range:</span>
-          <input 
-            type="date" 
-            value={doctorDateRange.start}
-            onChange={(e) => setDoctorDateRange(prev => ({ ...prev, start: e.target.value }))}
-            style={{ border: 'none', outline: 'none', fontSize: '13px', color: '#334155', background: 'transparent' }}
-          />
-          <span style={{ color: '#94a3b8' }}>-</span>
-          <input 
-            type="date" 
-            value={doctorDateRange.end}
-            onChange={(e) => setDoctorDateRange(prev => ({ ...prev, end: e.target.value }))}
-            style={{ border: 'none', outline: 'none', fontSize: '13px', color: '#334155', background: 'transparent' }}
-          />
+        <div className="doc-dash-date">
+          <span className="date-label">Date:</span> 20 Aug 2026
         </div>
       </div>
 
-      <div className="rec-action-cards" style={{ marginBottom: '24px' }}>
-        <div className="rec-action-card">
-          <div className="rec-action-content">
-            <div className="rec-action-icon-wrapper">
-              <Users size={24} className="text-yellow" />
-            </div>
-            <div className="rec-action-text">
-              <h3>View Patients</h3>
-              <p>Access patient records and history</p>
-            </div>
+      {/* Stats Row */}
+      <div className="doc-stats-grid">
+        <div className="doc-stat-card">
+          <div className="doc-stat-info">
+            <span className="doc-stat-label">Pending My<br/>Review</span>
+            <span className="doc-stat-value">10</span>
           </div>
-          <button className="btn-rec-action" onClick={() => setActiveTab('Patients')}>
-            View Patients List
-          </button>
+          <div className="doc-stat-icon pending"><Clock size={24}/></div>
         </div>
-
-        <div className="rec-action-card">
-          <div className="rec-action-content">
-            <div className="rec-action-icon-wrapper" style={{ background: '#e0f2fe' }}>
-              <ClipboardList size={24} style={{ color: '#0284c7' }} />
-            </div>
-            <div className="rec-action-text">
-              <h3>Review Lab Results</h3>
-              <p>Check pending results and reports</p>
-            </div>
+        <div className="doc-stat-card">
+          <div className="doc-stat-info">
+            <span className="doc-stat-label">Confidential<br/>Test</span>
+            <span className="doc-stat-value text-danger">2</span>
           </div>
-          <button className="btn-rec-action" style={{ background: '#0284c7' }} onClick={() => setActiveTab('Lab Results')}>
-            View Lab Results
-          </button>
+          <div className="doc-stat-icon critical"><AlertCircle size={24}/></div>
+        </div>
+        <div className="doc-stat-card">
+          <div className="doc-stat-info">
+            <span className="doc-stat-label">Urgent<br/>Unreviewed</span>
+            <span className="doc-stat-value text-warning">3</span>
+          </div>
+          <div className="doc-stat-icon urgent"><FileWarning size={24}/></div>
+        </div>
+        <div className="doc-stat-card">
+          <div className="doc-stat-info">
+            <span className="doc-stat-label">Reviewed<br/>Today</span>
+            <span className="doc-stat-value text-success">8</span>
+          </div>
+          <div className="doc-stat-icon success"><CheckCircle2 size={24}/></div>
         </div>
       </div>
 
-      <div className="dd-kpis">
-        <div className="dd-kpi-card">
-          <div className="dd-kpi-header">
-            <span>Pending Review</span>
-            <FileText size={16} className="dd-kpi-icon" />
+
+
+      <div className="doc-dash-main">
+        <div className="doc-dash-col-left">
+          {/* My Review Queue */}
+          <div className="doc-widget">
+            <div className="doc-widget-header border-none pb-0">
+              <h2 className="doc-widget-title">MY REVIEW QUEUE</h2>
+            </div>
+            
+            <div className="doc-queue-filters">
+              {['All', 'Urgent', 'Normal'].map(f => (
+                <button 
+                  key={f} 
+                  className={`doc-filter-btn ${filter === f ? 'active' : ''}`}
+                  onClick={() => setFilter(f)}
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
+
+            <div className="doc-table-container">
+              <table className="doc-queue-table">
+                <thead>
+                  <tr>
+                    <th>Patient</th>
+                    <th>Key finding</th>
+                    <th>Result flag</th>
+                    <th className="text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="font-medium">Emily J.</td>
+                    <td>Potassium 6.7</td>
+                    <td><span className="badge badge-critical">Critical</span></td>
+                    <td className="text-right">
+                      <button className="doc-btn-action" onClick={() => setActiveTab('Lab Results')}>Review Now</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="font-medium">David W.</td>
+                    <td>LDL 190</td>
+                    <td><span className="badge badge-abnormal">Abnormal</span></td>
+                    <td className="text-right">
+                      <button className="doc-btn-action" onClick={() => setActiveTab('Lab Results')}>Review Now</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="font-medium">Sarah P.</td>
+                    <td>CBC</td>
+                    <td><span className="badge badge-normal">Normal</span></td>
+                    <td className="text-right">
+                      <button className="doc-btn-action" onClick={() => setActiveTab('Lab Results')}>Review Now</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="doc-widget-footer">
+              <button className="doc-btn-link" onClick={() => setActiveTab('Lab Results')}>
+                View Full Review Queue <ArrowRight size={16}/>
+              </button>
+            </div>
           </div>
-          <div className="dd-kpi-value warning">0</div>
-          <div className="dd-kpi-desc">Results awaiting review</div>
         </div>
 
-        <div className="dd-kpi-card">
-          <div className="dd-kpi-header">
-            <span>Reviewed Today</span>
-            <CheckCircle size={16} className="dd-kpi-icon" />
+        <div className="doc-dash-col-right">
+          {/* ATTENTION REQUIRED */}
+          <div className="doc-widget">
+            <div className="doc-widget-header">
+              <h2 className="doc-widget-title">ATTENTION REQUIRED</h2>
+            </div>
+            <div className="doc-attention-list">
+              <div className="doc-attention-item">
+                <div className="doc-att-type">
+                  <span className="status-dot critical"></span> Critical Result
+                </div>
+                <div className="doc-att-details">
+                  <span className="patient-name">Emily Johnson</span> &bull; Potassium 6.7
+                </div>
+                <button className="doc-btn-review" onClick={() => setActiveTab('Lab Results')}>Review Now</button>
+              </div>
+              <div className="doc-attention-item">
+                <div className="doc-att-type">
+                  <span className="status-dot urgent"></span> Urgent Order
+                </div>
+                <div className="doc-att-details">
+                  <span className="patient-name">David Wilson</span> &bull; Cardiac Panel
+                </div>
+                <button className="doc-btn-review" onClick={() => setActiveTab('Lab Results')}>Review Now</button>
+              </div>
+            </div>
           </div>
-          <div className="dd-kpi-value success">0</div>
-          <div className="dd-kpi-desc">Results reviewed today</div>
-        </div>
 
-        <div className="dd-kpi-card">
-          <div className="dd-kpi-header">
-            <span>Critical Results</span>
-            <AlertTriangle size={16} className="dd-kpi-icon" />
+          {/* Recent Activity */}
+          <div className="doc-widget">
+            <div className="doc-widget-header">
+              <h2 className="doc-widget-title">RECENT ACTIVITY</h2>
+            </div>
+            <div className="doc-activity-list">
+              <div className="doc-activity-item">
+                <div className="doc-activity-icon success"><CheckCircle2 size={16}/></div>
+                <div className="doc-activity-content">
+                  <div className="doc-activity-text">Approved result &bull; <strong>Emily Johnson</strong></div>
+                  <div className="doc-activity-time">10:30 AM</div>
+                </div>
+              </div>
+              <div className="doc-activity-item">
+                <div className="doc-activity-icon warning"><FileText size={16}/></div>
+                <div className="doc-activity-content">
+                  <div className="doc-activity-text">Returned result to LIS &bull; <strong>David Wilson</strong></div>
+                  <div className="doc-activity-time">09:45 AM</div>
+                </div>
+              </div>
+              <div className="doc-activity-item">
+                <div className="doc-activity-icon success"><CheckCircle2 size={16}/></div>
+                <div className="doc-activity-content">
+                  <div className="doc-activity-text">Approved result &bull; <strong>Sarah Parker</strong></div>
+                  <div className="doc-activity-time">09:15 AM</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="dd-kpi-value danger">0</div>
-          <div className="dd-kpi-desc">Need attention</div>
-        </div>
-
-        <div className="dd-kpi-card">
-          <div className="dd-kpi-header">
-            <span>Total Completed</span>
-            <FileSearch size={16} className="dd-kpi-icon" />
-          </div>
-          <div className="dd-kpi-value">0</div>
-          <div className="dd-kpi-desc">All completed results</div>
         </div>
       </div>
-
-      <div className="dd-section">
-        <h2 className="dd-section-title">
-          <FileText size={18} /> Lab Results to Review
-        </h2>
-        <p className="dd-section-subtitle">Recent results requiring your attention</p>
-        
-        <div className="dd-empty-state">
-          No results to review
-        </div>
-
-        <button className="dd-view-all" onClick={() => setActiveTab('Lab Results')}>
-          <FileSearch size={16} /> View All Results
-        </button>
-      </div>
-
-      <PatientFormModal 
-        isOpen={isPatientModalOpen}
-        onClose={() => setIsPatientModalOpen(false)}
-        mode="create"
-      />
-      
-      <LabOrderFormModal 
-        isOpen={isLabOrderModalOpen} 
-        onClose={() => setIsLabOrderModalOpen(false)} 
-        mode="create" 
-        onRegisterPatient={() => {
-          setIsLabOrderModalOpen(false);
-          setIsPatientModalOpen(true);
-        }}
-        onPrintLabels={() => {}}
-      />
     </div>
   );
 }

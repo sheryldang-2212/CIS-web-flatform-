@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Search, Shield, AlertTriangle, CheckCircle2, UserPlus } from 'lucide-react';
+import { X, Search, Shield, AlertTriangle, CheckCircle2, UserPlus, Clock } from 'lucide-react';
 import './PlatformAdmin.css';
 
 interface AssignAdminModalProps {
@@ -117,14 +117,16 @@ export default function AssignAdminModal({ clinicName, onClose, onAssign }: Assi
             </div>
           )}
 
-          {step === 'confirm' && accountInfo && (
+          {step === 'confirm' && (
             <div>
               <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', padding: '16px', borderRadius: '8px', marginBottom: '24px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                 <CheckCircle2 size={20} style={{ color: '#16a34a', marginTop: '2px' }} />
                 <div>
-                  <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#15803d' }}>Account Found</h4>
+                  <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#15803d' }}>
+                    {accountInfo ? 'Account Found' : 'New Account Details'}
+                  </h4>
                   <p style={{ margin: 0, fontSize: '13px', color: '#166534' }}>
-                    Review the user's details before confirming the assignment.
+                    Review the user's details before confirming the assignment. {!accountInfo && "An invitation will be sent to this email."}
                   </p>
                 </div>
               </div>
@@ -132,22 +134,30 @@ export default function AssignAdminModal({ clinicName, onClose, onAssign }: Assi
               <div className="detail-list" style={{ backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px', marginBottom: '24px' }}>
                 <div className="detail-list-item">
                   <span className="detail-label">User Name</span>
-                  <span className="detail-value font-medium">{accountInfo.name}</span>
+                  <span className="detail-value font-medium">{accountInfo ? accountInfo.name : name}</span>
                 </div>
                 <div className="detail-list-item">
                   <span className="detail-label">Email</span>
-                  <span className="detail-value">{accountInfo.email}</span>
+                  <span className="detail-value">{accountInfo ? accountInfo.email : email}</span>
                 </div>
                 <div className="detail-list-item">
                   <span className="detail-label">Account Status</span>
                   <span className="detail-value">
-                    <span className="status-badge success"><CheckCircle2 size={12} className="mr-1" /> {accountInfo.status}</span>
+                    {accountInfo ? (
+                      <span className="status-badge success"><CheckCircle2 size={12} className="mr-1" /> {accountInfo.status}</span>
+                    ) : (
+                      <span className="status-badge warning" style={{ backgroundColor: '#fef3c7', color: '#d97706', padding: '2px 8px', borderRadius: '12px', display: 'inline-flex', alignItems: 'center', fontSize: '12px', fontWeight: 500 }}>
+                        <Clock size={12} className="mr-1" /> Invitation Pending
+                      </span>
+                    )}
                   </span>
                 </div>
-                <div className="detail-list-item">
-                  <span className="detail-label">Existing Roles</span>
-                  <span className="detail-value text-gray-500">{accountInfo.roles}</span>
-                </div>
+                {accountInfo && (
+                  <div className="detail-list-item">
+                    <span className="detail-label">Existing Roles</span>
+                    <span className="detail-value text-gray-500">{accountInfo.roles}</span>
+                  </div>
+                )}
               </div>
 
               <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '16px' }}>

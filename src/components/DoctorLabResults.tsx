@@ -6,6 +6,7 @@ import './DoctorLabResults.css';
 
 export default function DoctorLabResults() {
   const [selectAll, setSelectAll] = useState(false);
+  const [autoApprove, setAutoApprove] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [viewingResult, setViewingResult] = useState<any>(null);
   const [approvingResult, setApprovingResult] = useState<any>(null);
@@ -264,9 +265,19 @@ export default function DoctorLabResults() {
             />
             <span className="bulk-text">Select results to bulk approve <strong>(10 approvable)</strong></span>
           </label>
-          <button className="btn-primary bulk-btn" disabled={!selectAll} style={{ opacity: selectAll ? 1 : 0.5 }}>
-            <CheckCircle size={16} style={{ marginRight: '6px' }} /> Approve Selected
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+              <span style={{ fontSize: '13px', fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.02em' }}>Auto-Approve Normal</span>
+              <div className="toggle-switch">
+                <input type="checkbox" checked={autoApprove} onChange={() => setAutoApprove(!autoApprove)} />
+                <span className="slider"></span>
+              </div>
+            </label>
+            <div style={{ width: '1px', height: '24px', backgroundColor: '#cbd5e1' }}></div>
+            <button className="btn-primary bulk-btn" disabled={!selectAll} style={{ opacity: selectAll ? 1 : 0.5 }}>
+              <CheckCircle size={16} style={{ marginRight: '6px' }} /> Approve Selected
+            </button>
+          </div>
         </div>
 
         <div className="modern-table-container" style={{ marginTop: '20px' }}>

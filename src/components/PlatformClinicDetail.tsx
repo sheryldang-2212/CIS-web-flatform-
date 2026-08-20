@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Building2, CheckCircle2, AlertTriangle, XCircle, Clock, ShieldAlert, X, Users, Settings, Activity, History, MoreVertical, Save, RefreshCw, Edit2 } from 'lucide-react';
+import { ArrowLeft, Building2, CheckCircle2, AlertTriangle, XCircle, Clock, ShieldAlert, X, Users, Activity, History, MoreVertical, Save, RefreshCw, Edit2 } from 'lucide-react';
 import AssignAdminModal from './AssignAdminModal';
 import './PlatformAdmin.css';
 
@@ -317,9 +317,6 @@ export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, o
       <div className="detail-tabs">
         {[
           { id: 'Overview', icon: Building2 },
-          { id: 'Administrators', icon: Users },
-          { id: 'Configuration', icon: Settings },
-          { id: 'LIS Integration', icon: Activity },
           { id: 'Activity History', icon: History }
         ].map(tab => (
           <button
@@ -365,7 +362,12 @@ export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, o
             {!isEditing ? (
               <div className="detail-grid" style={{ gridTemplateColumns: '1fr', gap: '24px' }}>
                 <div className="detail-card">
-                  <h3>Basic Information</h3>
+                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ padding: '6px', backgroundColor: '#eff6ff', borderRadius: '6px', color: '#3b82f6' }}>
+                      <Building2 size={18} />
+                    </div>
+                    Basic Information
+                  </h3>
                   <div className="detail-list" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                     <div className="detail-list-item"><span className="detail-label">Clinic Code</span><span className="detail-value">{clinic.code}</span></div>
                     <div className="detail-list-item"><span className="detail-label">Organization Type</span><span className="detail-value">{clinic.type || 'Clinic'}</span></div>
@@ -380,7 +382,12 @@ export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, o
 
                 <div className="detail-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                   <div className="detail-card">
-                    <h3>Lifecycle Information</h3>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ padding: '6px', backgroundColor: '#f0fdf4', borderRadius: '6px', color: '#16a34a' }}>
+                        <Activity size={18} />
+                      </div>
+                      Lifecycle Information
+                    </h3>
                     <div className="detail-list">
                       <div className="detail-list-item"><span className="detail-label">Clinic Status</span><div style={{ marginTop: '4px' }}>{renderStatusBadge(clinic.status)}</div></div>
                       <div className="detail-list-item"><span className="detail-label">Created Date / By</span><span className="detail-value">{clinic.created} • {clinic.createdBy || 'System Admin'}</span></div>
@@ -391,11 +398,25 @@ export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, o
                   </div>
 
                   <div className="detail-card">
-                    <h3>Administration Summary</h3>
-                    <div className="detail-list">
-                      <div className="detail-list-item"><span className="detail-label">Total Clinic Administrators</span><span className="detail-value font-bold" style={{ fontSize: '18px' }}>{(clinic.activeAdmins || 0) + (clinic.pendingAdmins || 0)}</span></div>
-                      <div className="detail-list-item"><span className="detail-label">Active Administrator Count</span><span className="detail-value" style={{ color: '#16a34a', fontWeight: 600 }}>{clinic.activeAdmins || 0}</span></div>
-                      <div className="detail-list-item"><span className="detail-label">Pending Invitation Count</span><span className="detail-value" style={{ color: '#d97706', fontWeight: 600 }}>{clinic.pendingAdmins || 0}</span></div>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ padding: '6px', backgroundColor: '#fdf4ff', borderRadius: '6px', color: '#d946ef' }}>
+                        <Users size={18} />
+                      </div>
+                      Administration Summary
+                    </h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginTop: '8px' }}>
+                      <div style={{ backgroundColor: '#f8fafc', padding: '16px', borderRadius: '12px', display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Total Admins</span>
+                        <span style={{ fontSize: '28px', fontWeight: 800, color: '#334155', marginTop: '4px' }}>{(clinic.activeAdmins || 0) + (clinic.pendingAdmins || 0)}</span>
+                      </div>
+                      <div style={{ backgroundColor: '#f0fdf4', padding: '16px', borderRadius: '12px', display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '11px', color: '#166534', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Active</span>
+                        <span style={{ fontSize: '28px', fontWeight: 800, color: '#16a34a', marginTop: '4px' }}>{clinic.activeAdmins || 0}</span>
+                      </div>
+                      <div style={{ backgroundColor: '#fffbeb', padding: '16px', borderRadius: '12px', display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '11px', color: '#b45309', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Pending</span>
+                        <span style={{ fontSize: '28px', fontWeight: 800, color: '#d97706', marginTop: '4px' }}>{clinic.pendingAdmins || 0}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -465,109 +486,79 @@ export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, o
             )}
             
             {clinic.status === 'Setup Pending' && !isEditing && renderChecklist()}
-          </>
-        )}
 
-        {activeTab === 'Administrators' && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0 }}>Clinic Administrators</h3>
-              <button 
-                className="btn-primary" 
-                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-                onClick={() => setShowAssignModal(true)}
-                disabled={clinic.status === 'Cancelled'}
-              >
-                <Users size={16} /> Assign Admin
-              </button>
-            </div>
-            {clinic.status === 'Suspended' && (
-              <div style={{ backgroundColor: '#fffbeb', border: '1px solid #fde68a', padding: '12px 16px', borderRadius: '8px', display: 'flex', alignItems: 'flex-start', marginBottom: '16px' }}>
-                <AlertTriangle style={{ color: '#d97706', marginRight: '12px', flexShrink: 0, marginTop: '2px' }} size={16} />
-                <p style={{ color: '#b45309', fontSize: '13px', margin: 0 }}>
-                  This clinic is Suspended. Administrators can be assigned but they will not be able to access the clinic until it is Reactivated.
+            {!isEditing && (
+              <div className="detail-card" style={{ marginTop: '24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                  <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ padding: '6px', backgroundColor: '#fef2f2', borderRadius: '6px', color: '#ef4444' }}>
+                      <ShieldAlert size={18} />
+                    </div>
+                    Clinic Administrators
+                  </h3>
+                  <button 
+                    className="btn-primary" 
+                    style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                    onClick={() => setShowAssignModal(true)}
+                    disabled={clinic.status === 'Cancelled'}
+                  >
+                    <Users size={16} /> Assign Admin
+                  </button>
+                </div>
+                {clinic.status === 'Suspended' && (
+                  <div style={{ backgroundColor: '#fffbeb', border: '1px solid #fde68a', padding: '12px 16px', borderRadius: '8px', display: 'flex', alignItems: 'flex-start', marginBottom: '16px' }}>
+                    <AlertTriangle style={{ color: '#d97706', marginRight: '12px', flexShrink: 0, marginTop: '2px' }} size={16} />
+                    <p style={{ color: '#b45309', fontSize: '13px', margin: 0 }}>
+                      This clinic is Suspended. Administrators can be assigned but they will not be able to access the clinic until it is Reactivated.
+                    </p>
+                  </div>
+                )}
+                <div className="table-container">
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Admin Name</th>
+                        <th>Email Address</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {admins.filter(a => a.assignmentStatus === 'Assigned').length > 0 ? (
+                        admins.filter(a => a.assignmentStatus === 'Assigned').map(admin => (
+                          <tr key={admin.id}>
+                            <td style={{ fontWeight: 500 }}>{admin.name}</td>
+                            <td>{admin.email}</td>
+                            <td>
+                              <span className={`status-badge ${admin.accountStatus === 'Active' ? 'success' : 'warning'}`}>
+                                {admin.accountStatus === 'Active' ? <CheckCircle2 size={12} className="mr-1" /> : <Clock size={12} className="mr-1" />}
+                                {admin.accountStatus}
+                              </span>
+                            </td>
+                            <td>
+                              <button 
+                                style={{ color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 500, fontSize: '13px' }}
+                                onClick={() => setShowRemoveConfirm(admin.id)}
+                              >
+                                Remove
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={4} style={{ textAlign: 'center', padding: '32px 0', color: '#64748b' }}>No administrators assigned yet.</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                <p style={{ fontSize: '12px', color: '#64748b', marginTop: '16px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <ShieldAlert size={12} /> A clinic must have at least one active administrator to be activated.
                 </p>
               </div>
             )}
-            <div className="table-container">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Admin Name</th>
-                    <th>Email Address</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {admins.filter(a => a.assignmentStatus === 'Assigned').length > 0 ? (
-                    admins.filter(a => a.assignmentStatus === 'Assigned').map(admin => (
-                      <tr key={admin.id}>
-                        <td style={{ fontWeight: 500 }}>{admin.name}</td>
-                        <td>{admin.email}</td>
-                        <td>
-                          <span className={`status-badge ${admin.accountStatus === 'Active' ? 'success' : 'warning'}`}>
-                            {admin.accountStatus === 'Active' ? <CheckCircle2 size={12} className="mr-1" /> : <Clock size={12} className="mr-1" />}
-                            {admin.accountStatus}
-                          </span>
-                        </td>
-                        <td>
-                          <button 
-                            style={{ color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 500, fontSize: '13px' }}
-                            onClick={() => setShowRemoveConfirm(admin.id)}
-                          >
-                            Remove
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={4} style={{ textAlign: 'center', padding: '32px 0', color: '#64748b' }}>No administrators assigned yet.</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-            <p style={{ fontSize: '12px', color: '#64748b', marginTop: '16px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <ShieldAlert size={12} /> A clinic must have at least one active administrator to be activated.
-            </p>
-          </div>
-        )}
-
-        {activeTab === 'Configuration' && (
-          <div className="detail-card">
-            <h3 style={{ marginBottom: '24px' }}>Localization & Setup</h3>
-            <div className="detail-grid">
-              <div className="form-group mb-0">
-                <label className="form-label">Timezone</label>
-                <select className="form-input" style={{ backgroundColor: '#f8fafc', cursor: 'not-allowed' }} disabled>
-                  <option>Asia/Ho_Chi_Minh (UTC+7)</option>
-                </select>
-                <p style={{ fontSize: '12px', color: '#d97706', marginTop: '8px', margin: 0 }}>Changing timezone affects all historical audit logs and reports.</p>
-              </div>
-              <div className="form-group mb-0">
-                <label className="form-label">Language</label>
-                <select className="form-input" style={{ backgroundColor: '#f8fafc', cursor: 'not-allowed' }} disabled>
-                  <option>English</option>
-                  <option>Vietnamese</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'LIS Integration' && (
-          <div className="detail-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '64px 24px' }}>
-            <div style={{ width: '64px', height: '64px', backgroundColor: '#f1f5f9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px', color: '#94a3b8' }}>
-              <Activity size={32} />
-            </div>
-            <h3 style={{ fontSize: '18px', margin: '0 0 8px 0' }}>LIS Not Configured</h3>
-            <p style={{ fontSize: '14px', color: '#64748b', textAlign: 'center', maxWidth: '400px', margin: '0 0 24px 0' }}>
-              This clinic has not been connected to a Laboratory Information System. They will not be able to process automated lab orders.
-            </p>
-            <button className="btn-primary">Configure LIS Integration</button>
-          </div>
+          </>
         )}
 
         {activeTab === 'Activity History' && (
