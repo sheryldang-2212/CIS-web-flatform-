@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, AlertCircle, Clock, CheckCircle2, ChevronRight, FileText, FileWarning } from 'lucide-react';
+import { ArrowRight, AlertCircle, Clock, CheckCircle2, FileText, FileWarning } from 'lucide-react';
 import './DoctorDashboard.css';
 
 interface DoctorDashboardProps {

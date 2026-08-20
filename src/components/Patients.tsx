@@ -106,7 +106,7 @@ export default function Patients({ isDoctor = false }: PatientsProps) {
     setActiveDropdown(null);
   };
 
-  const filteredPatients: Patient[] = patientsList.filter(patient => {
+  const filteredPatients: Patient[] = patientsList.filter((patient: Patient) => {
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       const matchName = patient.name.toLowerCase().includes(q);
