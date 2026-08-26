@@ -26,10 +26,11 @@ import CreatePassword from './components/CreatePassword';
 import PlatformDashboard from './components/PlatformDashboard';
 import PlatformClinics from './components/PlatformClinics';
 import GlobalUserManagement from './components/GlobalUserManagement';
-import FeatureFlagManagement from './components/FeatureFlagManagement';
-import LISMappingManagement from './components/LISMappingManagement';
 import IntegrationMonitoring from './components/IntegrationMonitoring';
-import './components/PlatformAdmin.css';
+import PatientIdentitySupport from './components/PatientIdentitySupport';
+import BulkPatientUpload from './components/BulkPatientUpload';
+import PlatformSettings from './components/PlatformSettings';
+import './components/PlatformPremium.css';
 import './App.css';
 
 const MOCK_CLINICS = [
@@ -149,11 +150,18 @@ function App() {
           )}
 
           {/* Platform Admin Tabs */}
-          {activeTab === 'Platform Dashboard' && <PlatformDashboard />}
+          {activeTab === 'Platform Dashboard' && <PlatformDashboard setActiveTab={setActiveTab} />}
           {activeTab === 'Clinics' && <PlatformClinics />}
           {activeTab === 'Global Users' && <GlobalUserManagement />}
-          {activeTab === 'Feature Flags' && <FeatureFlagManagement />}
-          {activeTab === 'LIS Mapping' && <LISMappingManagement />}
+          {activeTab === 'Patient Identity Support' && <PatientIdentitySupport />}
+          {activeTab === 'Bulk Patient Upload' && <BulkPatientUpload />}
+          {activeTab === 'Platform Settings' && <PlatformSettings />}
+          {activeTab === 'Laboratory Configuration' && (
+            <div className="fadeIn">
+              <LaboratoryOperations />
+            </div>
+          )}
+          {activeTab === 'Operational Reports' && <ReportsAnalytics />}
           {activeTab === 'Integration Monitoring' && <IntegrationMonitoring />}
           {activeTab === 'Platform Audit Logs' && <div className="fadeIn"><AuditLogs /></div>}
         </div>

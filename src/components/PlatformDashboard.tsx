@@ -1,138 +1,166 @@
-import { Building2, Users, AlertTriangle, ShieldAlert, Activity, BellRing, ChevronRight } from 'lucide-react';
-import './Dashboard.css'; // Reuse Dashboard styles for consistency
+import { RefreshCw, Building2, ShieldCheck, Settings, PauseCircle, AlertTriangle, Info, ChevronRight } from 'lucide-react';
+import './Dashboard.css';
 
-export default function PlatformDashboard() {
+interface PlatformDashboardProps {
+  setActiveTab?: (tab: string) => void;
+}
+
+export default function PlatformDashboard({}: PlatformDashboardProps) {
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-header">
+    <div className="admin-dashboard-container" style={{ padding: '24px', backgroundColor: '#f8fafc', height: '100%', overflowY: 'auto' }}>
+      <div className="admin-dashboard-header">
         <div>
-          <h1 className="text-2xl font-bold">Platform Overview</h1>
-          <p className="text-muted">High-level operational metrics across all clinics.</p>
+          <h1 className="page-title" style={{ marginBottom: '8px', fontSize: '24px', color: '#0f172a' }}>Platform Overview</h1>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
+          <button style={{ 
+            display: 'flex', alignItems: 'center', gap: '6px', 
+            padding: '6px 12px', background: 'white', 
+            border: '1px solid #e2e8f0', borderRadius: '6px', 
+            fontSize: '13px', fontWeight: 500, cursor: 'pointer', color: '#475569'
+          }}>
+            <RefreshCw size={14} /> Refresh
+          </button>
+          <span style={{ fontSize: '12px', color: '#64748b' }}>Last updated: 24 Aug 2026, 08:45</span>
         </div>
       </div>
 
-      <div className="summary-cards" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
-        <div className="summary-card">
-          <div className="card-icon-wrapper" style={{ backgroundColor: '#eef2ff', color: '#4f46e5' }}>
-            <Building2 size={24} />
+      <div className="admin-metrics-grid" style={{ marginBottom: '24px' }}>
+        {/* Total Clinics */}
+        <div className="admin-metric-card" style={{ display: 'flex', flexDirection: 'column', padding: '20px', gap: '16px', alignItems: 'stretch' }}>
+          <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>Total Clinics</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%' }}>
+            <div style={{ fontSize: '36px', fontWeight: 700, color: '#0f172a', lineHeight: 1 }}>12</div>
+            <div style={{ color: '#94a3b8' }}>
+              <Building2 size={24} strokeWidth={1.5} />
+            </div>
           </div>
-          <div className="card-content">
-            <h3 className="card-label">Total Clinics</h3>
-            <div className="card-value">12</div>
-            <div className="text-xs text-green-600 font-medium mt-1">10 Active · 2 Suspended</div>
-          </div>
+          <div style={{ fontSize: '13px', color: '#64748b' }}>All registered clinics</div>
         </div>
-        
-        <div className="summary-card">
-          <div className="card-icon-wrapper" style={{ backgroundColor: '#f0fdf4', color: '#16a34a' }}>
-            <Users size={24} />
+
+        {/* Active */}
+        <div className="admin-metric-card" style={{ display: 'flex', flexDirection: 'column', padding: '20px', gap: '16px', alignItems: 'stretch' }}>
+          <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>Active</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%' }}>
+            <div style={{ fontSize: '36px', fontWeight: 700, color: '#16a34a', lineHeight: 1 }}>8</div>
+            <div style={{ color: '#16a34a' }}>
+              <ShieldCheck size={24} strokeWidth={1.5} />
+            </div>
           </div>
-          <div className="card-content">
-            <h3 className="card-label">Total Staff Accounts</h3>
-            <div className="card-value">248</div>
-            <div className="text-xs text-green-600 font-medium mt-1">240 Active · 8 Suspended</div>
-          </div>
+          <div style={{ fontSize: '13px', color: '#64748b' }}>Clinics online</div>
         </div>
-        
-        <div className="summary-card">
-          <div className="card-icon-wrapper" style={{ backgroundColor: '#fef2f2', color: '#dc2626' }}>
-            <AlertTriangle size={24} />
+
+        {/* In Setup */}
+        <div className="admin-metric-card" style={{ display: 'flex', flexDirection: 'column', padding: '20px', gap: '16px', alignItems: 'stretch' }}>
+          <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>In Setup</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%' }}>
+            <div style={{ fontSize: '36px', fontWeight: 700, color: '#0f172a', lineHeight: 1 }}>2</div>
+            <div style={{ color: '#f97316' }}>
+              <Settings size={24} strokeWidth={1.5} />
+            </div>
           </div>
-          <div className="card-content">
-            <h3 className="card-label">LIS Failures</h3>
-            <div className="card-value">14</div>
-            <div className="text-xs text-red-600 font-medium mt-1">Requires Attention</div>
-          </div>
+          <div style={{ fontSize: '13px', color: '#64748b' }}>Setup in progress</div>
         </div>
-        
-        <div className="summary-card">
-          <div className="card-icon-wrapper" style={{ backgroundColor: '#fff7ed', color: '#ea580c' }}>
-            <ShieldAlert size={24} />
+
+        {/* Suspended */}
+        <div className="admin-metric-card" style={{ display: 'flex', flexDirection: 'column', padding: '20px', gap: '16px', alignItems: 'stretch' }}>
+          <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>Suspended</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%' }}>
+            <div style={{ fontSize: '36px', fontWeight: 700, color: '#0f172a', lineHeight: 1 }}>2</div>
+            <div style={{ color: '#94a3b8' }}>
+              <PauseCircle size={24} strokeWidth={1.5} />
+            </div>
           </div>
-          <div className="card-content">
-            <h3 className="card-label">Security Alerts</h3>
-            <div className="card-value">3</div>
-            <div className="text-xs text-red-600 font-medium mt-1">In last 24 hours</div>
-          </div>
+          <div style={{ fontSize: '13px', color: '#64748b' }}>Temporarily suspended</div>
         </div>
       </div>
 
-      <div className="dashboard-grid mt-6">
-        <div className="dashboard-widget">
-          <div className="widget-header">
-            <h2 className="widget-title">Recently Created Clinics</h2>
-            <button className="btn-icon"><ChevronRight size={20}/></button>
+      <div className="tech-dashboard-grid">
+        {/* Clinic Status */}
+        <div className="admin-section-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#0f172a', margin: '0 0 24px 0' }}>Clinic Status</h2>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '48px', marginBottom: '24px', flex: 1 }}>
+            <div style={{ 
+              position: 'relative', width: '160px', height: '160px', borderRadius: '50%', 
+              background: 'conic-gradient(#ef4444 0% 17%, #f97316 17% 34%, #16a34a 34% 100%)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+            }}>
+              <div style={{ 
+                position: 'absolute', top: '16px', left: '16px', right: '16px', bottom: '16px', backgroundColor: 'white', borderRadius: '50%',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
+              }}>
+                <span style={{ fontSize: '28px', fontWeight: 700, color: '#0f172a', lineHeight: 1 }}>12</span>
+                <span style={{ fontSize: '12px', color: '#64748b', marginTop: '4px' }}>Total</span>
+              </div>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', flex: 1 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#16a34a' }}></div>
+                  <span style={{ color: '#334155', fontWeight: 500 }}>Active</span>
+                </div>
+                <span style={{ color: '#64748b' }}>8 (67%)</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#f97316' }}></div>
+                  <span style={{ color: '#334155', fontWeight: 500 }}>In Setup</span>
+                </div>
+                <span style={{ color: '#64748b' }}>2 (17%)</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#ef4444' }}></div>
+                  <span style={{ color: '#334155', fontWeight: 500 }}>Suspended</span>
+                </div>
+                <span style={{ color: '#64748b' }}>2 (17%)</span>
+              </div>
+            </div>
           </div>
-          <div className="widget-body p-0">
-            <ul className="queue-list">
-              <li className="queue-item">
-                <div className="queue-patient-info">
-                  <div className="queue-avatar" style={{ backgroundColor: '#f3f4f6', color: '#4b5563' }}>
-                    <Building2 size={20} />
-                  </div>
-                  <div className="queue-details">
-                    <span className="queue-name">Westside Health Center</span>
-                    <span className="queue-purpose">Active · Setup Complete</span>
-                  </div>
-                </div>
-                <div className="queue-status">
-                  <span className="queue-time">2 days ago</span>
-                </div>
-              </li>
-              <li className="queue-item">
-                <div className="queue-patient-info">
-                  <div className="queue-avatar" style={{ backgroundColor: '#f3f4f6', color: '#4b5563' }}>
-                    <Building2 size={20} />
-                  </div>
-                  <div className="queue-details">
-                    <span className="queue-name">North Park Clinic</span>
-                    <span className="queue-purpose text-warning">Setup Pending LIS Config</span>
-                  </div>
-                </div>
-                <div className="queue-status">
-                  <span className="queue-time">5 days ago</span>
-                </div>
-              </li>
-            </ul>
-          </div>
+          
+          <div style={{ fontSize: '12px', color: '#64748b', marginTop: 'auto' }}>As of 24 Aug 2026</div>
         </div>
 
-        <div className="dashboard-widget">
-          <div className="widget-header">
-            <h2 className="widget-title">System & Integration Status</h2>
-            <button className="btn-icon"><ChevronRight size={20}/></button>
+        {/* Needs Attention */}
+        <div className="admin-section-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#0f172a', margin: '0 0 16px 0' }}>Needs Attention</h2>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 0', borderBottom: '1px solid #f1f5f9' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#ef4444', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 'bold' }}>
+                  9
+                </div>
+                <span style={{ fontSize: '13px', fontWeight: 600, color: '#1e293b' }}>No Active Admin</span>
+              </div>
+              <span style={{ fontSize: '13px', color: '#64748b' }}>2 clinics</span>
+            </div>
+            
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 0', borderBottom: '1px solid #f1f5f9' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <AlertTriangle size={20} fill="#ffedd5" color="#f97316" strokeWidth={1.5} />
+                <span style={{ fontSize: '13px', fontWeight: 600, color: '#1e293b' }}>LIS Connection Error</span>
+              </div>
+              <span style={{ fontSize: '13px', color: '#64748b' }}>1 clinic</span>
+            </div>
+            
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 0', borderBottom: '1px solid #f1f5f9' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#2563eb', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Info size={14} />
+                </div>
+                <span style={{ fontSize: '13px', fontWeight: 600, color: '#1e293b' }}>Invitation Pending</span>
+              </div>
+              <span style={{ fontSize: '13px', color: '#64748b' }}>3 admins</span>
+            </div>
           </div>
-          <div className="widget-body p-0">
-            <ul className="queue-list">
-              <li className="queue-item">
-                <div className="queue-patient-info">
-                  <div className="queue-avatar" style={{ backgroundColor: '#fef2f2', color: '#dc2626' }}>
-                    <Activity size={20} />
-                  </div>
-                  <div className="queue-details">
-                    <span className="queue-name">LIS Integration (Downtown Clinic)</span>
-                    <span className="queue-purpose">14 Failed Messages (Pending Retry)</span>
-                  </div>
-                </div>
-                <div className="queue-status">
-                  <span className="queue-time">1 hr ago</span>
-                </div>
-              </li>
-              <li className="queue-item">
-                <div className="queue-patient-info">
-                  <div className="queue-avatar" style={{ backgroundColor: '#fff7ed', color: '#ea580c' }}>
-                    <BellRing size={20} />
-                  </div>
-                  <div className="queue-details">
-                    <span className="queue-name">Notification Delivery</span>
-                    <span className="queue-purpose">SMS Provider API Latency High</span>
-                  </div>
-                </div>
-                <div className="queue-status">
-                  <span className="queue-time">3 hrs ago</span>
-                </div>
-              </li>
-            </ul>
+          
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
+            <button style={{ background: 'none', border: 'none', color: '#2563eb', fontSize: '13px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+              View all alerts <ChevronRight size={16} />
+            </button>
           </div>
         </div>
       </div>

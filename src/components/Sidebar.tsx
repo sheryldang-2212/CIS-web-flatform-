@@ -1,4 +1,4 @@
-import { LayoutGrid, Users, FlaskConical, PanelLeftClose, Settings, Shield, Lock, Box, Activity, FileKey, Database } from 'lucide-react';
+import { LayoutGrid, Users, FlaskConical, PanelLeftClose, Settings, Shield, Lock, Box, Activity, FileKey, Database, BellRing } from 'lucide-react';
 import './Sidebar.css';
 
 interface SidebarProps {
@@ -31,17 +31,31 @@ const getNavGroups = (role: string) => {
         ]
       },
       {
+        groupName: 'PATIENT DATA MANAGEMENT',
+        items: [
+          { name: 'Patient Identity Support', icon: Users },
+          { name: 'Bulk Patient Upload', icon: Database, locked: true }
+        ]
+      },
+      {
         groupName: 'CONFIGURATION',
         items: [
-          { name: 'Feature Flags', icon: Settings },
-          { name: 'LIS Mapping', icon: FlaskConical }
+          { name: 'Platform Settings', icon: Settings },
+          { name: 'Laboratory Configuration', icon: FlaskConical }
         ]
       },
       {
         groupName: 'MONITORING & LOGS',
         items: [
           { name: 'Integration Monitoring', icon: Activity },
+          { name: 'Operational Reports', icon: Activity },
           { name: 'Platform Audit Logs', icon: FileKey }
+        ]
+      },
+      {
+        groupName: 'COMMUNICATION',
+        items: [
+          { name: 'Announcements', icon: BellRing }
         ]
       }
     ];
