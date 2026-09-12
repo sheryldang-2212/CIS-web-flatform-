@@ -25,13 +25,7 @@ const getNavGroups = (role: string) => {
           { name: 'User Management', icon: Users }
         ]
       },
-      {
-        groupName: 'PEOPLE & ACCESS',
-        items: [
-          { name: 'Global Users', icon: Users },
-          { name: 'Roles & Permissions', icon: Shield }
-        ]
-      },
+
       {
         groupName: 'PATIENT DATA MANAGEMENT',
         items: [
@@ -42,14 +36,14 @@ const getNavGroups = (role: string) => {
         groupName: 'CONFIGURATION',
         items: [
           { name: 'Platform Settings', icon: Settings },
-          { name: 'Laboratory Configuration', icon: FlaskConical }
+          { name: 'Services & Packages', icon: Box },
+          { name: 'Roles & Permissions', icon: Shield }
         ]
       },
       {
         groupName: 'MONITORING & LOGS',
         items: [
           { name: 'Integration Monitoring', icon: Activity },
-          { name: 'Operational Reports', icon: Activity },
           { name: 'Platform Audit Logs', icon: FileKey }
         ]
       },
@@ -82,7 +76,7 @@ const getNavGroups = (role: string) => {
       {
         groupName: 'PATIENT DATA MANAGEMENT',
         items: [
-          { name: 'Patient Data', icon: Database, locked: true }
+          { name: 'Patient Data', icon: Database }
         ]
       },
       {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Settings, UserPlus, Search, Edit, Trash2, Key, Eye, PowerOff, Shield } from 'lucide-react';
+import { Settings, UserPlus, Search, Edit, Key, Eye, PowerOff, Shield } from 'lucide-react';
 import UserFormModal from './UserFormModal';
 import UserDetailsDrawer from './UserDetailsDrawer';
 import './UserManagement.css';
@@ -205,9 +205,6 @@ export default function UserManagement({ currentRole, currentClinic, mockClinics
                               <div className="um-action-divider"></div>
                               <button className="um-action-item">
                                 <PowerOff size={14} className="um-action-icon" /> Deactivate user
-                              </button>
-                              <button className="um-action-item danger">
-                                <Trash2 size={14} className="um-action-icon" /> Delete user
                               </button>
                             </div>
                           )}

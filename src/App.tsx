@@ -17,7 +17,7 @@ import StaffSecurity from './components/StaffSecurity';
 import AuditLogs from './components/AuditLogs';
 import DoctorDashboard from './components/DoctorDashboard';
 import DoctorLabResults from './components/DoctorLabResults';
-import PatientDataManagement from './components/PatientDataManagement';
+import PatientData from './components/PatientData';
 import ReportsAnalytics from './components/ReportsAnalytics';
 import SystemAnnouncements from './components/SystemAnnouncements';
 import Login from './components/Login';
@@ -27,7 +27,6 @@ import PlatformDashboard from './components/PlatformDashboard';
 import PlatformClinics from './components/PlatformClinics';
 import GlobalUserManagement from './components/GlobalUserManagement';
 import IntegrationMonitoring from './components/IntegrationMonitoring';
-import PatientIdentitySupport from './components/PatientIdentitySupport';
 import BulkPatientUpload from './components/BulkPatientUpload';
 import PlatformSettings from './components/PlatformSettings';
 import PlatformUserManagement from './components/PlatformUserManagement';
@@ -135,7 +134,7 @@ function App() {
           )}
           {activeTab === 'Patient Data' && currentRole !== 'Platform Admin' && (
             <div className="fadeIn" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <PatientDataManagement />
+              <PatientData />
             </div>
           )}
           {activeTab === 'Reports & Analytics' && (
@@ -153,14 +152,10 @@ function App() {
           {activeTab === 'Clinic Management' && <PlatformClinics />}
           {activeTab === 'User Management' && currentRole === 'Platform Admin' && <PlatformUserManagement />}
           {activeTab === 'Global Users' && <GlobalUserManagement />}
-          {activeTab === 'Patient Data' && currentRole === 'Platform Admin' && <PatientIdentitySupport />}
+          {activeTab === 'Patient Data' && currentRole === 'Platform Admin' && <PatientData />}
           {activeTab === 'Bulk Patient Upload' && <BulkPatientUpload />}
           {activeTab === 'Platform Settings' && <PlatformSettings />}
-          {activeTab === 'Laboratory Configuration' && (
-            <div className="fadeIn">
-              <LaboratoryOperations />
-            </div>
-          )}
+
           {activeTab === 'Operational Reports' && <ReportsAnalytics />}
           {activeTab === 'Integration Monitoring' && <IntegrationMonitoring />}
           {activeTab === 'Platform Audit Logs' && <div className="fadeIn"><AuditLogs /></div>}
