@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Download, FlaskConical, Activity, Box, Users, Calendar } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import './ReportsAnalytics.css';
@@ -153,7 +153,7 @@ interface ReportsAnalyticsProps {
   currentClinic?: any;
 }
 
-export default function ReportsAnalytics({ currentRole, currentClinic }: ReportsAnalyticsProps) {
+export default function ReportsAnalytics({ currentRole }: ReportsAnalyticsProps) {
   const [activeTab, setActiveTab] = useState('Lab Volume');
 
   const isPlatform = currentRole === 'Platform Admin';
@@ -380,7 +380,7 @@ export default function ReportsAnalytics({ currentRole, currentClinic }: Reports
                     dataKey="count"
                     stroke="#fff"
                     strokeWidth={2}
-                    label={({ name, value }) => `${value}`}
+                    label={({ value }) => `${value}`}
                     labelLine={false}
                   >
                     {activeGenderData.map((entry, index) => (

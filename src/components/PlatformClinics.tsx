@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Plus, Filter, Building2, MoreVertical, CheckCircle2, XCircle, X, AlertTriangle, UserPlus, Edit2, Clock, Activity, Eye } from 'lucide-react';
+import { Search, Plus, Building2, MoreVertical, CheckCircle2, X, AlertTriangle, UserPlus, Edit2, Clock, Activity } from 'lucide-react';
 import EmailDemoModal from './EmailDemoModal';
 import PlatformClinicDetail from './PlatformClinicDetail';
 import './PlatformAdmin.css';
@@ -114,7 +114,12 @@ export default function PlatformClinics() {
         firstActivatedDate: null,
         lastStatusChangedDate: new Date().toISOString().split('T')[0],
         lastUpdated: new Date().toISOString().split('T')[0],
-        updatedBy: 'Current User'
+        updatedBy: 'Current User',
+        adminName: 'Not Assigned',
+        adminEmail: '',
+        staffCount: 0,
+        createdDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        createdAgo: 'Just now'
       };
       
       setClinics([clinic, ...clinics]);
@@ -177,11 +182,7 @@ export default function PlatformClinics() {
     setShowEditModal(null);
   };
 
-  const openAssignAdminModal = (clinic: any) => {
-    setNewAdminEmail(clinic.admin === 'Not Assigned' ? '' : clinic.admin);
-    setShowAssignAdminModal(clinic);
-    setShowActionMenu(null);
-  };
+
 
   const handleAssignAdminSubmit = (e: React.FormEvent) => {
     e.preventDefault();

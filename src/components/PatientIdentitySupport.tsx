@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Shield, CheckCircle2, AlertTriangle, Eye, FileText, Users, Download, X, Filter, GitMerge, Flag, MoreHorizontal, Calendar, RefreshCw } from 'lucide-react';
+import { Search, Shield, CheckCircle2, Eye, FileText, Users, Download, X, Filter, GitMerge, Flag, MoreHorizontal, Calendar, RefreshCw } from 'lucide-react';
 import './PatientDataPremium.css';
 
 const MOCK_RESULTS = [

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Search, Check, Plus, Edit2, Trash2, X, Package, FileText, Barcode, FlaskConical, Save, ChevronDown } from 'lucide-react';
-import { useClinicConfig, type Category } from '../context/ClinicConfigContext';
+import { Search, Check, Plus, Edit2, Trash2, X, Package, FileText, Barcode, FlaskConical, ChevronDown } from 'lucide-react';
+import { useClinicConfig } from '../context/ClinicConfigContext';
 import './ServicesAndPackages.css';
 
 export default function ServicesAndPackages() {
-  const { categories, setCategories, packages, setPackages } = useClinicConfig();
+  const { categories, packages, setPackages } = useClinicConfig();
   
   const [activeTab, setActiveTab] = useState<'tests' | 'packages' | 'reference'>('tests');
   

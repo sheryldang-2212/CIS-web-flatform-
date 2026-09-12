@@ -1,9 +1,6 @@
 import { useState } from 'react';
-import { Database, Upload, History, UserCheck, Copy } from 'lucide-react';
-import BulkPatientUpload from './BulkPatientUpload';
-import ImportHistory from './ImportHistory';
+import { Database, UserCheck } from 'lucide-react';
 import ImportedPatients from './ImportedPatients';
-import PossibleDuplicates from './PossibleDuplicates';
 import './PatientDataManagement.css';
 
 export default function PatientDataManagement() {

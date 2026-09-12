@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Settings, UserPlus, Search, Edit, Trash2, Key, Eye, PowerOff, Shield } from 'lucide-react';
 import UserFormModal from './UserFormModal';
 import UserDetailsDrawer from './UserDetailsDrawer';
