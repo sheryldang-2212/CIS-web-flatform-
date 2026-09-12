@@ -30,6 +30,7 @@ import IntegrationMonitoring from './components/IntegrationMonitoring';
 import PatientIdentitySupport from './components/PatientIdentitySupport';
 import BulkPatientUpload from './components/BulkPatientUpload';
 import PlatformSettings from './components/PlatformSettings';
+import PlatformUserManagement from './components/PlatformUserManagement';
 import './components/PlatformPremium.css';
 import './App.css';
 
@@ -116,17 +117,12 @@ function App() {
           {activeTab === 'Lab Orders' && <LabOrders />}
           {activeTab === 'Sample Collection Queue' && <SampleCollectionQueue />}
           {activeTab === 'Lab Order Tracking' && <LabOrderTracking />}
-          {activeTab === 'Staff Management' && <UserManagement currentRole={currentRole} currentClinic={currentClinic} mockClinics={MOCK_CLINICS} />}
+          {activeTab === 'User Management' && currentRole !== 'Platform Admin' && <UserManagement currentRole={currentRole} currentClinic={currentClinic} mockClinics={MOCK_CLINICS} />}
           {activeTab === 'Roles & Permissions' && <RolesPermissions currentRole={currentRole} currentClinic={currentClinic} mockClinics={MOCK_CLINICS} />}
           {activeTab === 'Clinic Settings' && <ClinicSettings />}
           {activeTab === 'Services & Packages' && <ServicesAndPackages />}
           
           {/* New Tabs Placeholders */}
-          {activeTab === 'Laboratory Operations' && (
-            <div className="fadeIn">
-              <LaboratoryOperations />
-            </div>
-          )}
           {activeTab === 'Staff Security' && (
             <div className="fadeIn">
               <StaffSecurity />
@@ -137,13 +133,16 @@ function App() {
               <AuditLogs />
             </div>
           )}
-          {activeTab === 'Patient Data' && (
+          {activeTab === 'Patient Data' && currentRole !== 'Platform Admin' && (
             <div className="fadeIn" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <PatientDataManagement />
             </div>
           )}
           {activeTab === 'Reports & Analytics' && (
-            <ReportsAnalytics />
+            <ReportsAnalytics currentRole={currentRole} currentClinic={currentClinic} />
+          )}
+          {activeTab === 'Reporting' && (
+            <ReportsAnalytics currentRole={currentRole} currentClinic={currentClinic} />
           )}
           {activeTab === 'Announcements' && (
             <SystemAnnouncements />
@@ -151,9 +150,10 @@ function App() {
 
           {/* Platform Admin Tabs */}
           {activeTab === 'Platform Dashboard' && <PlatformDashboard setActiveTab={setActiveTab} />}
-          {activeTab === 'Clinics' && <PlatformClinics />}
+          {activeTab === 'Clinic Management' && <PlatformClinics />}
+          {activeTab === 'User Management' && currentRole === 'Platform Admin' && <PlatformUserManagement />}
           {activeTab === 'Global Users' && <GlobalUserManagement />}
-          {activeTab === 'Patient Identity Support' && <PatientIdentitySupport />}
+          {activeTab === 'Patient Data' && currentRole === 'Platform Admin' && <PatientIdentitySupport />}
           {activeTab === 'Bulk Patient Upload' && <BulkPatientUpload />}
           {activeTab === 'Platform Settings' && <PlatformSettings />}
           {activeTab === 'Laboratory Configuration' && (

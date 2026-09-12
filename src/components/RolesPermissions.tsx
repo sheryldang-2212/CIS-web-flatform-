@@ -71,7 +71,9 @@ export default function RolesPermissions({ currentRole, currentClinic, mockClini
             <input type="text" placeholder="Search roles" />
           </div>
           <div className="rp-role-list">
-            {ROLES_LIST.map(role => {
+            {ROLES_LIST.filter(role => 
+              currentRole === 'Platform Admin' ? true : (role.id !== 'clinic_admin' && role.id !== 'platform_admin')
+            ).map(role => {
               const RoleIcon = role.icon;
               return (
                 <div 

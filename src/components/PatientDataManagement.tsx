@@ -7,7 +7,7 @@ import PossibleDuplicates from './PossibleDuplicates';
 import './PatientDataManagement.css';
 
 export default function PatientDataManagement() {
-  const [activeTab, setActiveTab] = useState('upload');
+  const [activeTab, setActiveTab] = useState('monitoring');
 
   return (
     <div className="patient-data-management-container">
@@ -23,36 +23,15 @@ export default function PatientDataManagement() {
 
       <div className="tabs-navigation">
         <button 
-          className={`tab-btn ${activeTab === 'upload' ? 'active' : ''}`}
-          onClick={() => setActiveTab('upload')}
-        >
-          <Upload size={16} /> Bulk Upload
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`}
-          onClick={() => setActiveTab('history')}
-        >
-          <History size={16} /> Import History
-        </button>
-        <button 
           className={`tab-btn ${activeTab === 'monitoring' ? 'active' : ''}`}
           onClick={() => setActiveTab('monitoring')}
         >
           <UserCheck size={16} /> Patient Monitoring
         </button>
-        <button 
-          className={`tab-btn ${activeTab === 'duplicates' ? 'active' : ''}`}
-          onClick={() => setActiveTab('duplicates')}
-        >
-          <Copy size={16} /> Possible Duplicates
-        </button>
       </div>
 
       <div className="tab-content fadeIn">
-        {activeTab === 'upload' && <BulkPatientUpload />}
-        {activeTab === 'history' && <ImportHistory />}
         {activeTab === 'monitoring' && <ImportedPatients />}
-        {activeTab === 'duplicates' && <PossibleDuplicates />}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { LayoutGrid, Users, FlaskConical, PanelLeftClose, Settings, Shield, Lock, Box, Activity, FileKey, Database, BellRing } from 'lucide-react';
+import { LayoutGrid, Users, FlaskConical, PanelLeftClose, Settings, Shield, Lock, Box, Activity, FileKey, Database, BellRing, BarChart2 } from 'lucide-react';
 import './Sidebar.css';
 
 interface SidebarProps {
@@ -14,13 +14,15 @@ const getNavGroups = (role: string) => {
       {
         groupName: null,
         items: [
-          { name: 'Platform Dashboard', icon: LayoutGrid }
+          { name: 'Platform Dashboard', icon: LayoutGrid },
+          { name: 'Reporting', icon: BarChart2 }
         ]
       },
       {
         groupName: 'CLINIC MANAGEMENT',
         items: [
-          { name: 'Clinics', icon: Box }
+          { name: 'Clinic Management', icon: Box },
+          { name: 'User Management', icon: Users }
         ]
       },
       {
@@ -33,8 +35,7 @@ const getNavGroups = (role: string) => {
       {
         groupName: 'PATIENT DATA MANAGEMENT',
         items: [
-          { name: 'Patient Identity Support', icon: Users },
-          { name: 'Bulk Patient Upload', icon: Database, locked: true }
+          { name: 'Patient Data', icon: Users }
         ]
       },
       {
@@ -67,13 +68,14 @@ const getNavGroups = (role: string) => {
       {
         groupName: null,
         items: [
-          { name: 'Dashboard', icon: LayoutGrid }
+          { name: 'Dashboard', icon: LayoutGrid },
+          { name: 'Reporting', icon: BarChart2 }
         ]
       },
       {
         groupName: 'People & Access',
         items: [
-          { name: 'Staff Management', icon: Users },
+          { name: 'User Management', icon: Users },
           { name: 'Roles & Permissions', icon: Shield }
         ]
       },
@@ -87,8 +89,7 @@ const getNavGroups = (role: string) => {
         groupName: 'CLINIC MANAGEMENT',
         items: [
           { name: 'Clinic Settings', icon: Settings },
-          { name: 'Services & Packages', icon: Box },
-          { name: 'Laboratory Operations', icon: FlaskConical }
+          { name: 'Services & Packages', icon: Box }
         ]
       },
       {

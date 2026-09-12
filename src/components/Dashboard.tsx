@@ -503,13 +503,13 @@ export default function Dashboard({ currentRole, setActiveTab }: DashboardProps)
         </div>
 
         <div className="admin-metric-card">
-          <div className="metric-icon-wrapper" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
-            <ShieldCheck size={24} />
+          <div className="metric-icon-wrapper" style={{ backgroundColor: 'rgba(14, 165, 233, 0.1)', color: '#0ea5e9' }}>
+            <UsersIcon size={24} />
           </div>
           <div className="metric-content">
-            <span className="metric-label">Security Alerts</span>
-            <span className="metric-value text-red-600">2</span>
-            <span className="metric-trend negative">Requires attention</span>
+            <span className="metric-label">Total Patients</span>
+            <span className="metric-value" style={{ color: '#0ea5e9' }}>1,284</span>
+            <span className="metric-trend positive">↑ 12 this week</span>
           </div>
         </div>
       </div>
@@ -521,7 +521,7 @@ export default function Dashboard({ currentRole, setActiveTab }: DashboardProps)
               <h2>Quick Actions</h2>
             </div>
             <div className="quick-actions-grid">
-              <button className="quick-action-btn" onClick={() => setActiveTab('Staff Management')}>
+              <button className="quick-action-btn" onClick={() => setActiveTab('User Management')}>
                 <div className="action-icon" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' }}>
                   <UserPlus size={20} />
                 </div>

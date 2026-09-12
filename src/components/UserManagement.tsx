@@ -1,17 +1,20 @@
-import { useState } from 'react';
-import { Settings, UserPlus, Search, Edit, Trash2, Key } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Settings, UserPlus, Search, Edit, Trash2, Key, Eye, PowerOff, Shield } from 'lucide-react';
 import UserFormModal from './UserFormModal';
+import UserDetailsDrawer from './UserDetailsDrawer';
 import './UserManagement.css';
 
 const MOCK_USERS = [
-  { id: '1', name: 'Sarah Chen', email: 'sarah.chen@healthhub.com', phone: '+1234567890', clinic: 'Downtown Medical Center', role: ['Receptionist'], status: 'Active', lastLogin: 'Jan 15, 2024 08:30', hasKey: false },
-  { id: '2', name: 'Dr. James Wilson', email: 'james.wilson@healthhub.com', phone: '+1234567891', clinic: 'Downtown Medical Center', role: ['Doctor', 'Clinic Admin'], status: 'Active', lastLogin: 'Jan 15, 2024 07:45', hasKey: true },
-  { id: '3', name: 'Maria Rodriguez', email: 'maria.rodriguez@healthhub.com', phone: '+1234567892', clinic: 'Downtown Medical Center', role: ['Technician', 'Receptionist'], status: 'Active', lastLogin: 'Jan 15, 2024 09:00', hasKey: false },
-  { id: '4', name: 'Dr. Lisa Park', email: 'lisa.park@healthhub.com', phone: '+1234567893', clinic: 'Downtown Medical Center', role: ['Admin'], status: 'Active', lastLogin: 'Jan 15, 2024 08:00', hasKey: true },
-  { id: '5', name: 'Jennifer Thompson', email: 'jennifer.thompson@suburbanfamily.com', phone: '+1234567896', clinic: 'Suburban Family Clinic', role: ['Receptionist'], status: 'Active', lastLogin: 'Jan 15, 2024 08:15', hasKey: false },
-  { id: '6', name: 'Dr. Michael Davis', email: 'michael.davis@suburbanfamily.com', phone: '+1234567897', clinic: 'Suburban Family Clinic', role: ['Doctor'], status: 'Active', lastLogin: 'Jan 15, 2024 07:30', hasKey: true },
-  { id: '7', name: 'Dr. Anna Martinez', email: 'anna.martinez@suburbanfamily.com', phone: '+1234567898', clinic: 'Suburban Family Clinic', role: ['Admin', 'Doctor', 'Technician'], status: 'Active', lastLogin: 'Jan 15, 2024 08:30', hasKey: true },
-  { id: '8', name: 'Robert Johnson', email: 'robert.johnson@urgentcare.com', phone: '+1234567899', clinic: 'Emergency Care Center', role: ['Technician'], status: 'Active', lastLogin: 'Jan 15, 2024 06:00', hasKey: false },
+  { id: '1', name: 'Robert Clark', email: 'robert.clark@innotechlab.net', phone: '+66 097-2077', clinic: 'All Clinics', role: ['Clinic Admin'], status: 'Active', lastLogin: 'May 6, 2026\n11:11', hasKey: false },
+  { id: '2', name: 'Malee Srikul', email: 'malee.srikul@innotechlab.net', phone: '+66 024-2154', clinic: 'Chiang Mai Health Hub', role: ['Clinic Admin'], status: 'Active', lastLogin: 'Jun 11, 2026\n14:22', hasKey: false },
+  { id: '3', name: 'Susan Moore', email: 'susan.moore@innotechlab.net', phone: '+66 871-2231', clinic: 'Sathorn Family Clinic', additionalClinics: '+1 more', role: ['Clinic Admin'], status: 'Active', lastLogin: 'Jan 16, 2026\n17:33', hasKey: false },
+  { id: '4', name: 'Orawan Petchara', email: 'orawan.petchara@innotechlab.net', phone: '+66 838-2305', clinic: 'Phuket Wellness Center', role: ['Clinic Admin'], status: 'Inactive', lastLogin: 'Feb 21, 2026\n10:44', hasKey: false },
+  { id: '5', name: 'David Wilson', email: 'david.wilson@innotechlab.net', phone: '+66 075-2365', clinic: 'Ari Medical Practice', role: ['Clinic Admin'], status: 'Active', lastLogin: 'Mar 26, 2026\n13:55', hasKey: false },
+  { id: '6', name: 'Achara Intharachai', email: 'achara.intharachai@innotechlab.net', phone: '+66 032-2462', clinic: 'Lanna Care Clinic', additionalClinics: '+2 more', role: ['Clinic Admin'], status: 'Active', lastLogin: 'Apr 3, 2026\n16:06', hasKey: false },
+  { id: '7', name: 'Daniel Srisawat', email: 'daniel.srisawat@innotechlab.net', phone: '+66 079-2539', clinic: 'Ekkamai Dental & Medical', role: ['Doctor'], status: 'Active', lastLogin: 'May 8, 2026\n09:17', hasKey: false },
+  { id: '8', name: 'Busaba Phromsri', email: 'busaba.phromsri@innotechlab.net', phone: '+66 836-2615', clinic: 'Khon Kaen City Clinic', role: ['Doctor'], status: 'Active', lastLogin: 'Jun 13, 2026\n12:28', hasKey: false },
+  { id: '9', name: 'Michael Wright', email: 'michael.wright@innotechlab.net', phone: '+66 859-2693', clinic: 'Silom Health Services', role: ['Doctor'], status: 'Inactive', lastLogin: 'Jan 10, 2026\n13:39', hasKey: false },
+  { id: '10', name: 'Ploy Sukjai', email: 'ploy.sukjai@innotechlab.net', phone: '+66 040-2770', clinic: 'Chiang Rai Wellness', role: ['Doctor'], status: 'Active', lastLogin: 'Feb 23, 2026\n03:50', hasKey: false },
 ];
 
 interface UserManagementProps {
@@ -22,34 +25,38 @@ interface UserManagementProps {
 
 export default function UserManagement({ currentRole, currentClinic, mockClinics }: UserManagementProps) {
   const [showUserForm, setShowUserForm] = useState(false);
+  const [activeFormTab, setActiveFormTab] = useState<'profile' | 'permissions' | 'security'>('profile');
   const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [viewUser, setViewUser] = useState<any>(null);
   const [selectedClinicId, setSelectedClinicId] = useState<string>(currentClinic?.id || 'all');
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
-  // Filter users based on selected clinic
+  useEffect(() => {
+    const handleClickOutside = () => setOpenMenuId(null);
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
+  // Temporarily bypass clinic filtering to show mock data
   let filteredUsers = MOCK_USERS;
-  if (currentRole === 'Platform Admin' && selectedClinicId !== 'all') {
-    const selectedClinicName = mockClinics?.find(c => c.id === selectedClinicId)?.name;
-    filteredUsers = MOCK_USERS.filter(user => user.clinic === selectedClinicName);
-  } else if (currentRole !== 'Platform Admin' && currentClinic) {
-    // If not Platform Admin, only show users from current clinic
-    filteredUsers = MOCK_USERS.filter(user => user.clinic === currentClinic.name);
-  }
 
-  // Recalculate stats based on filtered users
+  // Custom stats based on screenshot
   const stats = [
-    { label: 'Receptionist', value: filteredUsers.filter(u => u.role.includes('Receptionist')).length },
-    { label: 'Doctor', value: filteredUsers.filter(u => u.role.includes('Doctor')).length },
-    { label: 'Technician', value: filteredUsers.filter(u => u.role.includes('Technician')).length },
-    { label: 'Admin', value: filteredUsers.filter(u => u.role.includes('Admin') || u.role.includes('Clinic Admin')).length },
+    { label: 'Clinic Admin', value: 6 },
+    { label: 'Doctor', value: 12 },
+    { label: 'Technician', value: 6 },
+    { label: 'Receptionist', value: 5 },
   ];
 
-  const handleEditUser = (user: any) => {
+  const handleEditUser = (user: any, tab: 'profile' | 'permissions' | 'security' = 'profile') => {
     setSelectedUser(user);
+    setActiveFormTab(tab);
     setShowUserForm(true);
   };
 
   const handleAddUser = () => {
     setSelectedUser(null);
+    setActiveFormTab('profile');
     setShowUserForm(true);
   };
 
@@ -58,7 +65,6 @@ export default function UserManagement({ currentRole, currentClinic, mockClinics
       <div className="um-header">
         <div className="um-title-section">
           <h1>User Management</h1>
-          <p>Manage users, permissions, and security settings</p>
         </div>
         
         {currentRole === 'Platform Admin' && mockClinics && (
@@ -97,29 +103,25 @@ export default function UserManagement({ currentRole, currentClinic, mockClinics
           </div>
 
           <div className="um-section">
-            <div className="um-section-header">
-              <h2>Users</h2>
-              <p>Manage system users and their permissions</p>
-            </div>
-
             <div className="um-toolbar">
               <div className="um-search">
                 <Search size={16} className="um-search-icon" />
-                <input type="text" placeholder="Search users..." />
+                <input type="text" placeholder="Search by name or email" />
               </div>
               <div className="um-filters">
-                <select className="um-filter-select">
-                  <option>All Roles</option>
-                  <option>Receptionist</option>
-                  <option>Technician</option>
-                  <option>Doctor</option>
-                  <option>Admin</option>
-                </select>
-                <select className="um-filter-select">
-                  <option>All Status</option>
-                  <option>Active</option>
-                  <option>Inactive</option>
-                </select>
+                <div className="um-filter-group">
+                  <label>Role:</label>
+                  <select className="um-filter-select"><option>All</option></select>
+                </div>
+                <div className="um-filter-group">
+                  <label>Clinic:</label>
+                  <select className="um-filter-select"><option>All</option></select>
+                </div>
+                <div className="um-filter-group">
+                  <label>Status:</label>
+                  <select className="um-filter-select"><option>All</option></select>
+                </div>
+                <button className="um-btn-reset">Reset</button>
               </div>
             </div>
 
@@ -128,12 +130,13 @@ export default function UserManagement({ currentRole, currentClinic, mockClinics
                 <thead>
                   <tr>
                     <th style={{ width: 40 }}><input type="checkbox" className="um-user-checkbox" /></th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th>Last Login</th>
-                    <th>Actions</th>
+                    <th>NAME</th>
+                    <th>EMAIL</th>
+                    <th>ROLE</th>
+                    <th>CLINIC ACCESS</th>
+                    <th>STATUS</th>
+                    <th>LAST LOGIN</th>
+                    <th style={{ width: 40 }}></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -151,37 +154,63 @@ export default function UserManagement({ currentRole, currentClinic, mockClinics
                       </td>
                       <td>
                         <span className="um-cell-text">{user.email}</span>
-                        {currentRole === 'Platform Admin' && (
-                          <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>{user.clinic}</div>
-                        )}
                       </td>
                       <td>
                         <div className="um-roles-cell">
                           {user.role.slice(0, 1).map(r => (
-                            <span key={r} className="um-badge um-badge-role">{r}</span>
+                            <span key={r} className={`um-badge um-badge-role um-role-${r.replace(/\s+/g, '').toLowerCase()}`}>{r}</span>
                           ))}
-                          {user.role.length > 1 && (
-                            <span 
-                              className="um-badge um-badge-role-more" 
-                              title={user.role.slice(1).join(', ')}
-                            >
-                              +{user.role.length - 1}
-                            </span>
-                          )}
                         </div>
                       </td>
-                      <td><span className="um-badge um-badge-active">{user.status}</span></td>
                       <td>
-                        <span className="um-cell-text">{user.lastLogin}</span>
+                        <span className="um-cell-text">{user.clinic}</span>
+                        {(user as any).additionalClinics && (
+                          <span className="um-cell-subtext" style={{ marginLeft: '8px' }}>{(user as any).additionalClinics}</span>
+                        )}
                       </td>
+                      <td><span className={`um-badge um-badge-status-${user.status.toLowerCase()}`}>{user.status}</span></td>
                       <td>
+                        <span className="um-cell-text" style={{ whiteSpace: 'pre-line' }}>{user.lastLogin}</span>
+                      </td>
+                      <td style={{ position: 'relative' }}>
                         <div className="um-table-actions">
-                          <button className="um-action-btn" onClick={() => handleEditUser(user)}>
-                            <Edit size={16} />
+                          <button 
+                            className="um-action-btn-more"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpenMenuId(openMenuId === user.id ? null : user.id);
+                            }}
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <circle cx="12" cy="12" r="1"></circle>
+                              <circle cx="12" cy="5" r="1"></circle>
+                              <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
                           </button>
-                          <button className="um-action-btn">
-                            <Trash2 size={16} />
-                          </button>
+                          
+                          {openMenuId === user.id && (
+                            <div className="um-action-menu" onClick={(e) => e.stopPropagation()}>
+                              <button className="um-action-item" onClick={() => { setOpenMenuId(null); setViewUser(user); }}>
+                                <Eye size={14} className="um-action-icon" /> View details
+                              </button>
+                              <button className="um-action-item" onClick={() => { setOpenMenuId(null); handleEditUser(user, 'profile'); }}>
+                                <Edit size={14} className="um-action-icon" /> Edit user
+                              </button>
+                              <button className="um-action-item" onClick={() => { setOpenMenuId(null); handleEditUser(user, 'permissions'); }}>
+                                <Shield size={14} className="um-action-icon" /> Manage permission
+                              </button>
+                              <button className="um-action-item">
+                                <Key size={14} className="um-action-icon" /> Reset password
+                              </button>
+                              <div className="um-action-divider"></div>
+                              <button className="um-action-item">
+                                <PowerOff size={14} className="um-action-icon" /> Deactivate user
+                              </button>
+                              <button className="um-action-item danger">
+                                <Trash2 size={14} className="um-action-icon" /> Delete user
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -189,12 +218,35 @@ export default function UserManagement({ currentRole, currentClinic, mockClinics
                 </tbody>
               </table>
             </div>
+            
+            <div className="um-pagination">
+              <span className="um-pagination-info">Showing 1 - 10 of 29 users</span>
+              <div className="um-pagination-controls">
+                <button className="um-page-btn">&lt;</button>
+                <button className="um-page-btn active">1</button>
+                <button className="um-page-btn">2</button>
+                <button className="um-page-btn">3</button>
+                <button className="um-page-btn">&gt;</button>
+              </div>
+            </div>
           </div>
       
       {showUserForm && (
         <UserFormModal
           user={selectedUser}
+          initialTab={activeFormTab}
           onClose={() => setShowUserForm(false)}
+        />
+      )}
+      
+      {viewUser && (
+        <UserDetailsDrawer 
+          user={viewUser} 
+          onClose={() => setViewUser(null)} 
+          onEdit={() => {
+            setViewUser(null);
+            handleEditUser(viewUser, 'profile');
+          }}
         />
       )}
     </div>

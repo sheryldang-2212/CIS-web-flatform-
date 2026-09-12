@@ -6,11 +6,12 @@ import './UserFormModal.css';
 interface UserFormModalProps {
   user: any;
   onClose: () => void;
+  initialTab?: 'profile' | 'permissions' | 'security';
 }
 
-export default function UserFormModal({ user, onClose }: UserFormModalProps) {
+export default function UserFormModal({ user, onClose, initialTab = 'profile' }: UserFormModalProps) {
   const isEdit = !!user;
-  const [activeTab, setActiveTab] = useState<'profile' | 'permissions' | 'security'>('permissions');
+  const [activeTab, setActiveTab] = useState<'profile' | 'permissions' | 'security'>(initialTab);
   
   // Accordion state
   const initialRoles = user?.role 

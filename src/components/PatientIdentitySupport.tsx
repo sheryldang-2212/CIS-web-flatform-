@@ -1,212 +1,237 @@
 import { useState } from 'react';
-import { Search, ShieldAlert, CheckCircle2, AlertTriangle, Eye, Lock } from 'lucide-react';
-import './Dashboard.css';
+import { Search, Shield, CheckCircle2, AlertTriangle, Eye, FileText, Users, Download, X, Filter, GitMerge, Flag, MoreHorizontal, Calendar, RefreshCw } from 'lucide-react';
+import './PatientDataPremium.css';
 
-interface PatientMatch {
-  id: string;
-  maskedName: string;
-  maskedId: string;
-  maskedPhone: string;
-  matchType: 'Exact Match' | 'Possible Duplicate';
-  clinics: string[];
-}
-
-const MOCK_RESULTS: PatientMatch[] = [
-  { id: 'P-101', maskedName: 'S*** C***', maskedId: '1-10**-*****-**-1', maskedPhone: '081-***-1234', matchType: 'Exact Match', clinics: ['Downtown Clinic', 'Uptown Hospital'] },
-  { id: 'P-102', maskedName: 'S*** C***', maskedId: '1-10**-*****-**-8', maskedPhone: '081-***-1234', matchType: 'Possible Duplicate', clinics: ['North Park Clinic'] },
+const MOCK_RESULTS = [
+  { 
+    id: 'P-101', 
+    name: 'Mayuree Chan', age: '32Y', gender: 'Female', 
+    globalRef: 'GPR-000128', mrn: 'MRN-BKK001-00001234', 
+    clinic: 'Bangkok Wellness Clinic', idType: 'ID', maskedId: '****1234', 
+    phone: '****8901', email: 'm******@gmail.com', 
+    verification: 'Verified', consent: 'Completed' 
+  },
+  { 
+    id: 'P-102', 
+    name: 'Daniel Smith', age: '45Y', gender: 'Male', 
+    globalRef: 'GPR-000241', mrn: 'MRN-HKT003-00004561', 
+    clinic: 'Phuket Care Clinic', idType: 'Passport', maskedId: '****7788', 
+    phone: '****4456', email: 'd******@outlook.com', 
+    verification: 'Unverified', consent: 'Not Completed' 
+  },
+  { 
+    id: 'P-103', 
+    name: 'Arisa Wong', age: '28Y', gender: 'Female', 
+    globalRef: 'GPR-000352', mrn: 'MRN-BKK001-00007890', isMultipleMrn: true, extraMrn: 'MRN-CNX002-00001123',
+    clinic: 'Bangkok Wellness Clinic', extraClinic: 'Chiang Mai Health Center', idType: 'ID', maskedId: '****5678', 
+    phone: '****7766', email: 'a******@gmail.com', 
+    verification: 'Verified', consent: 'Completed' 
+  },
+  { 
+    id: 'P-104', 
+    name: 'Nattapong Suriya', age: '51Y', gender: 'Male', 
+    globalRef: 'GPR-000498', mrn: 'MRN-RYG004-00006789', 
+    clinic: 'Rayong Health Clinic', idType: 'ID', maskedId: '****4321', 
+    phone: '****2211', email: 'n******@hotmail.com', 
+    verification: 'Verified', consent: 'Not Completed' 
+  },
+  { 
+    id: 'P-105', 
+    name: 'Priya Patel', age: '38Y', gender: 'Female', 
+    globalRef: 'GPR-000621', mrn: 'MRN-PTY005-00003421', 
+    clinic: 'Pattaya Medical', idType: 'Passport', maskedId: '****1122', 
+    phone: '****9988', email: 'p******@yahoo.com', 
+    verification: 'Verified', consent: 'Completed' 
+  }
 ];
 
 export default function PatientIdentitySupport() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchType, setSearchType] = useState('National ID');
-  const [hasSearched, setHasSearched] = useState(false);
-  const [results, setResults] = useState<PatientMatch[]>([]);
-  
-  const [showAccessModal, setShowAccessModal] = useState(false);
-  const [accessReason, setAccessReason] = useState('');
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchTerm) return;
-    
-    // Simulate recording the search event in audit log
-    console.log(`[AUDIT] Cross-clinic search performed by Platform Admin: ${searchType} = ${searchTerm}`);
-    
-    setResults(MOCK_RESULTS);
-    setHasSearched(true);
-  };
-
-  const handleAccessIdentity = () => {
-    setShowAccessModal(true);
-  };
-
-  const submitAccessReason = () => {
-    // Simulate audit log for accessing identity
-    console.log(`[AUDIT] Full identity accessed. Reason: ${accessReason}`);
-    setShowAccessModal(false);
-    setAccessReason('');
-    alert("Identity details accessed. Action recorded in Audit Log.");
-  };
+  const [showBanner, setShowBanner] = useState(true);
 
   return (
-    <div className="h-full flex flex-col relative overflow-hidden p-6 bg-slate-50/50">
-      <div className="bg-rose-50 border-l-4 border-rose-500 p-5 rounded-r-xl mb-8 shadow-sm flex items-start gap-4">
-        <ShieldAlert className="text-rose-600 shrink-0 mt-0.5" size={24} />
+    <div className="pdm-container">
+      <div className="pdm-header">
         <div>
-          <h1 className="text-xl font-bold text-rose-900">Restricted Module: Patient Identity Support</h1>
-          <p className="text-rose-800 text-sm mt-2 max-w-3xl leading-relaxed">
-            This module is intended solely to support duplicate detection and identity troubleshooting across clinics. 
-            All searches and profile access events are strictly recorded in the Platform Audit Log. Do not attempt to use this 
-            for clinical viewing. Medical records and lab data are not accessible from this view.
-          </p>
+          <h1 className="pdm-title">Patient Data Management</h1>
+          <p className="pdm-subtitle">View cross-clinic patient directory and data access status</p>
+        </div>
+        <div className="pdm-header-actions">
+          <button className="btn-secondary">
+            <FileText size={16} style={{ marginRight: '8px' }} /> View Access Logs
+          </button>
+          <button className="btn-primary">
+            <Download size={16} style={{ marginRight: '8px' }} /> Export Report
+          </button>
         </div>
       </div>
 
-      <div className="glass-panel p-6 mb-8 bg-white/60">
-        <h2 className="text-lg font-bold text-slate-800 mb-5">Cross-Clinic Identity Search</h2>
-        <form onSubmit={handleSearch} className="flex gap-5 items-end">
-          <div className="flex-1 max-w-xs">
-            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Search Criteria</label>
-            <select className="prem-input" value={searchType} onChange={e => setSearchType(e.target.value)}>
-              <option>National ID</option>
-              <option>Passport Number</option>
-              <option>Name</option>
-              <option>DOB (YYYY-MM-DD)</option>
-              <option>Phone</option>
-              <option>Email</option>
+      {showBanner && (
+        <div className="pdm-banner">
+          <div className="pdm-banner-content">
+            <div className="pdm-banner-icon">
+              <Shield size={18} />
+            </div>
+            <span className="pdm-banner-text">
+              Platform view is for operational metadata only. Sensitive identifiers are masked and all access is audited.
+            </span>
+          </div>
+          <button className="pdm-banner-close" onClick={() => setShowBanner(false)}>
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* Stats Cards */}
+      <div className="pdm-stats-grid">
+        <div className="pdm-stat-card">
+          <div className="pdm-stat-icon blue">
+            <Users size={24} />
+          </div>
+          <div>
+            <div className="pdm-stat-value">24,893</div>
+            <div className="pdm-stat-label">Total Patients</div>
+            <div className="pdm-stat-sublabel">Across 6 clinics</div>
+          </div>
+        </div>
+        
+        <div className="pdm-stat-card">
+          <div className="pdm-stat-icon green">
+            <CheckCircle2 size={24} />
+          </div>
+          <div>
+            <div className="pdm-stat-value">21,402</div>
+            <div className="pdm-stat-label">Verified Patients</div>
+            <div className="pdm-stat-sublabel">86.0% of total</div>
+          </div>
+        </div>
+
+        <div className="pdm-stat-card">
+          <div className="pdm-stat-icon blue">
+            <FileText size={24} />
+          </div>
+          <div>
+            <div className="pdm-stat-value">18,905</div>
+            <div className="pdm-stat-label">Consent Completed</div>
+            <div className="pdm-stat-sublabel">76.0% of total</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="pdm-filters-container">
+        <div className="pdm-filters-top">
+          <div className="pdm-filters-label">
+            <Filter size={18} color="#3b82f6" /> Filters
+          </div>
+          <div className="pdm-search-bar">
+            <Search size={16} color="#94a3b8" />
+            <input type="text" placeholder="Search MRN, masked ID, phone, email, or patient name" />
+          </div>
+          <button className="btn-secondary" style={{ height: '40px' }}>
+            <RefreshCw size={14} style={{ marginRight: '6px' }} /> Clear Filters
+          </button>
+        </div>
+        
+        <div className="pdm-filters-grid">
+          <div className="pdm-filter-group">
+            <label>Clinic</label>
+            <select className="pdm-filter-select">
+              <option>All Clinics</option>
             </select>
           </div>
-          <div className="flex-[2]">
-            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Search Value</label>
-            <input 
-              type="text" 
-              className="prem-input" 
-              placeholder={`Enter ${searchType}...`}
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-            />
+          <div className="pdm-filter-group">
+            <label>Verification Status</label>
+            <select className="pdm-filter-select">
+              <option>All Statuses</option>
+            </select>
           </div>
-          <button type="submit" className="prem-btn-primary mb-1">
-            <Search size={16} /> Search
-          </button>
-        </form>
+          <div className="pdm-filter-group">
+            <label>Consent Status</label>
+            <select className="pdm-filter-select">
+              <option>All Statuses</option>
+            </select>
+          </div>
+          <div className="pdm-filter-group">
+            <label>Date Range</label>
+            <div className="pdm-search-bar" style={{ height: '38px', color: '#64748b' }}>
+               <Calendar size={14} style={{ marginRight: '8px' }} color="#3b82f6" /> Select date range
+            </div>
+          </div>
+        </div>
       </div>
 
-      {hasSearched && (
-        <div className="flex-1 overflow-auto glass-panel p-1 bg-white/50">
-          <div className="flex items-center justify-between p-4 px-6 border-b border-slate-200/50">
-            <h3 className="font-bold text-slate-800">Search Results</h3>
-            <span className="text-xs font-medium text-amber-600 bg-amber-50 px-3 py-1 rounded-full">Sensitive PII is masked by default</span>
+      {/* Table */}
+      <div className="pdm-table-container">
+        <div className="pdm-table-header">
+          <h2 className="pdm-table-title">Cross-Clinic Patient Directory</h2>
+          <div className="pdm-table-actions">
+            <span className="pdm-table-info">Showing 1-5 of 24,893 patients</span>
+            <div className="pdm-pagination">
+              <button className="pdm-page-btn">{"<"}</button>
+              <button className="pdm-page-btn">{">"}</button>
+            </div>
           </div>
-          <table className="prem-table">
-            <thead>
-              <tr>
-                <th>Masked Name</th>
-                <th>Masked Identifier</th>
-                <th>Masked Contact</th>
-                <th>Match Confidence</th>
-                <th>Known Clinics</th>
-                <th className="text-right">Actions</th>
+        </div>
+        
+        <table className="pdm-table">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Global Patient Ref</th>
+              <th>Clinic MRN</th>
+              <th>Clinic</th>
+              <th>ID/Passport</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Verification</th>
+              <th>Consent</th>
+              <th style={{ textAlign: 'right' }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {MOCK_RESULTS.map((patient) => (
+              <tr key={patient.id}>
+                <td>
+                  <div style={{ fontWeight: 600, color: '#0f172a' }}>{patient.name}</div>
+                  <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>{patient.age} • {patient.gender}</div>
+                </td>
+                <td style={{ fontWeight: 500 }}>{patient.globalRef}</td>
+                <td>
+                  <div style={{ fontWeight: 500 }}>{patient.mrn}</div>
+                </td>
+                <td>
+                  <div style={{ fontWeight: 500 }}>{patient.clinic}</div>
+                  {patient.extraClinic && <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>{patient.extraClinic}</div>}
+                </td>
+                <td style={{ color: '#64748b' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', marginRight: '4px' }}>{patient.idType}</span> 
+                  {patient.maskedId}
+                </td>
+                <td style={{ color: '#64748b' }}>{patient.phone}</td>
+                <td style={{ color: '#64748b' }}>{patient.email}</td>
+                <td>
+                  <span className={`pdm-badge ${patient.verification === 'Verified' ? 'success' : 'error'}`}>
+                    {patient.verification}
+                  </span>
+                </td>
+                <td>
+                  <span className={`pdm-badge ${patient.consent === 'Completed' ? 'success' : 'error'}`}>
+                    {patient.consent}
+                  </span>
+                </td>
+                <td style={{ textAlign: 'right' }}>
+                  <div className="pdm-actions-cell" style={{ justifyContent: 'flex-end' }}>
+                    <button className="pdm-action-btn"><Eye size={18} /></button>
+                    <button className="pdm-action-btn"><GitMerge size={18} /></button>
+                    <button className="pdm-action-btn"><Flag size={18} /></button>
+                    <button className="pdm-action-btn"><MoreHorizontal size={18} /></button>
+                  </div>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {results.map(match => (
-                <tr key={match.id}>
-                  <td className="font-medium font-mono text-slate-800">{match.maskedName}</td>
-                  <td className="font-mono text-slate-500">{match.maskedId}</td>
-                  <td className="font-mono text-slate-500">{match.maskedPhone}</td>
-                  <td>
-                    {match.matchType === 'Exact Match' ? (
-                      <span className="prem-badge success">
-                        <CheckCircle2 size={12} /> Exact Match
-                      </span>
-                    ) : (
-                      <span className="prem-badge warning">
-                        <AlertTriangle size={12} /> Possible Duplicate
-                      </span>
-                    )}
-                  </td>
-                  <td>
-                    <div className="flex flex-wrap gap-1">
-                      {match.clinics.map(c => (
-                        <span key={c} className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-medium border border-slate-200">
-                          {c}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <button className="prem-btn-secondary text-xs" onClick={() => handleAccessIdentity()}>
-                        <Eye size={14} /> View
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {results.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="text-center py-10 text-slate-500 font-medium bg-slate-50/50 rounded-b-xl">
-                    No cross-clinic matches found for this search.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Access Reason Modal */}
-      {showAccessModal && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-slide-up">
-            <div className="px-6 py-5 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center">
-                <Lock size={20} />
-              </div>
-              <h2 className="text-xl font-bold text-slate-800">Access Identity Details</h2>
-            </div>
-            
-            <div className="p-6">
-              <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-xl text-sm mb-6 leading-relaxed">
-                You are about to access unmasked Personally Identifiable Information (PII). 
-                This action requires justification and will be permanently recorded in the Platform Audit Log.
-              </div>
-              
-              <div className="mb-4">
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Reason for Access <span className="text-rose-500">*</span></label>
-                <select 
-                  className="prem-input mb-4"
-                  value={accessReason}
-                  onChange={(e) => setAccessReason(e.target.value)}
-                >
-                  <option value="" disabled>Select a reason...</option>
-                  <option value="Duplicate Resolution">Duplicate Resolution / Merge Request</option>
-                  <option value="Support Escalation">Support Escalation / Troubleshooting</option>
-                  <option value="Compliance Audit">Compliance Audit</option>
-                  <option value="Other">Other (Please specify below)</option>
-                </select>
-                <textarea 
-                  className="prem-input" 
-                  rows={3} 
-                  placeholder="Provide additional details or ticket reference..."
-                ></textarea>
-              </div>
-            </div>
-            
-            <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
-              <button className="prem-btn-secondary" onClick={() => setShowAccessModal(false)}>Cancel</button>
-              <button 
-                className="prem-btn-primary" 
-                onClick={submitAccessReason}
-                disabled={!accessReason}
-              >
-                Access Records
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

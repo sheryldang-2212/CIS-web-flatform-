@@ -1,25 +1,17 @@
 import React, { useState } from 'react';
-import { Search, Check, Plus, Edit2, Trash2, X, Package, FileText, Barcode, FlaskConical, Save } from 'lucide-react';
+import { Search, Check, Plus, Edit2, Trash2, X, Package, FileText, Barcode, FlaskConical, Save, ChevronDown } from 'lucide-react';
 import { useClinicConfig, type Category } from '../context/ClinicConfigContext';
 import './ServicesAndPackages.css';
 
 export default function ServicesAndPackages() {
   const { categories, setCategories, packages, setPackages } = useClinicConfig();
   
-  const [activeTab, setActiveTab] = useState<'tests' | 'packages'>('tests');
+  const [activeTab, setActiveTab] = useState<'tests' | 'packages' | 'reference'>('tests');
   
   // State for Categories and Tests
   const [activeCategory, setActiveCategory] = useState(categories[0]?.name || '');
   const [enabledTests, setEnabledTests] = useState<string[]>(['CBC', 'Hemoglobin', 'Glucose', 'HbA1c', 'TSH']);
   const [searchQuery, setSearchQuery] = useState('');
-
-  // Add new Category State
-  const [isAddingCategory, setIsAddingCategory] = useState(false);
-  const [newCategoryName, setNewCategoryName] = useState('');
-
-  // Add new Test State
-  const [isAddingTest, setIsAddingTest] = useState(false);
-  const [newTestName, setNewTestName] = useState('');
 
   // State for Packages
   const [showDrawer, setShowDrawer] = useState(false);
@@ -28,46 +20,44 @@ export default function ServicesAndPackages() {
   const [newPkgName, setNewPkgName] = useState('');
   const [newPkgCode, setNewPkgCode] = useState('');
   const [newPkgTests, setNewPkgTests] = useState<string[]>([]);
+  const [activeNewPkgCategory, setActiveNewPkgCategory] = useState(categories[0]?.name || '');
+  const [editingPackageId, setEditingPackageId] = useState<string | null>(null);
+  
+  // Custom Searchable Dropdown State (Create Package)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [dropdownSearch, setDropdownSearch] = useState('');
+
+  // Custom Searchable Dropdown State (Main View)
+  const [isMainDropdownOpen, setIsMainDropdownOpen] = useState(false);
+  const [mainDropdownSearch, setMainDropdownSearch] = useState('');
+
+  // Initialize activeNewPkgCategory with the first category that has enabled tests
+  React.useEffect(() => {
+    if (showDrawer) {
+      const firstValidCat = categories.find(cat => cat.tests.some(t => enabledTests.includes(t)));
+      if (firstValidCat) setActiveNewPkgCategory(firstValidCat.name);
+    }
+  }, [showDrawer, categories, enabledTests]);
 
   // Auto-generate package code based on name
   React.useEffect(() => {
-    if (newPkgName) {
-      const initials = newPkgName
-        .split(' ')
-        .filter(w => w.length > 0)
-        .map(w => w.charAt(0).toUpperCase())
-        .join('')
-        .substring(0, 3);
-      const nextId = String(packages.length + 1).padStart(3, '0');
-      setNewPkgCode(`${initials ? initials + '-' : 'PKG-'}${nextId}`);
-    } else {
-      setNewPkgCode('');
+    if (!editingPackageId) {
+      if (newPkgName) {
+        const initials = newPkgName
+          .split(' ')
+          .filter(w => w.length > 0)
+          .map(w => w.charAt(0).toUpperCase())
+          .join('')
+          .substring(0, 3);
+        const nextId = String(packages.length + 1).padStart(3, '0');
+        setNewPkgCode(`${initials ? initials + '-' : 'PKG-'}${nextId}`);
+      } else {
+        setNewPkgCode('');
+      }
     }
-  }, [newPkgName, packages.length]);
+  }, [newPkgName, packages.length, editingPackageId]);
 
   // --- Handlers ---
-  const handleAddCategory = () => {
-    if (!newCategoryName.trim()) return;
-    setCategories([...categories, { name: newCategoryName, tests: [] }]);
-    setNewCategoryName('');
-    setIsAddingCategory(false);
-    setActiveCategory(newCategoryName); // Auto-select the new category
-  };
-
-  const handleAddTest = () => {
-    if (!newTestName.trim()) return;
-    setCategories(categories.map((cat: Category) => {
-      if (cat.name === activeCategory) {
-        return { ...cat, tests: [...cat.tests, newTestName] };
-      }
-      return cat;
-    }));
-    // Auto-enable the newly added test
-    setEnabledTests(prev => [...prev, newTestName]);
-    setNewTestName('');
-    setIsAddingTest(false);
-  };
-
   const toggleTest = (testName: string) => {
     setEnabledTests(prev => 
       prev.includes(testName) ? prev.filter(t => t !== testName) : [...prev, testName]
@@ -80,19 +70,41 @@ export default function ServicesAndPackages() {
     );
   };
 
-  const handleSavePackage = () => {
-    if (!newPkgName.trim() || !newPkgCode.trim()) return;
-    const newPkg = {
-      id: `pkg-${Date.now()}`,
-      name: newPkgName,
-      code: newPkgCode,
-      tests: newPkgTests
-    };
-    setPackages([...packages, newPkg]);
+  const handleEditPackage = (pkg: any) => {
+    setEditingPackageId(pkg.id);
+    setNewPkgName(pkg.name);
+    setNewPkgCode(pkg.code);
+    setNewPkgTests(pkg.tests);
+    setShowDrawer(true);
+  };
+
+  const handleCloseDrawer = () => {
     setShowDrawer(false);
+    setEditingPackageId(null);
     setNewPkgName('');
     setNewPkgCode('');
     setNewPkgTests([]);
+  };
+
+  const handleSavePackage = () => {
+    if (!newPkgName.trim() || !newPkgCode.trim()) return;
+    
+    if (editingPackageId) {
+      setPackages(packages.map(p => 
+        p.id === editingPackageId 
+          ? { ...p, name: newPkgName, code: newPkgCode, tests: newPkgTests }
+          : p
+      ));
+    } else {
+      const newPkg = {
+        id: `pkg-${Date.now()}`,
+        name: newPkgName,
+        code: newPkgCode,
+        tests: newPkgTests
+      };
+      setPackages([...packages, newPkg]);
+    }
+    handleCloseDrawer();
   };
 
   // --- Filtered Data ---
@@ -118,6 +130,12 @@ export default function ServicesAndPackages() {
         >
           Health Packages
         </button>
+        <button 
+          className={`sp-tab-btn ${activeTab === 'reference' ? 'active' : ''}`}
+          onClick={() => setActiveTab('reference')}
+        >
+          Reference Ranges
+        </button>
       </div>
 
       <div className="sp-content">
@@ -130,106 +148,125 @@ export default function ServicesAndPackages() {
                 <h2 className="sp-title">Clinic-Specific Test Availability</h2>
                 <p className="sp-subtitle">Enable tests available at this clinic. Receptionists will only see enabled tests.</p>
               </div>
-              <div className="sp-search-bar">
-                <Search size={16} className="text-muted" />
-                <input 
-                  type="text" 
-                  placeholder="Search tests..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
             </div>
 
-            <div className="master-detail-layout">
-              {/* Sidebar: Categories */}
-              <div className="master-sidebar">
-                {categories.map(cat => {
-                  const enabledCount = cat.tests.filter(t => enabledTests.includes(t)).length;
-                  return (
-                    <button
-                      key={cat.name}
-                      className={`sidebar-cat-btn ${activeCategory === cat.name ? 'active' : ''}`}
-                      onClick={() => {
-                        setActiveCategory(cat.name);
-                        setIsAddingTest(false);
-                      }}
-                    >
-                      <span className="cat-name">
-                        <FlaskConical size={16} /> {cat.name}
-                      </span>
-                      <span className="cat-count">{enabledCount}/{cat.tests.length}</span>
-                    </button>
-                  );
-                })}
-
-                {/* Add Category UI */}
-                {isAddingCategory ? (
-                  <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color)', backgroundColor: 'white' }}>
-                    <input 
-                      autoFocus
-                      type="text" 
-                      className="form-input" 
-                      placeholder="Category name"
-                      style={{ padding: '8px 12px', fontSize: '13px', marginBottom: '8px' }}
-                      value={newCategoryName}
-                      onChange={(e) => setNewCategoryName(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && handleAddCategory()}
-                    />
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <button className="btn-primary" style={{ padding: '6px 12px', fontSize: '12px', flex: 1 }} onClick={handleAddCategory}>Save</button>
-                      <button className="btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => setIsAddingCategory(false)}>Cancel</button>
+            {/* Searchable Dropdown for Categories */}
+            <div style={{ position: 'relative', marginBottom: '24px', maxWidth: '400px' }}>
+              <div 
+                className="form-input" 
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', backgroundColor: '#f8fafc', padding: '10px 16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                onClick={() => setIsMainDropdownOpen(!isMainDropdownOpen)}
+              >
+                <span style={{ fontWeight: 500, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <FlaskConical size={18} className="text-muted" /> 
+                  {activeCategory || 'Select category...'}
+                </span>
+                <ChevronDown size={18} className="text-muted" />
+              </div>
+              
+              {isMainDropdownOpen && (
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  right: 0,
+                  backgroundColor: 'white',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '8px',
+                  marginTop: '4px',
+                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                  zIndex: 20,
+                  maxHeight: '350px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  overflow: 'hidden'
+                }}>
+                  <div style={{ padding: '8px', borderBottom: '1px solid #e2e8f0', backgroundColor: '#f8fafc' }}>
+                    <div className="sp-search-bar" style={{ width: '100%', padding: '8px 12px', backgroundColor: 'white' }}>
+                      <Search size={14} className="text-muted" />
+                      <input 
+                        type="text" 
+                        placeholder="Search category..." 
+                        value={mainDropdownSearch}
+                        onChange={(e) => setMainDropdownSearch(e.target.value)}
+                        style={{ fontSize: '14px', width: '100%' }}
+                        onClick={(e) => e.stopPropagation()}
+                      />
                     </div>
                   </div>
-                ) : (
-                  <button 
-                    className="sidebar-cat-btn" 
-                    style={{ justifyContent: 'center', color: 'var(--primary)', fontWeight: 600 }}
-                    onClick={() => setIsAddingCategory(true)}
-                  >
-                    <Plus size={16} /> Add Category
-                  </button>
-                )}
-              </div>
-
-              {/* Detail Content: Tests in Selected Category */}
-              <div className="detail-content">
-                <div className="detail-header">
-                  <div>
-                    <h3 className="detail-title">{activeCategory} Tests</h3>
-                    <p className="detail-subtitle">Manage availability for all tests under {activeCategory}.</p>
+                  <div style={{ overflowY: 'auto', flex: 1, padding: '4px 0' }}>
+                    {categories.filter(cat => {
+                      return cat.name.toLowerCase().includes(mainDropdownSearch.toLowerCase());
+                    }).length === 0 ? (
+                      <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '14px' }}>
+                        No categories found.
+                      </div>
+                    ) : (
+                      categories.filter(cat => {
+                        return cat.name.toLowerCase().includes(mainDropdownSearch.toLowerCase());
+                      }).map(cat => {
+                        const enabledCount = cat.tests.filter(t => enabledTests.includes(t)).length;
+                        return (
+                          <div 
+                            key={cat.name}
+                            className="custom-select-option"
+                            style={{
+                              padding: '12px 16px',
+                              cursor: 'pointer',
+                              backgroundColor: activeCategory === cat.name ? '#f1f5f9' : 'transparent',
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              fontSize: '14px',
+                              color: activeCategory === cat.name ? 'var(--primary)' : 'var(--text-main)',
+                              fontWeight: activeCategory === cat.name ? 600 : 500
+                            }}
+                            onClick={() => {
+                              setActiveCategory(cat.name);
+                              setIsMainDropdownOpen(false);
+                              setMainDropdownSearch('');
+                            }}
+                          >
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                               {cat.name}
+                            </span>
+                            <span style={{ 
+                              fontSize: '12px', 
+                              color: activeCategory === cat.name ? 'var(--primary)' : '#64748b',
+                              backgroundColor: activeCategory === cat.name ? 'rgba(203, 160, 40, 0.1)' : '#f1f5f9',
+                              padding: '2px 8px',
+                              borderRadius: '12px'
+                            }}>
+                              {enabledCount}/{cat.tests.length}
+                            </span>
+                          </div>
+                        );
+                      })
+                    )}
                   </div>
-                  <button className="btn-primary" onClick={() => setIsAddingTest(true)}>
-                    <Plus size={16} /> Add Test
-                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Content for Selected Category */}
+            <div className="category-content-container">
+              <div className="sp-detail-header">
+                  <div>
+                    <h3 className="sp-detail-title">{activeCategory} Tests</h3>
+                    <p className="sp-detail-subtitle">Manage availability for all tests under {activeCategory}.</p>
+                  </div>
+                  <div className="sp-search-bar">
+                    <Search size={16} className="text-muted" />
+                    <input 
+                      type="text" 
+                      placeholder="Search tests..." 
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
                 </div>
                 
                 <div className="test-settings-list">
-                  {/* Inline Add Test Form */}
-                  {isAddingTest && (
-                    <div className="test-setting-row" style={{ backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px', marginBottom: '16px', border: '1px solid var(--primary)' }}>
-                      <div className="test-setting-info" style={{ flex: 1, marginRight: '16px' }}>
-                        <input 
-                          autoFocus
-                          type="text" 
-                          className="form-input" 
-                          placeholder="Enter new test name..."
-                          value={newTestName}
-                          onChange={(e) => setNewTestName(e.target.value)}
-                          onKeyDown={(e) => e.key === 'Enter' && handleAddTest()}
-                        />
-                      </div>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                         <button className="btn-primary" style={{ padding: '8px 16px' }} onClick={handleAddTest}>
-                           <Save size={16} /> Save
-                         </button>
-                         <button className="btn-secondary" style={{ padding: '8px 12px' }} onClick={() => setIsAddingTest(false)}>
-                           <X size={16} />
-                         </button>
-                      </div>
-                    </div>
-                  )}
-
                   {filteredCategories.find(c => c.name === activeCategory)?.tests.map(test => {
                     const isSelected = enabledTests.includes(test);
                     return (
@@ -258,7 +295,6 @@ export default function ServicesAndPackages() {
                 </div>
               </div>
             </div>
-          </div>
         )}
 
         {/* --- TAB: HEALTH PACKAGES --- */}
@@ -295,7 +331,7 @@ export default function ServicesAndPackages() {
                     </div>
                   </div>
                   <div className="package-actions">
-                    <button className="btn-icon-action" title="Edit Package">
+                    <button className="btn-icon-action" title="Edit Package" onClick={() => handleEditPackage(pkg)}>
                       <Edit2 size={16} />
                     </button>
                     <button className="btn-icon-action danger" title="Delete Package">
@@ -315,96 +351,263 @@ export default function ServicesAndPackages() {
           </div>
         )}
 
+        {/* --- TAB: REFERENCE RANGES --- */}
+        {activeTab === 'reference' && (
+          <div className="tab-pane fadeIn">
+            <div className="sp-header-row" style={{ marginBottom: '16px' }}>
+              <div>
+                <h2 className="sp-title">Clinic-Specific Reference Ranges</h2>
+                <p className="sp-subtitle">Display only. Changes are handled by Platform/System Admin.</p>
+              </div>
+            </div>
+
+            <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px' }}>
+                <thead style={{ backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                  <tr>
+                    <th style={{ padding: '12px 16px', fontWeight: 600, color: '#475569' }}>Test</th>
+                    <th style={{ padding: '12px 16px', fontWeight: 600, color: '#475569' }}>Parameter</th>
+                    <th style={{ padding: '12px 16px', fontWeight: 600, color: '#475569' }}>Unit</th>
+                    <th style={{ padding: '12px 16px', fontWeight: 600, color: '#475569' }}>Male Range</th>
+                    <th style={{ padding: '12px 16px', fontWeight: 600, color: '#475569' }}>Female Range</th>
+                    <th style={{ padding: '12px 16px', fontWeight: 600, color: '#475569' }}>Age Range</th>
+                    <th style={{ padding: '12px 16px', fontWeight: 600, color: '#475569' }}>Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>Glucose</td>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>Fasting Glucose</td>
+                    <td style={{ padding: '12px 16px', color: '#64748b' }}>mg/dL</td>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>70 - 99</td>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>70 - 99</td>
+                    <td style={{ padding: '12px 16px', color: '#64748b' }}>—</td>
+                    <td style={{ padding: '12px 16px', color: '#64748b' }}>Fasting required</td>
+                  </tr>
+                  <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>HbA1c</td>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>HbA1c</td>
+                    <td style={{ padding: '12px 16px', color: '#64748b' }}>%</td>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>&lt; 5.7</td>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>&lt; 5.7</td>
+                    <td style={{ padding: '12px 16px', color: '#64748b' }}>—</td>
+                    <td style={{ padding: '12px 16px', color: '#64748b' }}>—</td>
+                  </tr>
+                  <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>CBC</td>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>Hemoglobin</td>
+                    <td style={{ padding: '12px 16px', color: '#64748b' }}>g/dL</td>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>13.5 - 17.5</td>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>12.0 - 15.5</td>
+                    <td style={{ padding: '12px 16px', color: '#64748b' }}>—</td>
+                    <td style={{ padding: '12px 16px', color: '#64748b' }}>—</td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>Lipid Profile</td>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>LDL</td>
+                    <td style={{ padding: '12px 16px', color: '#64748b' }}>mg/dL</td>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>&lt; 100</td>
+                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>&lt; 100</td>
+                    <td style={{ padding: '12px 16px', color: '#64748b' }}>—</td>
+                    <td style={{ padding: '12px 16px', color: '#64748b' }}>—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        )}
+
       </div>
 
-      {/* --- ADD PACKAGE DRAWER --- */}
+      {/* --- ADD / EDIT PACKAGE MODAL --- */}
       {showDrawer && (
-        <div className="drawer-overlay">
-          <div className="drawer-panel">
-            <div className="drawer-header">
-              <h3 className="drawer-title">Create New Package</h3>
-              <button className="drawer-close" onClick={() => setShowDrawer(false)}>
+        <div className="modal-overlay">
+          <div className="modal-panel">
+            <div className="modal-header">
+              <h3 className="modal-title">{editingPackageId ? 'Edit Package' : 'Create New Package'}</h3>
+              <button className="modal-close" onClick={handleCloseDrawer}>
                 <X size={20} />
               </button>
             </div>
             
-            <div className="drawer-body">
-              <div className="form-group">
-                <label className="form-label">Package Name</label>
-                <div className="input-with-icon-drawer">
-                  <FileText size={18} className="input-icon" />
-                  <input 
-                    type="text" 
-                    className="form-input" 
-                    placeholder="e.g. Annual Health Checkup" 
-                    value={newPkgName}
-                    onChange={(e) => setNewPkgName(e.target.value)}
-                  />
+            <div className="modal-body">
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Package Name</label>
+                  <div className="input-with-icon-drawer">
+                    <FileText size={18} className="input-icon" />
+                    <input 
+                      type="text" 
+                      className="form-input" 
+                      placeholder="e.g. Annual Health Checkup" 
+                      value={newPkgName}
+                      onChange={(e) => setNewPkgName(e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="form-group">
-                <label className="form-label">Package Code</label>
-                <div className="input-with-icon-drawer">
-                  <Barcode size={18} className="input-icon" />
-                  <input 
-                    type="text" 
-                    className="form-input" 
-                    placeholder="Auto-generated code" 
-                    value={newPkgCode}
-                    disabled
-                    style={{ backgroundColor: '#f1f5f9', cursor: 'not-allowed', color: '#64748b' }}
-                  />
+                <div className="form-group">
+                  <label className="form-label">Package Code</label>
+                  <div className="input-with-icon-drawer">
+                    <Barcode size={18} className="input-icon" />
+                    <input 
+                      type="text" 
+                      className="form-input" 
+                      placeholder="Auto-generated code" 
+                      value={newPkgCode}
+                      disabled
+                      style={{ backgroundColor: '#f1f5f9', cursor: 'not-allowed', color: '#64748b' }}
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="form-group" style={{ marginTop: '12px' }}>
+              <div className="form-group" style={{ marginTop: '4px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                   <label className="form-label" style={{ margin: 0 }}>Included Tests</label>
                   <span className="selected-count-badge">{newPkgTests.length} selected</span>
                 </div>
                 <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: '0 0 12px 0' }}>Select tests to include in this package. Only enabled clinic tests are shown.</p>
                 
-                <div className="tests-selection-area">
-                  {/* We only show tests that are currently "enabled" for the clinic */}
-                  {categories.map(cat => {
-                    const availableTests = cat.tests.filter(t => enabledTests.includes(t));
-                    if (availableTests.length === 0) return null;
-
-                    return (
-                      <div key={cat.name} className="selection-category">
-                        <div className="selection-cat-title">
-                          <FlaskConical size={14} className="text-muted" />
-                          {cat.name}
+                <div className="tests-selection-tabs-layout">
+                  {/* Custom Searchable Dropdown */}
+                  <div style={{ position: 'relative', marginBottom: '16px' }}>
+                    <div 
+                      className="form-input" 
+                      style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', backgroundColor: '#f8fafc' }}
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    >
+                      <span style={{ fontWeight: 500, color: 'var(--text-main)' }}>
+                        {activeNewPkgCategory || 'Select category...'}
+                      </span>
+                      <ChevronDown size={16} className="text-muted" />
+                    </div>
+                    
+                    {isDropdownOpen && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        backgroundColor: 'white',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                        marginTop: '4px',
+                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                        zIndex: 10,
+                        maxHeight: '300px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        overflow: 'hidden'
+                      }}>
+                        <div style={{ padding: '8px', borderBottom: '1px solid #e2e8f0', backgroundColor: '#f8fafc' }}>
+                          <div className="sp-search-bar" style={{ width: '100%', padding: '8px 12px', backgroundColor: 'white' }}>
+                            <Search size={14} className="text-muted" />
+                            <input 
+                              type="text" 
+                              placeholder="Search category..." 
+                              value={dropdownSearch}
+                              onChange={(e) => setDropdownSearch(e.target.value)}
+                              style={{ fontSize: '13px' }}
+                              onClick={(e) => e.stopPropagation()}
+                            />
+                          </div>
                         </div>
-                        <div className="selection-tags">
-                          {availableTests.map(test => {
-                            const isSelected = newPkgTests.includes(test);
-                            return (
-                              <div 
-                                key={test} 
-                                className={`selectable-tag ${isSelected ? 'selected' : ''}`}
-                                onClick={() => toggleNewPkgTest(test)}
-                              >
-                                {isSelected ? <Check size={14} /> : <Plus size={14} />}
-                                {test}
-                              </div>
-                            );
-                          })}
+                        <div style={{ overflowY: 'auto', flex: 1, padding: '4px 0' }}>
+                          {categories.filter(cat => {
+                            const availableTests = cat.tests.filter(t => enabledTests.includes(t));
+                            if (availableTests.length === 0) return false;
+                            return cat.name.toLowerCase().includes(dropdownSearch.toLowerCase());
+                          }).length === 0 ? (
+                            <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>
+                              No categories found.
+                            </div>
+                          ) : (
+                            categories.filter(cat => {
+                              const availableTests = cat.tests.filter(t => enabledTests.includes(t));
+                              if (availableTests.length === 0) return false;
+                              return cat.name.toLowerCase().includes(dropdownSearch.toLowerCase());
+                            }).map(cat => {
+                              const availableTests = cat.tests.filter(t => enabledTests.includes(t));
+                              const selectedCount = availableTests.filter(t => newPkgTests.includes(t)).length;
+                              return (
+                                <div 
+                                  key={cat.name}
+                                  className="custom-select-option"
+                                  style={{
+                                    padding: '10px 16px',
+                                    cursor: 'pointer',
+                                    backgroundColor: activeNewPkgCategory === cat.name ? '#f1f5f9' : 'transparent',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    fontSize: '14px',
+                                    color: activeNewPkgCategory === cat.name ? 'var(--primary)' : 'var(--text-main)',
+                                    fontWeight: activeNewPkgCategory === cat.name ? 600 : 500
+                                  }}
+                                  onClick={() => {
+                                    setActiveNewPkgCategory(cat.name);
+                                    setIsDropdownOpen(false);
+                                    setDropdownSearch('');
+                                  }}
+                                >
+                                  <span>{cat.name}</span>
+                                  <span style={{ 
+                                    fontSize: '12px', 
+                                    color: activeNewPkgCategory === cat.name ? 'var(--primary)' : '#64748b',
+                                    backgroundColor: activeNewPkgCategory === cat.name ? 'rgba(203, 160, 40, 0.1)' : '#f1f5f9',
+                                    padding: '2px 8px',
+                                    borderRadius: '12px'
+                                  }}>
+                                    {selectedCount}/{availableTests.length}
+                                  </span>
+                                </div>
+                              );
+                            })
+                          )}
                         </div>
                       </div>
-                    );
-                  })}
-                  {enabledTests.length === 0 && (
-                    <div style={{ fontSize: '13px', color: '#ef4444', textAlign: 'center', padding: '16px' }}>
-                      No tests are currently enabled for this clinic. Please enable tests in the "Test Availability" tab first.
+                    )}
+                  </div>
+
+                  {/* Test List for Active Category */}
+                  <div className="category-content-container" style={{ padding: '16px' }}>
+                    <div className="test-settings-list">
+                      {categories.find(c => c.name === activeNewPkgCategory)?.tests
+                        .filter(t => enabledTests.includes(t))
+                        .map(test => {
+                        const isSelected = newPkgTests.includes(test);
+                        return (
+                          <div key={test} className="test-setting-row" style={{ padding: '12px 0' }}>
+                            <div className="test-setting-info">
+                              <span className="test-setting-name">{test}</span>
+                              <span className="test-setting-desc">Standard diagnostic test</span>
+                            </div>
+                            <button 
+                              className={`add-test-btn ${isSelected ? 'added' : ''}`}
+                              onClick={() => toggleNewPkgTest(test)}
+                              title={isSelected ? "Remove test" : "Add test"}
+                            >
+                              {isSelected ? <Check size={16} /> : <Plus size={16} />}
+                            </button>
+                          </div>
+                        );
+                      })}
+                      
+                      {(!categories.find(c => c.name === activeNewPkgCategory) || 
+                        categories.find(c => c.name === activeNewPkgCategory)?.tests.filter(t => enabledTests.includes(t)).length === 0) && (
+                        <div style={{ color: 'var(--text-muted)', padding: '24px 0', textAlign: 'center' }}>
+                          No enabled tests in this category.
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="drawer-footer">
-              <button className="btn-secondary" onClick={() => setShowDrawer(false)}>Cancel</button>
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={handleCloseDrawer}>Cancel</button>
               <button className="btn-primary" onClick={handleSavePackage}>Save Package</button>
             </div>
           </div>

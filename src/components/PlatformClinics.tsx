@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { Search, Plus, Filter, Building2, MoreVertical, CheckCircle2, XCircle, X, AlertTriangle, UserPlus, Edit2, Clock, Activity } from 'lucide-react';
+import { Search, Plus, Filter, Building2, MoreVertical, CheckCircle2, XCircle, X, AlertTriangle, UserPlus, Edit2, Clock, Activity, Eye } from 'lucide-react';
 import EmailDemoModal from './EmailDemoModal';
 import PlatformClinicDetail from './PlatformClinicDetail';
 import './PlatformAdmin.css';
 
 const INITIAL_CLINICS = [
-  { id: 'C-001', code: 'DT-CLINIC', type: 'Clinic', name: 'Downtown Clinic', legalName: 'Downtown Medical Services LLC', address: '123 Main St, City', contactEmail: 'contact@downtown.com', contactPhone: '+66812345671', country: 'Thailand', timezone: 'Asia/Bangkok', language: 'English', status: 'Active', admin: 'sarah.chen@email.com', activeAdmins: 2, pendingAdmins: 0, created: '2023-01-15', createdBy: 'System Admin', firstActivatedDate: '2023-01-20', lastStatusChangedDate: '2023-01-20', lastUpdated: '2023-08-01', updatedBy: 'System Admin' },
-  { id: 'C-002', code: 'UP-HOSP', type: 'Hospital', name: 'Uptown Hospital', legalName: 'Uptown General Hospital Corp', address: '456 Oak Ave, City', contactEmail: 'info@uptown.com', contactPhone: '+66812345672', country: 'Thailand', timezone: 'Asia/Bangkok', language: 'Thai', status: 'Active', admin: 'j.smith@email.com', activeAdmins: 5, pendingAdmins: 1, created: '2023-03-22', createdBy: 'System Admin', firstActivatedDate: '2023-04-10', lastStatusChangedDate: '2023-04-10', lastUpdated: '2023-07-15', updatedBy: 'System Admin' },
-  { id: 'C-003', code: 'WS-HEALTH', type: 'Clinic', name: 'Westside Health Center', legalName: 'Westside Community Health', address: '789 Pine Rd, City', contactEmail: 'hello@westside.com', contactPhone: '+66812345673', country: 'Thailand', timezone: 'Asia/Bangkok', language: 'English', status: 'Setup Pending', admin: 'Not Assigned', activeAdmins: 0, pendingAdmins: 0, created: '2023-08-10', createdBy: 'System Admin', firstActivatedDate: null, lastStatusChangedDate: '2023-08-10', lastUpdated: '2023-08-10', updatedBy: 'System Admin' },
-  { id: 'C-004', code: 'NP-CLINIC', type: 'Clinic', name: 'North Park Clinic', legalName: 'North Park Care LLC', address: '321 Elm St, City', contactEmail: 'support@northpark.com', contactPhone: '+66812345674', country: 'Thailand', timezone: 'Asia/Bangkok', language: 'Thai', status: 'Suspended', admin: 'm.johnson@email.com', activeAdmins: 1, pendingAdmins: 0, created: '2022-11-05', createdBy: 'System Admin', firstActivatedDate: '2022-11-20', lastStatusChangedDate: '2023-08-01', lastUpdated: '2023-08-01', updatedBy: 'System Admin', suspensionReason: 'Non-payment of platform fees', suspendedDate: '2023-08-01', suspendedBy: 'Billing Admin' },
+  { id: 'C-001', code: 'BKK001', name: 'Bangkok Wellness Clinic', address: 'Bangkok, Thailand', status: 'Active', adminName: 'Suda Klinprasert', adminEmail: 'suda@bkkwellness.co.th', staffCount: 42, createdDate: 'Jan 15, 2024', createdAgo: '10 months ago' },
+  { id: 'C-002', code: 'CNX002', name: 'Chiang Mai Health Center', address: 'Chiang Mai, Thailand', status: 'Pending Setup', adminName: 'Anan Wongchai', adminEmail: 'anan@cmhealth.co.th', staffCount: 18, createdDate: 'Mar 3, 2024', createdAgo: '8 months ago' },
+  { id: 'C-003', code: 'HKT003', name: 'Phuket Care Clinic', address: 'Phuket, Thailand', status: 'Active', adminName: 'Kanyarat Thongdee', adminEmail: 'kanyarat@phuketcare.co.th', staffCount: 27, createdDate: 'Feb 20, 2024', createdAgo: '8 months ago' },
+  { id: 'C-004', code: 'PTY004', name: 'Pattaya Medical', address: 'Pattaya, Thailand', status: 'Deactivated', adminName: 'Somchai Rattanakul', adminEmail: 'somchai@pattayamed.co.th', staffCount: 0, createdDate: 'Nov 10, 2023', createdAgo: '1 year ago' },
 ];
 
 export default function PlatformClinics() {
@@ -26,8 +26,8 @@ export default function PlatformClinics() {
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
 
   // Filter States
-  const [statusFilter, setStatusFilter] = useState<string>('');
-  const [adminFilter, setAdminFilter] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<string>('All Statuses');
+  const [dateFilter, setDateFilter] = useState<string>('All Dates');
 
   // Form State
   const [newClinic, setNewClinic] = useState({ 
@@ -64,22 +64,13 @@ export default function PlatformClinics() {
                           c.code.toLowerCase().includes(searchTerm.toLowerCase());
     
     let matchesStatus = true;
-    if (statusFilter === '') {
-      matchesStatus = c.status !== 'Cancelled';
-    } else if (statusFilter === 'All') {
-      matchesStatus = true;
-    } else {
+    if (statusFilter !== 'All Statuses') {
       matchesStatus = c.status === statusFilter;
     }
 
-    let matchesAdmin = true;
-    if (adminFilter === 'Assigned') {
-      matchesAdmin = c.admin !== 'Not Assigned';
-    } else if (adminFilter === 'Not Assigned') {
-      matchesAdmin = c.admin === 'Not Assigned';
-    }
+    let matchesDate = true; // Placeholder for date filtering logic
 
-    return matchesSearch && matchesStatus && matchesAdmin;
+    return matchesSearch && matchesStatus && matchesDate;
   });
 
   const handleCreateSubmit = (e: React.FormEvent) => {
@@ -242,171 +233,216 @@ export default function PlatformClinics() {
         </div>
       </div>
 
-      <div className="table-controls mt-6">
-        <div className="search-bar" style={{ width: '300px' }}>
-          <Search size={20} className="text-muted" />
-          <input 
-            type="text" 
-            placeholder="Search by name or code..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="relative">
-          <button className="btn-secondary" onClick={() => setFilterMenuOpen(!filterMenuOpen)}>
-            <Filter size={16} className="mr-2" />
-            Filter {(statusFilter || adminFilter) && <span className="w-2 h-2 rounded-full bg-indigo-600 ml-2"></span>}
-          </button>
-          
-          {filterMenuOpen && (
-            <div className="dropdown-menu p-4" style={{ width: '250px' }}>
-              <div className="form-group mb-3">
-                <label className="form-label text-xs">Status</label>
-                <select className="form-input text-sm" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
-                  <option value="">Default (Exclude Cancelled)</option>
-                  <option value="All">All Statuses</option>
-                  <option value="Setup Pending">Setup Pending</option>
-                  <option value="Active">Active</option>
-                  <option value="Suspended">Suspended</option>
-                  <option value="Cancelled">Cancelled</option>
-                </select>
-              </div>
-              <div className="form-group mb-0">
-                <label className="form-label text-xs">Administrator</label>
-                <select className="form-input text-sm" value={adminFilter} onChange={e => setAdminFilter(e.target.value)}>
-                  <option value="">All</option>
-                  <option value="Assigned">Admin Assigned</option>
-                  <option value="Not Assigned">Admin Not Assigned</option>
-                </select>
-              </div>
+      <div className="grid grid-cols-4 gap-4 mt-6">
+        <div className="bg-white p-4 rounded-xl border border-gray-200 flex items-center shadow-sm">
+          <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mr-4">
+            <Building2 size={24} className="text-blue-500" />
+          </div>
+          <div>
+            <div className="text-sm text-gray-500 mb-1">Total Clinics</div>
+            <div className="text-2xl font-bold text-gray-900">24</div>
+            <div className="text-xs text-green-600 flex items-center mt-1">
+              <span className="mr-1">↑ +3</span>
+              <span className="text-gray-400 ml-1">vs. last month</span>
             </div>
-          )}
+          </div>
+        </div>
+        <div className="bg-white p-4 rounded-xl border border-gray-200 flex items-center shadow-sm">
+          <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center mr-4">
+            <CheckCircle2 size={24} className="text-green-500" />
+          </div>
+          <div>
+            <div className="text-sm text-gray-500 mb-1">Active Clinics</div>
+            <div className="text-2xl font-bold text-gray-900">18</div>
+            <div className="text-xs text-green-600 flex items-center mt-1">
+              <span className="mr-1">↑ +2</span>
+              <span className="text-gray-400 ml-1">vs. last month</span>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white p-4 rounded-xl border border-gray-200 flex items-center shadow-sm">
+          <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center mr-4">
+            <Clock size={24} className="text-orange-500" />
+          </div>
+          <div>
+            <div className="text-sm text-gray-500 mb-1">Pending Setup</div>
+            <div className="text-2xl font-bold text-gray-900">3</div>
+            <div className="text-xs text-gray-400 flex items-center mt-1">
+              <span className="mr-1">0</span>
+              <span className="text-gray-400 ml-1">vs. last month</span>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white p-4 rounded-xl border border-gray-200 flex items-center shadow-sm">
+          <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mr-4">
+            <X size={24} className="text-red-500" />
+          </div>
+          <div>
+            <div className="text-sm text-gray-500 mb-1">Deactivated Clinics</div>
+            <div className="text-2xl font-bold text-gray-900">3</div>
+            <div className="text-xs text-red-500 flex items-center mt-1">
+              <span className="mr-1">~ +1</span>
+              <span className="text-gray-400 ml-1">vs. last month</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="table-container mt-4 flex-1">
-        <table className="data-table">
+      <div className="flex items-end gap-4 mt-6">
+        <div className="flex-1">
+          <label className="block text-xs font-medium text-gray-700 mb-1">Search</label>
+          <div className="search-bar" style={{ width: '100%', maxWidth: '400px' }}>
+            <Search size={16} className="text-muted" />
+            <input 
+              type="text" 
+              placeholder="Search clinic code or name..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+        
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1">Status</label>
+          <select 
+            className="form-input text-sm h-[42px] w-48" 
+            value={statusFilter} 
+            onChange={e => setStatusFilter(e.target.value)}
+          >
+            <option value="All Statuses">All Statuses</option>
+            <option value="Active">Active</option>
+            <option value="Pending Setup">Pending Setup</option>
+            <option value="Deactivated">Deactivated</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1">Created Date</label>
+          <select 
+            className="form-input text-sm h-[42px] w-48" 
+            value={dateFilter} 
+            onChange={e => setDateFilter(e.target.value)}
+          >
+            <option value="All Dates">All Dates</option>
+            <option value="Last 7 Days">Last 7 Days</option>
+            <option value="Last 30 Days">Last 30 Days</option>
+          </select>
+        </div>
+
+        <button 
+          className="btn-secondary h-[42px] ml-auto px-6 text-sm"
+          onClick={() => {
+            setSearchTerm('');
+            setStatusFilter('All Statuses');
+            setDateFilter('All Dates');
+          }}
+        >
+          Clear Filters
+        </button>
+      </div>
+
+      <div className="flex justify-between items-center mt-6 py-3 border-t border-gray-100">
+        <span className="text-sm text-gray-500">Showing 1-{filteredClinics.length} of {filteredClinics.length} clinics</span>
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <span>Show</span>
+          <select className="border border-gray-300 rounded-md px-2 py-1 text-sm bg-white">
+            <option>10</option>
+            <option>20</option>
+            <option>50</option>
+          </select>
+          <span>per page</span>
+        </div>
+      </div>
+
+      <div className="table-container mt-2 flex-1 rounded-lg border border-gray-200">
+        <table className="data-table w-full text-left border-collapse">
           <thead>
-            <tr>
-              <th>Clinic Code</th>
-              <th>Clinic Name & Address</th>
-              <th>Status</th>
-              <th>Clinic Admin(s)</th>
-              <th>Last Updated</th>
-              <th className="text-right">Actions</th>
+            <tr className="bg-gray-50 text-gray-500 text-xs uppercase">
+              <th className="py-3 px-4 border-b border-gray-200 font-medium whitespace-nowrap">Clinic Code <span className="ml-1 text-[10px]">↕</span></th>
+              <th className="py-3 px-4 border-b border-gray-200 font-medium whitespace-nowrap">Clinic Name <span className="ml-1 text-[10px]">↕</span></th>
+              <th className="py-3 px-4 border-b border-gray-200 font-medium whitespace-nowrap">Status <span className="ml-1 text-[10px]">↕</span></th>
+              <th className="py-3 px-4 border-b border-gray-200 font-medium whitespace-nowrap">Primary Admin <span className="ml-1 text-[10px]">↕</span></th>
+              <th className="py-3 px-4 border-b border-gray-200 font-medium whitespace-nowrap">Staff Count <span className="ml-1 text-[10px]">↕</span></th>
+              <th className="py-3 px-4 border-b border-gray-200 font-medium whitespace-nowrap">Created Date <span className="ml-1 text-[10px]">↕</span></th>
+              <th className="py-3 px-4 border-b border-gray-200 font-medium text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredClinics.map(clinic => (
-              <tr key={clinic.id} onClick={() => setSelectedClinic(clinic)} className="cursor-pointer">
-                <td className="font-medium text-indigo-600 hover:underline" onClick={(e) => { e.stopPropagation(); setSelectedClinic(clinic); }}>
+              <tr key={clinic.id} onClick={() => setSelectedClinic(clinic)} className="cursor-pointer border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                <td className="py-3 px-4 font-medium text-gray-900" onClick={(e) => { e.stopPropagation(); setSelectedClinic(clinic); }}>
                   {clinic.code}
                 </td>
-                <td>
-                  <div className="flex items-center">
-                    <div className="mr-3 p-2 bg-gray-100 rounded-md">
-                      <Building2 size={16} className="text-gray-500" />
-                    </div>
-                    <div>
-                      <div className="font-medium">{clinic.name}</div>
-                      <div className="text-xs text-gray-500 mt-1">{clinic.address}</div>
-                    </div>
-                  </div>
+                <td className="py-3 px-4">
+                  <div className="font-medium text-indigo-700">{clinic.name}</div>
+                  <div className="text-xs text-gray-500 mt-0.5">{clinic.address}</div>
                 </td>
-                <td>
-                  <span className={`status-badge ${clinic.status === 'Active' ? 'success' : clinic.status === 'Suspended' ? 'error' : clinic.status === 'Cancelled' ? 'bg-gray-100 text-gray-700' : 'warning'}`}>
-                    {clinic.status === 'Active' && <CheckCircle2 size={12} className="mr-1" />}
-                    {clinic.status === 'Suspended' && <XCircle size={12} className="mr-1" />}
-                    {clinic.status === 'Cancelled' && <XCircle size={12} className="mr-1" />}
-                    {clinic.status === 'Setup Pending' && <Clock size={12} className="mr-1" />}
+                <td className="py-3 px-4">
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${clinic.status === 'Active' ? 'bg-green-100 text-green-800' : clinic.status === 'Deactivated' ? 'bg-red-100 text-red-800' : 'bg-orange-100 text-orange-800'}`}>
                     {clinic.status}
                   </span>
                 </td>
-                <td className="text-sm">
-                  {clinic.admin !== 'Not Assigned' ? (
-                    <div className="flex items-center">
-                      <div className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold mr-2">
-                        {clinic.admin.charAt(0).toUpperCase()}
-                      </div>
-                      {clinic.admin}
-                    </div>
-                  ) : (
-                    <span className="text-gray-400 italic">Not Assigned</span>
-                  )}
+                <td className="py-3 px-4 text-sm">
+                  <div className="font-medium text-gray-900">{clinic.adminName}</div>
+                  <div className="text-xs text-gray-500">{clinic.adminEmail}</div>
                 </td>
-                <td className="text-sm text-gray-500">Just now</td>
-                <td className="text-right" style={{ position: 'relative' }} onClick={e => e.stopPropagation()}>
-                  <button 
-                    className="btn-icon"
-                    onClick={() => setShowActionMenu(showActionMenu === clinic.id ? null : clinic.id)}
-                  >
-                    <MoreVertical size={16} />
-                  </button>
+                <td className="py-3 px-4 text-sm font-medium text-gray-900">
+                  {clinic.staffCount}
+                </td>
+                <td className="py-3 px-4">
+                  <div className="text-sm font-medium text-gray-900">{clinic.createdDate}</div>
+                  <div className="text-xs text-gray-500">{clinic.createdAgo}</div>
+                </td>
+                <td className="py-3 px-4 text-right" style={{ position: 'relative' }} onClick={e => e.stopPropagation()}>
+                  <div className="flex justify-center items-center gap-4 text-gray-400">
+                    <button 
+                      className="hover:text-indigo-600 transition-colors"
+                      onClick={() => setShowActionMenu(showActionMenu === clinic.id ? null : clinic.id)}
+                    >
+                      <MoreVertical size={18} />
+                    </button>
+                  </div>
                   
                   {/* Action Menu Dropdown */}
                   {showActionMenu === clinic.id && (
-                    <div className="dropdown-menu">
-                      <button className="dropdown-item" onClick={() => { setSelectedClinic(clinic); setShowActionMenu(null); }}>
+                    <div className="dropdown-menu mt-2 right-4 shadow-lg border border-gray-100 z-10 w-48 bg-white rounded-md">
+                      <button className="dropdown-item w-full text-left px-4 py-2 hover:bg-gray-50 text-sm flex items-center" onClick={() => { setSelectedClinic(clinic); setShowActionMenu(null); }}>
                         <Search size={14} className="mr-2" /> View Details
                       </button>
                       
-                      {/* Setup Pending and Active can Edit */}
-                      {(clinic.status === 'Setup Pending' || clinic.status === 'Active') && (
-                        <button className="dropdown-item" onClick={() => openEditModal(clinic)}>
-                          <Edit2 size={14} className="mr-2" /> Edit Information
+                      <button className="dropdown-item w-full text-left px-4 py-2 hover:bg-gray-50 text-sm flex items-center" onClick={() => openEditModal(clinic)}>
+                        <Edit2 size={14} className="mr-2" /> Edit Information
+                      </button>
+                      
+                      <div className="border-t border-gray-100 my-1"></div>
+
+                      {clinic.status === 'Pending Setup' && (
+                        <button 
+                          className="dropdown-item success w-full text-left px-4 py-2 hover:bg-green-50 text-green-600 text-sm flex items-center"
+                          onClick={() => {
+                            setShowStatusConfirmModal({ clinic, newStatus: 'Active' });
+                            setShowActionMenu(null);
+                          }}
+                        >
+                          <CheckCircle2 size={14} className="mr-2" /> Activate Clinic
                         </button>
-                      )}
-                      
-                      {/* Assign/Manage Admin available for Setup Pending, Active, Suspended */}
-                      {clinic.status !== 'Cancelled' && (
-                        <button className="dropdown-item" onClick={() => openAssignAdminModal(clinic)}>
-                          <UserPlus size={14} className="mr-2" /> {clinic.admin !== 'Not Assigned' ? 'Manage Admin' : 'Assign Admin'}
-                        </button>
-                      )}
-                      
-                      {clinic.status !== 'Cancelled' && <div className="border-t my-1"></div>}
-                      
-                      {clinic.status === 'Setup Pending' && (
-                        <>
-                          <button 
-                            className="dropdown-item success"
-                            disabled={clinic.admin === 'Not Assigned'}
-                            onClick={() => {
-                              if (clinic.admin !== 'Not Assigned') {
-                                setShowStatusConfirmModal({ clinic, newStatus: 'Active' });
-                                setShowActionMenu(null);
-                              }
-                            }}
-                          >
-                            <CheckCircle2 size={14} className="mr-2" /> Activate Clinic
-                          </button>
-                          <button 
-                            className="dropdown-item danger"
-                            onClick={() => {
-                              setShowStatusConfirmModal({ clinic, newStatus: 'Cancelled' });
-                              setShowActionMenu(null);
-                            }}
-                          >
-                            <X size={14} className="mr-2" /> Cancel Setup
-                          </button>
-                        </>
                       )}
 
                       {clinic.status === 'Active' && (
                         <button 
-                          className="dropdown-item danger"
+                          className="dropdown-item danger w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 text-sm flex items-center"
                           onClick={() => {
-                            setShowStatusConfirmModal({ clinic, newStatus: 'Suspended' });
+                            setShowStatusConfirmModal({ clinic, newStatus: 'Deactivated' });
                             setShowActionMenu(null);
                           }}
                         >
-                          <AlertTriangle size={14} className="mr-2" /> Suspend Clinic
+                          <AlertTriangle size={14} className="mr-2" /> Deactivate Clinic
                         </button>
                       )}
 
-                      {clinic.status === 'Suspended' && (
+                      {clinic.status === 'Deactivated' && (
                         <button 
-                          className="dropdown-item success"
+                          className="dropdown-item success w-full text-left px-4 py-2 hover:bg-green-50 text-green-600 text-sm flex items-center"
                           onClick={() => {
                             setShowStatusConfirmModal({ clinic, newStatus: 'Active' });
                             setShowActionMenu(null);
@@ -422,13 +458,20 @@ export default function PlatformClinics() {
             ))}
             {filteredClinics.length === 0 && (
               <tr>
-                <td colSpan={7} className="text-center py-8 text-gray-500">
+                <td colSpan={7} className="text-center py-12 text-gray-500">
                   No clinics found matching your search.
                 </td>
               </tr>
             )}
           </tbody>
         </table>
+        
+        {/* Pagination placeholder matching image */}
+        <div className="flex justify-end items-center py-4 px-6 gap-1 border-t border-gray-200">
+           <button className="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 text-sm">{"<"}</button>
+           <button className="w-8 h-8 flex items-center justify-center rounded border border-indigo-600 bg-indigo-600 text-white font-medium text-sm">1</button>
+           <button className="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 text-sm">{">"}</button>
+        </div>
       </div>
 
       {/* Overlay for closing action menu or filter menu */}
@@ -666,41 +709,30 @@ export default function PlatformClinics() {
             <div className="modal-body">
               <div className="flex items-start gap-4">
                 <div className={
-                  showStatusConfirmModal.newStatus === 'Suspended' || showStatusConfirmModal.newStatus === 'Cancelled' 
+                  showStatusConfirmModal.newStatus === 'Deactivated'
                   ? 'modal-icon-warning' 
                   : 'modal-icon-success'
                 }>
-                  {showStatusConfirmModal.newStatus === 'Suspended' || showStatusConfirmModal.newStatus === 'Cancelled' 
+                  {showStatusConfirmModal.newStatus === 'Deactivated'
                     ? <AlertTriangle size={24} /> 
                     : <CheckCircle2 size={24} />}
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-bold mb-2 text-gray-900">
-                    {showStatusConfirmModal.newStatus === 'Suspended' && 'Suspend Clinic?'}
+                    {showStatusConfirmModal.newStatus === 'Deactivated' && 'Deactivate Clinic?'}
                     {showStatusConfirmModal.newStatus === 'Active' && 'Activate Clinic?'}
-                    {showStatusConfirmModal.newStatus === 'Cancelled' && 'Cancel Clinic Setup?'}
                   </h3>
                   
                   <div className="text-sm text-gray-600 leading-relaxed mb-4">
-                    {showStatusConfirmModal.newStatus === 'Suspended' && (
-                      <>
-                        <p className="mb-2">Are you sure you want to suspend <strong>{showStatusConfirmModal.clinic.name}</strong>?</p>
-                        <ul className="list-disc pl-5 space-y-1 text-gray-700 font-medium">
-                          <li>Staff will be immediately blocked from logging in.</li>
-                          <li>No new Lab Orders can be created.</li>
-                          <li><span className="text-indigo-600">LIS results for already sent orders will continue to be received.</span></li>
-                        </ul>
-                      </>
+                    {showStatusConfirmModal.newStatus === 'Deactivated' && (
+                      <p className="mb-2">Are you sure you want to deactivate <strong>{showStatusConfirmModal.clinic.name}</strong>?</p>
                     )}
                     {showStatusConfirmModal.newStatus === 'Active' && (
                       <p>Activate <strong>{showStatusConfirmModal.clinic.name}</strong>? Clinic staff will gain access to the platform.</p>
                     )}
-                    {showStatusConfirmModal.newStatus === 'Cancelled' && (
-                      <p>Cancel setup for <strong>{showStatusConfirmModal.clinic.name}</strong>? This action cannot be undone. The Clinic Code will not be available for reuse.</p>
-                    )}
                   </div>
 
-                  {(showStatusConfirmModal.newStatus === 'Suspended' || showStatusConfirmModal.newStatus === 'Cancelled') && (
+                  {showStatusConfirmModal.newStatus === 'Deactivated' && (
                     <div className="form-group mb-0">
                       <label className="form-label">Reason Required *</label>
                       <textarea 
@@ -725,11 +757,10 @@ export default function PlatformClinics() {
               <button 
                 onClick={handleStatusChange} 
                 className="btn-primary" 
-                style={{ backgroundColor: (showStatusConfirmModal.newStatus === 'Suspended' || showStatusConfirmModal.newStatus === 'Cancelled') ? '#dc2626' : '#16a34a' }}
+                style={{ backgroundColor: showStatusConfirmModal.newStatus === 'Deactivated' ? '#dc2626' : '#16a34a' }}
               >
-                {showStatusConfirmModal.newStatus === 'Suspended' && 'Suspend Clinic'}
+                {showStatusConfirmModal.newStatus === 'Deactivated' && 'Deactivate Clinic'}
                 {showStatusConfirmModal.newStatus === 'Active' && 'Activate Clinic'}
-                {showStatusConfirmModal.newStatus === 'Cancelled' && 'Confirm Cancel'}
               </button>
             </div>
           </div>
