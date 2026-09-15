@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { Settings, Building2, FlaskConical, Save, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Settings, Building2, FlaskConical, Save, CheckCircle, AlertTriangle, Smartphone } from 'lucide-react';
 import './Dashboard.css';
-import ClinicSettings from './ClinicSettings';
-import LISMappingManagement from './LISMappingManagement';
+import MobileAppSettings from './MobileAppSettings';
 
 export default function PlatformSettings() {
   const [activeTab, setActiveTab] = useState('Platform');
@@ -19,139 +18,95 @@ export default function PlatformSettings() {
   };
 
   return (
-    <div className="h-full flex flex-col relative overflow-hidden p-6 bg-slate-50/50">
-      <div className="flex justify-between items-end mb-6">
+    <div className="dashboard-container h-full flex flex-col relative overflow-hidden bg-slate-50">
+      <div className="detail-header" style={{ padding: '24px', borderBottom: '1px solid #e2e8f0', backgroundColor: 'white' }}>
         <div>
-          <h1 className="prem-title">Configuration & Settings</h1>
-          <p className="prem-subtitle mt-2">Manage platform features, clinic information, and LIS integrations.</p>
+          <h1 style={{ fontSize: '24px', fontWeight: 700, margin: 0, color: '#0f172a' }}>Platform Settings</h1>
+          <p style={{ fontSize: '14px', color: '#64748b', marginTop: '4px', marginBottom: 0 }}>Manage platform features and mobile app configurations.</p>
         </div>
       </div>
 
-      <div className="prem-tabs mb-6 self-start">
+      <div className="detail-tabs" style={{ padding: '0 24px', backgroundColor: 'white', borderBottom: '1px solid #e2e8f0' }}>
         <button 
-          className={`prem-tab ${activeTab === 'Platform' ? 'active' : ''}`}
+          className={`detail-tab ${activeTab === 'Platform' ? 'active' : ''}`}
           onClick={() => setActiveTab('Platform')}
         >
           <Settings size={16} /> Platform Features
         </button>
         <button 
-          className={`prem-tab ${activeTab === 'Clinic' ? 'active' : ''}`}
-          onClick={() => setActiveTab('Clinic')}
+          className={`detail-tab ${activeTab === 'Mobile App' ? 'active' : ''}`}
+          onClick={() => setActiveTab('Mobile App')}
         >
-          <Building2 size={16} /> Clinic Configurations
-        </button>
-        <button 
-          className={`prem-tab ${activeTab === 'LIS' ? 'active' : ''}`}
-          onClick={() => setActiveTab('LIS')}
-        >
-          <FlaskConical size={16} /> LIS Integration
+          <Smartphone size={16} /> Mobile App Settings
         </button>
       </div>
 
-      <div className="flex-1 overflow-auto">
+      <div className="detail-content" style={{ padding: '24px', flex: 1, overflowY: 'auto' }}>
         {activeTab === 'Platform' && (
           <div className="max-w-3xl fadeIn">
-            <div className="glass-panel overflow-hidden mb-6">
-              <div className="p-5 border-b border-slate-200/60 bg-white/50 backdrop-blur-md flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <div className="detail-card">
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
+                <div style={{ padding: '6px', backgroundColor: '#eff6ff', borderRadius: '6px', color: '#3b82f6' }}>
                   <Settings size={18} />
                 </div>
-                <h3 className="font-bold text-slate-800">Platform Feature Flags</h3>
-              </div>
-              <div className="p-6 bg-white/40">
-                <div className="flex items-start justify-between py-5 border-b border-slate-100">
-                  <div className="pr-8">
-                    <h4 className="font-semibold text-slate-800">Multi-Tenant Management</h4>
-                    <p className="text-sm text-slate-500 mt-2 leading-relaxed">
+                Platform Feature Flags
+              </h3>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', paddingBottom: '24px', borderBottom: '1px solid #f1f5f9' }}>
+                  <div style={{ paddingRight: '32px' }}>
+                    <h4 style={{ fontSize: '15px', fontWeight: 600, color: '#1e293b', margin: '0 0 8px 0' }}>Multi-Tenant Management</h4>
+                    <p style={{ fontSize: '13px', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
                       Enable multi-clinic management capabilities. If disabled, the system operates in standalone hospital mode. 
                       Disabling this does not delete existing data.
                     </p>
                   </div>
-                  <label className="prem-toggle shrink-0">
+                  <label className="toggle-switch shrink-0" style={{ position: 'relative', display: 'inline-block', width: '44px', height: '24px' }}>
                     <input 
                       type="checkbox" 
                       checked={multiTenantEnabled}
                       onChange={() => setMultiTenantEnabled(!multiTenantEnabled)}
+                      style={{ opacity: 0, width: 0, height: 0 }}
                     />
-                    <span className="prem-toggle-slider"></span>
+                    <span className="slider round" style={{ position: 'absolute', cursor: 'pointer', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: multiTenantEnabled ? '#3b82f6' : '#cbd5e1', transition: '.4s', borderRadius: '24px' }}>
+                      <span style={{ position: 'absolute', height: '18px', width: '18px', left: multiTenantEnabled ? '22px' : '3px', bottom: '3px', backgroundColor: 'white', transition: '.4s', borderRadius: '50%' }}></span>
+                    </span>
                   </label>
                 </div>
 
-                <div className="flex items-start justify-between py-5">
-                  <div className="pr-8">
-                    <h4 className="font-semibold text-slate-800">Global Notifications</h4>
-                    <p className="text-sm text-slate-500 mt-2 leading-relaxed">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', paddingBottom: '8px' }}>
+                  <div style={{ paddingRight: '32px' }}>
+                    <h4 style={{ fontSize: '15px', fontWeight: 600, color: '#1e293b', margin: '0 0 8px 0' }}>Global Notifications</h4>
+                    <p style={{ fontSize: '13px', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
                       Allow platform-wide announcements and automated SMS/Email notifications to all clinics.
                     </p>
                   </div>
-                  <label className="prem-toggle shrink-0">
+                  <label className="toggle-switch shrink-0" style={{ position: 'relative', display: 'inline-block', width: '44px', height: '24px' }}>
                     <input 
                       type="checkbox" 
                       checked={globalNotifEnabled}
                       onChange={() => setGlobalNotifEnabled(!globalNotifEnabled)}
+                      style={{ opacity: 0, width: 0, height: 0 }}
                     />
-                    <span className="prem-toggle-slider"></span>
+                    <span className="slider round" style={{ position: 'absolute', cursor: 'pointer', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: globalNotifEnabled ? '#3b82f6' : '#cbd5e1', transition: '.4s', borderRadius: '24px' }}>
+                      <span style={{ position: 'absolute', height: '18px', width: '18px', left: globalNotifEnabled ? '22px' : '3px', bottom: '3px', backgroundColor: 'white', transition: '.4s', borderRadius: '50%' }}></span>
+                    </span>
                   </label>
                 </div>
               </div>
-              <div className="bg-slate-50/80 p-5 flex justify-end border-t border-slate-200/60">
-                <button className="prem-btn-primary" onClick={handleSavePlatformSettings} disabled={isSaving}>
-                  {isSaving ? 'Saving...' : <><Save size={16} /> Save Platform Settings</>}
+              
+              <div style={{ marginTop: '32px', paddingTop: '24px', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'flex-end' }}>
+                <button className="btn-primary" onClick={handleSavePlatformSettings} disabled={isSaving}>
+                  {isSaving ? 'Saving...' : <><Save size={16} className="mr-2 inline" /> Save Settings</>}
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {activeTab === 'Clinic' && (
-          <div className="fadeIn">
-            {/* Reusing existing ClinicSettings */}
-            <div className="mb-4 bg-blue-50 border-l-4 border-blue-500 p-3 rounded-r text-sm text-blue-800 flex gap-2">
-              <Building2 size={16} className="mt-0.5" />
-              <div>
-                <strong>Platform Admin Mode:</strong> You are viewing clinic settings. To modify settings for a specific clinic, ensure you have the correct clinic selected in the context switcher.
-              </div>
-            </div>
-            <ClinicSettings />
-          </div>
-        )}
-
-        {activeTab === 'LIS' && (
-          <div className="fadeIn flex flex-col gap-6">
-            <div className="glass-panel overflow-hidden">
-              <div className="p-5 border-b border-slate-200/60 bg-white/50 backdrop-blur-md flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                  <CheckCircle size={18} />
-                </div>
-                <h3 className="font-bold text-slate-800">LIS Connection Status</h3>
-              </div>
-              <div className="p-6 flex flex-wrap gap-8 bg-white/40">
-                <div className="flex-1 min-w-[200px]">
-                  <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Current Status</div>
-                  <div className="flex items-center gap-2 text-emerald-600 font-bold text-lg">
-                    <span className="status-dot text-emerald-500"></span> Connected
-                  </div>
-                </div>
-                <div className="flex-1 min-w-[200px]">
-                  <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Last Successful Connection</div>
-                  <div className="font-semibold text-slate-800">2026-08-24 12:45:00</div>
-                </div>
-                <div className="flex-1 min-w-[200px]">
-                  <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Last Failed Connection</div>
-                  <div className="font-semibold text-rose-600 flex items-center gap-1">
-                    <AlertTriangle size={16} /> 2026-08-23 09:12:00
-                  </div>
-                </div>
-                <div className="w-full mt-4 border-t border-slate-100 pt-6">
-                  <button className="prem-btn-secondary">Test Connection</button>
-                </div>
-              </div>
-            </div>
-
-            <div className="glass-panel overflow-hidden h-[600px] p-0 bg-white/60">
-              {/* Embed LISMappingManagement to manage the actual test mappings */}
-              <LISMappingManagement />
-            </div>
+        {activeTab === 'Mobile App' && (
+          <div className="fadeIn h-full">
+            <MobileAppSettings />
           </div>
         )}
       </div>

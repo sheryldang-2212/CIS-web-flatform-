@@ -43,7 +43,6 @@ const getNavGroups = (role: string) => {
       {
         groupName: 'MONITORING & LOGS',
         items: [
-          { name: 'Integration Monitoring', icon: Activity },
           { name: 'Platform Audit Logs', icon: FileKey }
         ]
       },

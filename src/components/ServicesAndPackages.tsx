@@ -3,8 +3,15 @@ import { Search, Check, Plus, Edit2, Trash2, X, Package, FileText, Barcode, Flas
 import { useClinicConfig } from '../context/ClinicConfigContext';
 import './ServicesAndPackages.css';
 
-export default function ServicesAndPackages() {
+export default function ServicesAndPackages({ currentRole }: { currentRole?: string }) {
   const { categories, packages, setPackages } = useClinicConfig();
+
+  const INITIAL_REFERENCE_RANGES = [
+    { id: '1', test: 'Glucose', parameter: 'Fasting Glucose', unit: 'mg/dL', maleRange: '70 - 99', femaleRange: '70 - 99', ageRange: '—', notes: 'Fasting required' },
+    { id: '2', test: 'HbA1c', parameter: 'HbA1c', unit: '%', maleRange: '< 5.7', femaleRange: '< 5.7', ageRange: '—', notes: '—' },
+    { id: '3', test: 'CBC', parameter: 'Hemoglobin', unit: 'g/dL', maleRange: '13.5 - 17.5', femaleRange: '12.0 - 15.5', ageRange: '—', notes: '—' },
+    { id: '4', test: 'Lipid Profile', parameter: 'LDL', unit: 'mg/dL', maleRange: '< 100', femaleRange: '< 100', ageRange: '—', notes: '—' }
+  ];
   
   const [activeTab, setActiveTab] = useState<'tests' | 'packages' | 'reference'>('tests');
   
@@ -30,6 +37,13 @@ export default function ServicesAndPackages() {
   // Custom Searchable Dropdown State (Main View)
   const [isMainDropdownOpen, setIsMainDropdownOpen] = useState(false);
   const [mainDropdownSearch, setMainDropdownSearch] = useState('');
+
+  // Reference Ranges State
+  const [referenceRanges, setReferenceRanges] = useState(INITIAL_REFERENCE_RANGES);
+  const [showRefModal, setShowRefModal] = useState(false);
+  const [editingRefId, setEditingRefId] = useState<string | null>(null);
+  const [newRefData, setNewRefData] = useState({ test: '', parameter: '', unit: '', maleRange: '', femaleRange: '', ageRange: '', notes: '' });
+  const allTests = categories.flatMap(cat => cat.tests);
 
   // Initialize activeNewPkgCategory with the first category that has enabled tests
   React.useEffect(() => {
@@ -105,6 +119,32 @@ export default function ServicesAndPackages() {
       setPackages([...packages, newPkg]);
     }
     handleCloseDrawer();
+  };
+
+  const handleEditRef = (ref: any) => {
+    setEditingRefId(ref.id);
+    setNewRefData({
+      test: ref.test, parameter: ref.parameter, unit: ref.unit,
+      maleRange: ref.maleRange, femaleRange: ref.femaleRange,
+      ageRange: ref.ageRange, notes: ref.notes
+    });
+    setShowRefModal(true);
+  };
+
+  const handleDeleteRef = (id: string) => {
+    setReferenceRanges(referenceRanges.filter(r => r.id !== id));
+  };
+
+  const handleSaveRef = () => {
+    if (!newRefData.test || !newRefData.parameter) return;
+    if (editingRefId) {
+      setReferenceRanges(referenceRanges.map(r => r.id === editingRefId ? { ...r, ...newRefData } : r));
+    } else {
+      setReferenceRanges([...referenceRanges, { id: `ref-${Date.now()}`, ...newRefData }]);
+    }
+    setShowRefModal(false);
+    setEditingRefId(null);
+    setNewRefData({ test: '', parameter: '', unit: '', maleRange: '', femaleRange: '', ageRange: '', notes: '' });
   };
 
   // --- Filtered Data ---
@@ -357,8 +397,21 @@ export default function ServicesAndPackages() {
             <div className="sp-header-row" style={{ marginBottom: '16px' }}>
               <div>
                 <h2 className="sp-title">Clinic-Specific Reference Ranges</h2>
-                <p className="sp-subtitle">Display only. Changes are handled by Platform/System Admin.</p>
+                {currentRole === 'Platform Admin' ? (
+                  <p className="sp-subtitle">Manage reference ranges for laboratory tests.</p>
+                ) : (
+                  <p className="sp-subtitle">Display only. Changes are handled by Platform/System Admin.</p>
+                )}
               </div>
+              {currentRole === 'Platform Admin' && (
+                <button className="btn-primary" onClick={() => {
+                  setEditingRefId(null);
+                  setNewRefData({ test: '', parameter: '', unit: '', maleRange: '', femaleRange: '', ageRange: '', notes: '' });
+                  setShowRefModal(true);
+                }}>
+                  <Plus size={16} /> Add Reference Range
+                </button>
+              )}
             </div>
 
             <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
@@ -372,49 +425,41 @@ export default function ServicesAndPackages() {
                     <th style={{ padding: '12px 16px', fontWeight: 600, color: '#475569' }}>Female Range</th>
                     <th style={{ padding: '12px 16px', fontWeight: 600, color: '#475569' }}>Age Range</th>
                     <th style={{ padding: '12px 16px', fontWeight: 600, color: '#475569' }}>Notes</th>
+                    {currentRole === 'Platform Admin' && <th style={{ padding: '12px 16px', fontWeight: 600, color: '#475569', textAlign: 'right' }}>Actions</th>}
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>Glucose</td>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>Fasting Glucose</td>
-                    <td style={{ padding: '12px 16px', color: '#64748b' }}>mg/dL</td>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>70 - 99</td>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>70 - 99</td>
-                    <td style={{ padding: '12px 16px', color: '#64748b' }}>—</td>
-                    <td style={{ padding: '12px 16px', color: '#64748b' }}>Fasting required</td>
-                  </tr>
-                  <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>HbA1c</td>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>HbA1c</td>
-                    <td style={{ padding: '12px 16px', color: '#64748b' }}>%</td>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>&lt; 5.7</td>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>&lt; 5.7</td>
-                    <td style={{ padding: '12px 16px', color: '#64748b' }}>—</td>
-                    <td style={{ padding: '12px 16px', color: '#64748b' }}>—</td>
-                  </tr>
-                  <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>CBC</td>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>Hemoglobin</td>
-                    <td style={{ padding: '12px 16px', color: '#64748b' }}>g/dL</td>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>13.5 - 17.5</td>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>12.0 - 15.5</td>
-                    <td style={{ padding: '12px 16px', color: '#64748b' }}>—</td>
-                    <td style={{ padding: '12px 16px', color: '#64748b' }}>—</td>
-                  </tr>
-                  <tr>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>Lipid Profile</td>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>LDL</td>
-                    <td style={{ padding: '12px 16px', color: '#64748b' }}>mg/dL</td>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>&lt; 100</td>
-                    <td style={{ padding: '12px 16px', color: '#1e293b' }}>&lt; 100</td>
-                    <td style={{ padding: '12px 16px', color: '#64748b' }}>—</td>
-                    <td style={{ padding: '12px 16px', color: '#64748b' }}>—</td>
-                  </tr>
+                  {referenceRanges.map(ref => (
+                    <tr key={ref.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '12px 16px', color: '#1e293b' }}>{ref.test}</td>
+                      <td style={{ padding: '12px 16px', color: '#1e293b' }}>{ref.parameter}</td>
+                      <td style={{ padding: '12px 16px', color: '#64748b' }}>{ref.unit}</td>
+                      <td style={{ padding: '12px 16px', color: '#1e293b' }}>{ref.maleRange}</td>
+                      <td style={{ padding: '12px 16px', color: '#1e293b' }}>{ref.femaleRange}</td>
+                      <td style={{ padding: '12px 16px', color: '#64748b' }}>{ref.ageRange}</td>
+                      <td style={{ padding: '12px 16px', color: '#64748b' }}>{ref.notes}</td>
+                      {currentRole === 'Platform Admin' && (
+                        <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                          <button className="btn-icon-action" onClick={() => handleEditRef(ref)} style={{ marginRight: '8px' }}>
+                            <Edit2 size={16} />
+                          </button>
+                          <button className="btn-icon-action danger" onClick={() => handleDeleteRef(ref.id)}>
+                            <Trash2 size={16} />
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                  {referenceRanges.length === 0 && (
+                    <tr>
+                      <td colSpan={currentRole === 'Platform Admin' ? 8 : 7} style={{ padding: '32px 16px', textAlign: 'center', color: '#64748b' }}>
+                        No reference ranges configured yet.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
-
           </div>
         )}
 
@@ -609,6 +654,107 @@ export default function ServicesAndPackages() {
             <div className="modal-footer">
               <button className="btn-secondary" onClick={handleCloseDrawer}>Cancel</button>
               <button className="btn-primary" onClick={handleSavePackage}>Save Package</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- ADD / EDIT REFERENCE RANGE MODAL --- */}
+      {showRefModal && (
+        <div className="modal-overlay">
+          <div className="modal-panel" style={{ maxWidth: '600px' }}>
+            <div className="modal-header">
+              <h3 className="modal-title">{editingRefId ? 'Edit Reference Range' : 'Add Reference Range'}</h3>
+              <button className="modal-close" onClick={() => setShowRefModal(false)}>
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label">Test *</label>
+                <select 
+                  className="form-input" 
+                  value={newRefData.test}
+                  onChange={(e) => setNewRefData({...newRefData, test: e.target.value})}
+                >
+                  <option value="">Select a test from the system...</option>
+                  {allTests.map(t => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Parameter *</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  placeholder="e.g. Fasting Glucose" 
+                  value={newRefData.parameter}
+                  onChange={(e) => setNewRefData({...newRefData, parameter: e.target.value})}
+                />
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Unit</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    placeholder="e.g. mg/dL" 
+                    value={newRefData.unit}
+                    onChange={(e) => setNewRefData({...newRefData, unit: e.target.value})}
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Age Range</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    placeholder="e.g. 18-65" 
+                    value={newRefData.ageRange}
+                    onChange={(e) => setNewRefData({...newRefData, ageRange: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Male Range</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    placeholder="e.g. 70 - 99" 
+                    value={newRefData.maleRange}
+                    onChange={(e) => setNewRefData({...newRefData, maleRange: e.target.value})}
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Female Range</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    placeholder="e.g. 70 - 99" 
+                    value={newRefData.femaleRange}
+                    onChange={(e) => setNewRefData({...newRefData, femaleRange: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Notes</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  placeholder="e.g. Fasting required" 
+                  value={newRefData.notes}
+                  onChange={(e) => setNewRefData({...newRefData, notes: e.target.value})}
+                />
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={() => setShowRefModal(false)}>Cancel</button>
+              <button className="btn-primary" onClick={handleSaveRef} disabled={!newRefData.test || !newRefData.parameter}>
+                Save Reference Range
+              </button>
             </div>
           </div>
         </div>

@@ -8,7 +8,7 @@ const INITIAL_CLINICS = [
   { id: 'C-001', code: 'BKK001', name: 'Bangkok Wellness Clinic', address: 'Bangkok, Thailand', status: 'Active', adminName: 'Suda Klinprasert', adminEmail: 'suda@bkkwellness.co.th', staffCount: 42, createdDate: 'Jan 15, 2024', createdAgo: '10 months ago' },
   { id: 'C-002', code: 'CNX002', name: 'Chiang Mai Health Center', address: 'Chiang Mai, Thailand', status: 'Pending Setup', adminName: 'Anan Wongchai', adminEmail: 'anan@cmhealth.co.th', staffCount: 18, createdDate: 'Mar 3, 2024', createdAgo: '8 months ago' },
   { id: 'C-003', code: 'HKT003', name: 'Phuket Care Clinic', address: 'Phuket, Thailand', status: 'Active', adminName: 'Kanyarat Thongdee', adminEmail: 'kanyarat@phuketcare.co.th', staffCount: 27, createdDate: 'Feb 20, 2024', createdAgo: '8 months ago' },
-  { id: 'C-004', code: 'PTY004', name: 'Pattaya Medical', address: 'Pattaya, Thailand', status: 'Deactivated', adminName: 'Somchai Rattanakul', adminEmail: 'somchai@pattayamed.co.th', staffCount: 0, createdDate: 'Nov 10, 2023', createdAgo: '1 year ago' },
+  { id: 'C-004', code: 'PTY004', name: 'Pattaya Medical', address: 'Pattaya, Thailand', status: 'Suspended', adminName: 'Somchai Rattanakul', adminEmail: 'somchai@pattayamed.co.th', staffCount: 0, createdDate: 'Nov 10, 2023', createdAgo: '1 year ago' },
 ];
 
 export default function PlatformClinics() {
@@ -279,7 +279,7 @@ export default function PlatformClinics() {
             <X size={24} className="text-red-500" />
           </div>
           <div>
-            <div className="text-sm text-gray-500 mb-1">Deactivated Clinics</div>
+            <div className="text-sm text-gray-500 mb-1">Suspended Clinics</div>
             <div className="text-2xl font-bold text-gray-900">3</div>
             <div className="text-xs text-red-500 flex items-center mt-1">
               <span className="mr-1">~ +1</span>
@@ -313,7 +313,7 @@ export default function PlatformClinics() {
             <option value="All Statuses">All Statuses</option>
             <option value="Active">Active</option>
             <option value="Pending Setup">Pending Setup</option>
-            <option value="Deactivated">Deactivated</option>
+            <option value="Suspended">Suspended</option>
           </select>
         </div>
 
@@ -379,7 +379,7 @@ export default function PlatformClinics() {
                   <div className="text-xs text-gray-500 mt-0.5">{clinic.address}</div>
                 </td>
                 <td className="py-3 px-4">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${clinic.status === 'Active' ? 'bg-green-100 text-green-800' : clinic.status === 'Deactivated' ? 'bg-red-100 text-red-800' : 'bg-orange-100 text-orange-800'}`}>
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${clinic.status === 'Active' ? 'bg-green-100 text-green-800' : clinic.status === 'Suspended' ? 'bg-red-100 text-red-800' : 'bg-orange-100 text-orange-800'}`}>
                     {clinic.status}
                   </span>
                 </td>
@@ -433,15 +433,15 @@ export default function PlatformClinics() {
                         <button 
                           className="dropdown-item danger w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 text-sm flex items-center"
                           onClick={() => {
-                            setShowStatusConfirmModal({ clinic, newStatus: 'Deactivated' });
+                            setShowStatusConfirmModal({ clinic, newStatus: 'Suspended' });
                             setShowActionMenu(null);
                           }}
                         >
-                          <AlertTriangle size={14} className="mr-2" /> Deactivate Clinic
+                          <AlertTriangle size={14} className="mr-2" /> Suspend Clinic
                         </button>
                       )}
 
-                      {clinic.status === 'Deactivated' && (
+                      {clinic.status === 'Suspended' && (
                         <button 
                           className="dropdown-item success w-full text-left px-4 py-2 hover:bg-green-50 text-green-600 text-sm flex items-center"
                           onClick={() => {
@@ -710,30 +710,30 @@ export default function PlatformClinics() {
             <div className="modal-body">
               <div className="flex items-start gap-4">
                 <div className={
-                  showStatusConfirmModal.newStatus === 'Deactivated'
+                  showStatusConfirmModal.newStatus === 'Suspended'
                   ? 'modal-icon-warning' 
                   : 'modal-icon-success'
                 }>
-                  {showStatusConfirmModal.newStatus === 'Deactivated'
+                  {showStatusConfirmModal.newStatus === 'Suspended'
                     ? <AlertTriangle size={24} /> 
                     : <CheckCircle2 size={24} />}
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-bold mb-2 text-gray-900">
-                    {showStatusConfirmModal.newStatus === 'Deactivated' && 'Deactivate Clinic?'}
+                    {showStatusConfirmModal.newStatus === 'Suspended' && 'Suspend Clinic?'}
                     {showStatusConfirmModal.newStatus === 'Active' && 'Activate Clinic?'}
                   </h3>
                   
                   <div className="text-sm text-gray-600 leading-relaxed mb-4">
-                    {showStatusConfirmModal.newStatus === 'Deactivated' && (
-                      <p className="mb-2">Are you sure you want to deactivate <strong>{showStatusConfirmModal.clinic.name}</strong>?</p>
+                    {showStatusConfirmModal.newStatus === 'Suspended' && (
+                      <p className="mb-2">Are you sure you want to suspend <strong>{showStatusConfirmModal.clinic.name}</strong>?</p>
                     )}
                     {showStatusConfirmModal.newStatus === 'Active' && (
                       <p>Activate <strong>{showStatusConfirmModal.clinic.name}</strong>? Clinic staff will gain access to the platform.</p>
                     )}
                   </div>
 
-                  {showStatusConfirmModal.newStatus === 'Deactivated' && (
+                  {showStatusConfirmModal.newStatus === 'Suspended' && (
                     <div className="form-group mb-0">
                       <label className="form-label">Reason Required *</label>
                       <textarea 
@@ -758,9 +758,9 @@ export default function PlatformClinics() {
               <button 
                 onClick={handleStatusChange} 
                 className="btn-primary" 
-                style={{ backgroundColor: showStatusConfirmModal.newStatus === 'Deactivated' ? '#dc2626' : '#16a34a' }}
+                style={{ backgroundColor: showStatusConfirmModal.newStatus === 'Suspended' ? '#dc2626' : '#16a34a' }}
               >
-                {showStatusConfirmModal.newStatus === 'Deactivated' && 'Deactivate Clinic'}
+                {showStatusConfirmModal.newStatus === 'Suspended' && 'Suspend Clinic'}
                 {showStatusConfirmModal.newStatus === 'Active' && 'Activate Clinic'}
               </button>
             </div>

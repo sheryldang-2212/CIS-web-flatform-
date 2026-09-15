@@ -133,7 +133,6 @@ export default function UserManagement({ currentRole, currentClinic, mockClinics
                     <th>NAME</th>
                     <th>EMAIL</th>
                     <th>ROLE</th>
-                    <th>CLINIC ACCESS</th>
                     <th>STATUS</th>
                     <th>LAST LOGIN</th>
                     <th style={{ width: 40 }}></th>
@@ -161,12 +160,6 @@ export default function UserManagement({ currentRole, currentClinic, mockClinics
                             <span key={r} className={`um-badge um-badge-role um-role-${r.replace(/\s+/g, '').toLowerCase()}`}>{r}</span>
                           ))}
                         </div>
-                      </td>
-                      <td>
-                        <span className="um-cell-text">{user.clinic}</span>
-                        {(user as any).additionalClinics && (
-                          <span className="um-cell-subtext" style={{ marginLeft: '8px' }}>{(user as any).additionalClinics}</span>
-                        )}
                       </td>
                       <td><span className={`um-badge um-badge-status-${user.status.toLowerCase()}`}>{user.status}</span></td>
                       <td>
@@ -197,14 +190,17 @@ export default function UserManagement({ currentRole, currentClinic, mockClinics
                                 <Edit size={14} className="um-action-icon" /> Edit user
                               </button>
                               <button className="um-action-item" onClick={() => { setOpenMenuId(null); handleEditUser(user, 'permissions'); }}>
-                                <Shield size={14} className="um-action-icon" /> Manage permission
+                                <Shield size={14} className="um-action-icon" /> Manage permissions
                               </button>
                               <button className="um-action-item">
                                 <Key size={14} className="um-action-icon" /> Reset password
                               </button>
                               <div className="um-action-divider"></div>
                               <button className="um-action-item">
-                                <PowerOff size={14} className="um-action-icon" /> Deactivate user
+                                <PowerOff size={14} className="um-action-icon" /> Suspend user
+                              </button>
+                              <button className="um-action-item danger" style={{ color: '#ef4444' }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="um-action-icon"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Delete user
                               </button>
                             </div>
                           )}

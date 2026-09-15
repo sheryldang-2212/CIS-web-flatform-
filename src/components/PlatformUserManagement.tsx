@@ -142,7 +142,7 @@ export default function PlatformUserManagement() {
                         <Key size={14} className="pum-action-icon" /> Reset password
                       </button>
                       <button className="pum-action-item">
-                        <PowerOff size={14} className="pum-action-icon" /> Deactivate user
+                        <PowerOff size={14} className="pum-action-icon" /> Suspend user
                       </button>
                       <button className="pum-action-item danger">
                         <Trash2 size={14} className="pum-action-icon" /> Delete user

@@ -26,7 +26,6 @@ import CreatePassword from './components/CreatePassword';
 import PlatformDashboard from './components/PlatformDashboard';
 import PlatformClinics from './components/PlatformClinics';
 import GlobalUserManagement from './components/GlobalUserManagement';
-import IntegrationMonitoring from './components/IntegrationMonitoring';
 import BulkPatientUpload from './components/BulkPatientUpload';
 import PlatformSettings from './components/PlatformSettings';
 import PlatformUserManagement from './components/PlatformUserManagement';
@@ -119,7 +118,7 @@ function App() {
           {activeTab === 'User Management' && currentRole !== 'Platform Admin' && <UserManagement currentRole={currentRole} currentClinic={currentClinic} mockClinics={MOCK_CLINICS} />}
           {activeTab === 'Roles & Permissions' && <RolesPermissions currentRole={currentRole} currentClinic={currentClinic} mockClinics={MOCK_CLINICS} />}
           {activeTab === 'Clinic Settings' && <ClinicSettings />}
-          {activeTab === 'Services & Packages' && <ServicesAndPackages />}
+          {activeTab === 'Services & Packages' && <ServicesAndPackages currentRole={currentRole} />}
           
           {/* New Tabs Placeholders */}
           {activeTab === 'Staff Security' && (
@@ -157,7 +156,6 @@ function App() {
           {activeTab === 'Platform Settings' && <PlatformSettings />}
 
           {activeTab === 'Operational Reports' && <ReportsAnalytics />}
-          {activeTab === 'Integration Monitoring' && <IntegrationMonitoring />}
           {activeTab === 'Platform Audit Logs' && <div className="fadeIn"><AuditLogs /></div>}
         </div>
       </main>

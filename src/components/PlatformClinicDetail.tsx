@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Building2, CheckCircle2, AlertTriangle, XCircle, Clock, ShieldAlert, X, Users, Activity, History, MoreVertical, Save, RefreshCw, Edit2 } from 'lucide-react';
 import AssignAdminModal from './AssignAdminModal';
+import ClinicModuleAccess from './ClinicModuleAccess';
 import './PlatformAdmin.css';
 
 interface PlatformClinicDetailProps {
@@ -11,7 +12,7 @@ interface PlatformClinicDetailProps {
 }
 
 export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, onUpdateClinic }: PlatformClinicDetailProps) {
-  const [activeTab, setActiveTab] = useState('Overview');
+  const [activeTab, setActiveTab] = useState('Clinic Profile');
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState(clinic);
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
@@ -316,7 +317,8 @@ export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, o
       {/* Tabs */}
       <div className="detail-tabs">
         {[
-          { id: 'Overview', icon: Building2 },
+          { id: 'Clinic Profile', icon: Building2 },
+          { id: 'Module Access', icon: Activity },
           { id: 'Activity History', icon: History }
         ].map(tab => (
           <button
@@ -332,7 +334,11 @@ export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, o
 
       {/* Content Area */}
       <div className="detail-content">
-        {activeTab === 'Overview' && (
+        {activeTab === 'Module Access' && (
+          <ClinicModuleAccess />
+        )}
+
+        {activeTab === 'Clinic Profile' && (
           <>
             {errorMsg && (
               <div style={{ backgroundColor: '#fee2e2', border: '1px solid #fca5a5', padding: '16px', borderRadius: '8px', display: 'flex', alignItems: 'flex-start', marginBottom: '24px' }}>

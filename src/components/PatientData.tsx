@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Search, Eye, Edit2, Trash2 } from 'lucide-react';
+import PatientBulkUpload from './PatientBulkUpload';
 import './PatientData.css';
 
 const MOCK_PATIENTS = [
@@ -24,18 +25,18 @@ export default function PatientData() {
     <div className="patient-data-wrapper">
       <div className="pd-header">
         <h1 className="pd-title">Patients</h1>
-        <p className="pd-subtitle">Manage patients across all clinics</p>
+        <p className="pd-subtitle">Manage patient records, upload new patients, and keep your database up to date.</p>
       </div>
 
-      <div className="pd-tabs">
+      <div className="pd-tabs-new">
         <button 
-          className={`pd-tab ${activeTab === 'Patient List' ? 'active' : ''}`}
+          className={`pd-tab-new ${activeTab === 'Patient List' ? 'active' : ''}`}
           onClick={() => setActiveTab('Patient List')}
         >
           Patient List
         </button>
         <button 
-          className={`pd-tab ${activeTab === 'Bulk Upload' ? 'active' : ''}`}
+          className={`pd-tab-new ${activeTab === 'Bulk Upload' ? 'active' : ''}`}
           onClick={() => setActiveTab('Bulk Upload')}
         >
           Bulk Upload
@@ -61,12 +62,7 @@ export default function PatientData() {
                 />
               </div>
               <div className="pd-filters">
-                <select className="pd-filter-select">
-                  <option>All clinics</option>
-                  <option>Downtown Medical Center</option>
-                  <option>Suburban Family Clinic</option>
-                  <option>Emergency Care Center</option>
-                </select>
+
                 <select className="pd-filter-select">
                   <option>All statuses</option>
                   <option>Active</option>
@@ -86,7 +82,7 @@ export default function PatientData() {
                     <th>Email</th>
                     <th>DOB</th>
                     <th>Age</th>
-                    <th>Clinic</th>
+
                     <th>Registered</th>
                     <th>Status</th>
                     <th style={{ textAlign: 'right' }}>Actions</th>
@@ -102,7 +98,7 @@ export default function PatientData() {
                       <td>{patient.email !== '-' ? <span style={{ color: '#2563eb' }}>{patient.email}</span> : patient.email}</td>
                       <td>{patient.dob}</td>
                       <td>{patient.age}</td>
-                      <td><span className="pd-clinic-badge">{patient.clinic}</span></td>
+
                       <td>{patient.registered}</td>
                       <td>
                         <span className="pd-badge-active">{patient.status}</span>
@@ -123,9 +119,7 @@ export default function PatientData() {
         )}
         
         {activeTab === 'Bulk Upload' && (
-          <div style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>
-            Bulk upload interface will be implemented here.
-          </div>
+          <PatientBulkUpload />
         )}
       </div>
     </div>
