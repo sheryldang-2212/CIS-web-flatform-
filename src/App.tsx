@@ -29,6 +29,7 @@ import GlobalUserManagement from './components/GlobalUserManagement';
 import BulkPatientUpload from './components/BulkPatientUpload';
 import PlatformSettings from './components/PlatformSettings';
 import PlatformUserManagement from './components/PlatformUserManagement';
+import GlobalTestMaster from './components/GlobalTestMaster';
 import './components/PlatformPremium.css';
 import './App.css';
 
@@ -119,6 +120,7 @@ function App() {
           {activeTab === 'Roles & Permissions' && <RolesPermissions currentRole={currentRole} currentClinic={currentClinic} mockClinics={MOCK_CLINICS} />}
           {activeTab === 'Clinic Settings' && <ClinicSettings />}
           {activeTab === 'Services & Packages' && <ServicesAndPackages currentRole={currentRole} />}
+          {activeTab === 'Global Test Master' && <GlobalTestMaster />}
           
           {/* New Tabs Placeholders */}
           {activeTab === 'Staff Security' && (

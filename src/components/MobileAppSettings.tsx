@@ -1,210 +1,430 @@
 import React, { useState } from 'react';
-import { Smartphone, Globe, ShieldCheck, FileQuestion, LifeBuoy, Save, Plus, ChevronDown, Edit2, Trash2 } from 'lucide-react';
+import { Smartphone, LayoutDashboard, Activity, FileQuestion, Bell, LifeBuoy, ShieldCheck, Eye, Save, Plus, Trash2, Edit2, CheckCircle2, ChevronRight, Globe, AlertTriangle } from 'lucide-react';
+import './Settings.css';
 
 export default function MobileAppSettings() {
-  const [activeSection, setActiveSection] = useState('general');
+  const [activeTab, setActiveTab] = useState('Dashboard Display');
+  const [configStatus, setConfigStatus] = useState('Draft');
   const [isSaving, setIsSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState('Not saved yet');
 
-  // Mock state for forms
-  const [countryCode, setCountryCode] = useState('+66');
-  
-  const handleSave = () => {
+  const tabs = [
+    { id: 'Dashboard Display', icon: LayoutDashboard },
+    { id: 'Test Metrics', icon: Activity },
+    { id: 'Questionnaire', icon: FileQuestion },
+    { id: 'Notifications', icon: Bell },
+    { id: 'Help & Support', icon: LifeBuoy },
+    { id: 'Consent Content', icon: ShieldCheck },
+    { id: 'Preview & Publish', icon: Eye }
+  ];
+
+  const handleSaveDraft = () => {
     setIsSaving(true);
     setTimeout(() => {
       setIsSaving(false);
-      alert('Mobile App Settings saved successfully.');
+      setConfigStatus('Draft');
+      setLastSaved(new Date().toLocaleTimeString());
     }, 800);
   };
 
+  const handlePublish = () => {
+    if (confirm('Are you sure you want to publish these configurations to the live Mobile App?')) {
+      setIsSaving(true);
+      setTimeout(() => {
+        setIsSaving(false);
+        setConfigStatus('Published');
+        alert('Configuration published successfully!');
+      }, 1000);
+    }
+  };
+
+  // Mock data for Dashboard Display
+  const [categories] = useState([
+    { id: 'c1', nameEn: 'Metabolic', nameTh: 'เมตาบอลิก', order: 1, status: 'Active', metrics: 'Glucose, HbA1c, Insulin, Lipid Profile' },
+    { id: 'c2', nameEn: 'Cardio', nameTh: 'คาร์ดิโอ', order: 2, status: 'Active', metrics: 'hs-CRP, Homocysteine' },
+  ]);
+
+  // Mock data for Test Metrics
+  const [metrics] = useState([
+    { id: 'm1', code: 'LDL', nameEn: 'LDL Cholesterol', nameTh: 'LDL โคเลสเตอรอล', category: 'Cardio / Metabolic', unit: 'mg/dL', refLabel: 'Normal / High / Critical', order: 3, status: 'Active' },
+  ]);
+
+  // Mock data for Questionnaires
+  const [questions] = useState([
+    { id: 'q1', qId: 'Q001', en: 'Do you smoke?', th: 'คุณสูบบุหรี่หรือไม่?', type: 'Single choice', required: 'Yes', section: 'Lifestyle', status: 'Active' },
+  ]);
+
+  // Mock data for Notifications
+  const [notifications] = useState([
+    { id: 'n1', event: 'LAB_ORDER_CREATED', title: 'Order Created', template: 'Your lab order has been created.', status: 'Active' },
+    { id: 'n2', event: 'RESULT_AVAILABLE', title: 'Results Ready', template: 'Your lab result is now available.', status: 'Active' },
+  ]);
+
   return (
-    <div className="flex gap-6 h-full" style={{ minHeight: '600px' }}>
-      {/* Sidebar Navigation */}
-      <div className="w-64 flex-shrink-0">
-        <div className="detail-card" style={{ padding: '16px', position: 'sticky', top: '0' }}>
-          <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#1e293b', marginBottom: '16px', padding: '0 8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Smartphone size={18} className="text-indigo-600" /> Mobile Config
-          </h3>
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <button 
-              className="btn-secondary"
-              style={{ width: '100%', justifyContent: 'flex-start', border: 'none', backgroundColor: activeSection === 'general' ? '#eff6ff' : 'transparent', color: activeSection === 'general' ? '#3b82f6' : '#64748b', boxShadow: 'none' }}
-              onClick={() => setActiveSection('general')}
-            >
-              <Globe size={16} className="mr-2" /> General Settings
-            </button>
-            <button 
-              className="btn-secondary"
-              style={{ width: '100%', justifyContent: 'flex-start', border: 'none', backgroundColor: activeSection === 'consent' ? '#eff6ff' : 'transparent', color: activeSection === 'consent' ? '#3b82f6' : '#64748b', boxShadow: 'none' }}
-              onClick={() => setActiveSection('consent')}
-            >
-              <ShieldCheck size={16} className="mr-2" /> Privacy & Consents
-            </button>
-            <button 
-              className="btn-secondary"
-              style={{ width: '100%', justifyContent: 'flex-start', border: 'none', backgroundColor: activeSection === 'questionnaire' ? '#eff6ff' : 'transparent', color: activeSection === 'questionnaire' ? '#3b82f6' : '#64748b', boxShadow: 'none' }}
-              onClick={() => setActiveSection('questionnaire')}
-            >
-              <FileQuestion size={16} className="mr-2" /> Custom Questionnaires
-            </button>
-            <button 
-              className="btn-secondary"
-              style={{ width: '100%', justifyContent: 'flex-start', border: 'none', backgroundColor: activeSection === 'support' ? '#eff6ff' : 'transparent', color: activeSection === 'support' ? '#3b82f6' : '#64748b', boxShadow: 'none' }}
-              onClick={() => setActiveSection('support')}
-            >
-              <LifeBuoy size={16} className="mr-2" /> Help & Support
-            </button>
-          </nav>
+    <div className="settings-container" style={{ border: '1px solid var(--border-color)', borderRadius: '12px', background: 'white', minHeight: '600px' }}>
+      <div className="settings-sidebar" style={{ width: '250px' }}>
+        <h2 className="settings-title" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '18px', marginBottom: '8px' }}>
+          <Smartphone size={20} style={{ color: 'var(--primary)' }} /> Mobile App Config
+        </h2>
+        <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          Status: 
+          <span style={{ 
+            fontWeight: 600, 
+            color: configStatus === 'Draft' ? 'var(--warning)' : 'var(--success)',
+            backgroundColor: configStatus === 'Draft' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(34, 197, 94, 0.1)',
+            padding: '2px 8px',
+            borderRadius: '12px'
+          }}>
+            {configStatus}
+          </span>
         </div>
+
+        <nav className="settings-nav">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              className={`settings-nav-item ${activeTab === tab.id ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              <tab.icon size={18} className="settings-icon" />
+              <span>{tab.id}</span>
+            </button>
+          ))}
+        </nav>
       </div>
 
-      {/* Main Content Area */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <div className="detail-card" style={{ padding: '0', display: 'flex', flexDirection: 'column', height: '100%' }}>
-          <div style={{ padding: '20px 24px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1e293b', margin: 0 }}>
-              {activeSection === 'general' && 'General Settings'}
-              {activeSection === 'consent' && 'Privacy & Consents T&C'}
-              {activeSection === 'questionnaire' && 'Custom Questionnaires'}
-              {activeSection === 'support' && 'Help & Support FAQs'}
-            </h3>
-            <button className="btn-primary" onClick={handleSave} disabled={isSaving}>
-              {isSaving ? 'Saving...' : <><Save size={16} className="mr-2 inline" /> Save Changes</>}
-            </button>
+      <div className="settings-content" style={{ border: 'none', borderRadius: '0', padding: '32px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' }}>
+          <div>
+            <h3 className="section-header">{activeTab}</h3>
+            <p className="section-desc" style={{ marginBottom: 0 }}>
+              {activeTab === 'Dashboard Display' && 'Configure health groups and mapping for the mobile dashboard.'}
+              {activeTab === 'Test Metrics' && 'Configure how specific lab metrics are displayed to patients.'}
+              {activeTab === 'Questionnaire' && 'Manage questions asked during patient registration and profile updates.'}
+              {activeTab === 'Notifications' && 'Configure push notification and in-app message content by event.'}
+              {activeTab === 'Help & Support' && 'Manage contact information and frequently asked questions.'}
+              {activeTab === 'Consent Content' && 'Configure text for T&C, Privacy Policy, and Data Sharing explanations.'}
+              {activeTab === 'Preview & Publish' && 'Review changes and publish to the live patient application.'}
+            </p>
           </div>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button className="btn-secondary" onClick={handleSaveDraft} disabled={isSaving}>
+              <Save size={16} style={{ marginRight: '8px' }} /> 
+              {isSaving ? 'Saving...' : 'Save Draft'}
+            </button>
+            {activeTab !== 'Preview & Publish' && (
+              <button className="btn-primary" onClick={() => setActiveTab('Preview & Publish')}>
+                Review & Publish <ChevronRight size={16} style={{ marginLeft: '4px' }} />
+              </button>
+            )}
+          </div>
+        </div>
 
-          <div style={{ padding: '24px', flex: 1, overflowY: 'auto' }}>
-          
-          {/* General Section */}
-          {activeSection === 'general' && (
-            <div className="max-w-2xl fadeIn">
-              <div className="form-group mb-6">
-                <label className="form-label font-semibold text-slate-700 block mb-2">Default Country Code</label>
-                <p className="text-sm text-slate-500 mb-3">Set the default country code used for mobile number registration and SMS OTP.</p>
-                <select 
-                  className="form-input max-w-xs"
-                  value={countryCode}
-                  onChange={(e) => setCountryCode(e.target.value)}
-                >
-                  <option value="+1">+1 (United States)</option>
-                  <option value="+44">+44 (United Kingdom)</option>
-                  <option value="+65">+65 (Singapore)</option>
-                  <option value="+66">+66 (Thailand)</option>
-                  <option value="+84">+84 (Vietnam)</option>
-                  <option value="+91">+91 (India)</option>
-                </select>
+        {/* Dashboard Display */}
+        {activeTab === 'Dashboard Display' && (
+          <div className="fadeIn">
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+              <button className="btn-primary-small"><Plus size={14} style={{ marginRight: '6px' }} /> Add Category</button>
+            </div>
+            
+            <div className="table-container" style={{ marginBottom: '24px' }}>
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Category EN</th>
+                    <th>Category TH</th>
+                    <th>Order</th>
+                    <th>Linked Metrics</th>
+                    <th>Status</th>
+                    <th style={{ textAlign: 'right' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {categories.map((cat) => (
+                    <tr key={cat.id}>
+                      <td style={{ fontWeight: 600 }}>{cat.nameEn}</td>
+                      <td>{cat.nameTh}</td>
+                      <td>{cat.order}</td>
+                      <td style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--text-secondary)' }} title={cat.metrics}>{cat.metrics}</td>
+                      <td>
+                        <span className="status-pill status-ready">{cat.status}</span>
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        <button className="icon-btn" title="Edit"><Edit2 size={16} /></button>
+                        <button className="icon-btn" title="Delete" style={{ color: 'var(--danger)' }}><Trash2 size={16} /></button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div style={{ padding: '16px', backgroundColor: 'rgba(59, 130, 246, 0.05)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '8px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+              <AlertTriangle size={20} style={{ color: 'var(--primary)', flexShrink: 0 }} />
+              <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-main)', lineHeight: 1.5 }}>
+                <strong>Note:</strong> Lab order workflows and clinical logic are managed in the central clinical configuration module to maintain strict governance. This screen only controls the presentation layer on the patient app.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Test Metrics */}
+        {activeTab === 'Test Metrics' && (
+          <div className="fadeIn">
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+              <button className="btn-primary-small"><Plus size={14} style={{ marginRight: '6px' }} /> Add Metric Config</button>
+            </div>
+            
+            <div className="table-container" style={{ marginBottom: '16px' }}>
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Metric Code</th>
+                    <th>Display EN / TH</th>
+                    <th>Category</th>
+                    <th>Reference Label</th>
+                    <th>Status</th>
+                    <th style={{ textAlign: 'right' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {metrics.map((metric) => (
+                    <tr key={metric.id}>
+                      <td style={{ fontFamily: 'monospace', color: 'var(--text-secondary)' }}>{metric.code}</td>
+                      <td>
+                        <div style={{ fontWeight: 600 }}>{metric.nameEn}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{metric.nameTh}</div>
+                      </td>
+                      <td>{metric.category}</td>
+                      <td style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{metric.refLabel}</td>
+                      <td><span className="status-pill status-ready">{metric.status}</span></td>
+                      <td style={{ textAlign: 'right' }}>
+                        <button className="icon-btn" title="Edit"><Edit2 size={16} /></button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+              <strong>BA Note:</strong> Actual reference ranges are pulled securely from the LIS/Clinical configuration. Mobile App Config strictly manages visual labeling and translations.
+            </p>
+          </div>
+        )}
+
+        {/* Questionnaire */}
+        {activeTab === 'Questionnaire' && (
+          <div className="fadeIn">
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+              <button className="btn-primary-small"><Plus size={14} style={{ marginRight: '6px' }} /> Add Question</button>
+            </div>
+
+            <div style={{ padding: '16px', backgroundColor: 'rgba(245, 158, 11, 0.05)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '8px', display: 'flex', gap: '12px', alignItems: 'flex-start', marginBottom: '24px' }}>
+              <AlertTriangle size={20} style={{ color: 'var(--warning)', flexShrink: 0 }} />
+              <div>
+                <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 600, color: 'var(--text-main)' }}>Data Retention Rule Active</h4>
+                <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                  Questions with existing patient answers cannot be hard deleted; they may only be deactivated. Modifying answer types of existing questions will trigger a data migration warning.
+                </p>
               </div>
             </div>
-          )}
+            
+            <div className="table-container">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Question (EN)</th>
+                    <th>Type</th>
+                    <th>Section</th>
+                    <th>Required</th>
+                    <th>Status</th>
+                    <th style={{ textAlign: 'right' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {questions.map((q) => (
+                    <tr key={q.id}>
+                      <td style={{ fontFamily: 'monospace', fontSize: '12px', color: 'var(--text-muted)' }}>{q.qId}</td>
+                      <td style={{ fontWeight: 600 }}>{q.en}</td>
+                      <td>{q.type}</td>
+                      <td>{q.section}</td>
+                      <td>{q.required}</td>
+                      <td><span className="status-pill status-ready">{q.status}</span></td>
+                      <td style={{ textAlign: 'right' }}>
+                        <button className="icon-btn" title="Edit"><Edit2 size={16} /></button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
-          {/* Consents Section */}
-          {activeSection === 'consent' && (
-            <div className="fadeIn max-w-3xl">
-              <p className="text-sm text-slate-500 mb-6">Configure the legal documents and consent forms displayed in the mobile app during onboarding and in settings.</p>
-              
-              <div className="space-y-4">
-                {['Privacy Policy', 'Terms & Conditions', 'Marketing Consent', 'Data Sharing Consent'].map((doc) => (
-                  <div key={doc} className="bg-white border border-slate-200 rounded-lg p-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded bg-indigo-50 flex items-center justify-center text-indigo-600">
-                        <ShieldCheck size={20} />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-slate-800">{doc}</h4>
-                        <p className="text-xs text-slate-500">Last updated: 14 Sep 2026</p>
-                      </div>
-                    </div>
-                    <button className="btn-secondary" style={{ backgroundColor: 'white' }}>
-                      Edit Content
-                    </button>
+        {/* Notifications */}
+        {activeTab === 'Notifications' && (
+          <div className="fadeIn" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {notifications.map((notif) => (
+              <div key={notif.id} style={{ border: '1px solid var(--border-color)', borderRadius: '8px', padding: '20px', backgroundColor: '#fafafa' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                  <div>
+                    <span style={{ fontSize: '11px', fontWeight: 600, padding: '4px 8px', backgroundColor: 'white', border: '1px solid var(--border-color)', borderRadius: '4px', color: 'var(--text-secondary)', display: 'inline-block', marginBottom: '8px' }}>
+                      EVENT: {notif.event}
+                    </span>
+                    <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 600 }}>{notif.title}</h4>
                   </div>
-                ))}
+                  <label className="toggle-switch">
+                    <input type="checkbox" defaultChecked={notif.status === 'Active'} />
+                    <span className="slider round"></span>
+                  </label>
+                </div>
+                
+                <div className="form-row-2">
+                  <div className="form-group">
+                    <label>Body Template (EN)</label>
+                    <textarea rows={2} defaultValue={notif.template} style={{ resize: 'vertical' }}></textarea>
+                  </div>
+                  <div className="form-group">
+                    <label>Body Template (TH)</label>
+                    <textarea rows={2} placeholder="Thai translation..." style={{ resize: 'vertical' }}></textarea>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
+                  <button className="btn-secondary-small">Save Template</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Help & Support */}
+        {activeTab === 'Help & Support' && (
+          <div className="fadeIn" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div className="security-card" style={{ marginBottom: 0, backgroundColor: '#fafafa' }}>
+              <div className="security-card-header" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '16px', marginBottom: '16px' }}>
+                <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 600 }}>Contact Information</h4>
+              </div>
+              <div className="form-row-2">
+                <div className="form-group">
+                  <label>Support Email</label>
+                  <input type="email" defaultValue="support@healthhub.com" />
+                </div>
+                <div className="form-group">
+                  <label>Support Phone</label>
+                  <input type="text" defaultValue="+66 2 123 4567" />
+                </div>
+              </div>
+              <div className="form-group" style={{ marginTop: '16px' }}>
+                <label>Operating Hours (Display String)</label>
+                <input type="text" defaultValue="Mon-Fri, 9:00 AM - 6:00 PM ICT" />
               </div>
             </div>
-          )}
 
-          {/* Questionnaires Section */}
-          {activeSection === 'questionnaire' && (
-            <div className="fadeIn max-w-4xl">
-              <div className="flex justify-between items-center mb-6">
-                <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>Manage custom health questionnaires assigned to patients in the mobile app.</p>
-                <button className="btn-secondary">
-                  <Plus size={16} className="mr-2 inline" /> Create Questionnaire
-                </button>
+            <div className="security-card" style={{ marginBottom: 0 }}>
+              <div className="security-card-header" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '16px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between' }}>
+                <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 600 }}>FAQ Content</h4>
+                <button className="btn-secondary-small"><Plus size={14} style={{ marginRight: '4px' }} /> Add FAQ</button>
               </div>
-
-              <div className="table-container bg-white">
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Questionnaire Title</th>
-                      <th>Target Audience</th>
-                      <th>Questions</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="font-medium text-slate-800">Initial Health Assessment</td>
-                      <td>All New Patients</td>
-                      <td>12</td>
-                      <td><span className="status-badge success">Active</span></td>
-                      <td>
-                        <button className="text-indigo-600 hover:text-indigo-800 mr-3"><Edit2 size={16} /></button>
-                        <button className="text-rose-600 hover:text-rose-800"><Trash2 size={16} /></button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="font-medium text-slate-800">Diabetes Follow-up</td>
-                      <td>Diabetic Patients</td>
-                      <td>8</td>
-                      <td><span className="status-badge bg-gray-100 text-gray-700">Draft</span></td>
-                      <td>
-                        <button className="text-indigo-600 hover:text-indigo-800 mr-3"><Edit2 size={16} /></button>
-                        <button className="text-rose-600 hover:text-rose-800"><Trash2 size={16} /></button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {/* Help & Support Section */}
-          {activeSection === 'support' && (
-            <div className="fadeIn max-w-3xl">
-              <div className="flex justify-between items-center mb-6">
-                <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>Manage the Frequently Asked Questions (FAQs) displayed in the mobile app.</p>
-                <button className="btn-secondary">
-                  <Plus size={16} className="mr-2 inline" /> Add FAQ
-                </button>
-              </div>
-
-              <div className="space-y-3">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {[
                   'How is my health score calculated?',
-                  'How often should I update my medical information?',
-                  'Is my health data secure?',
-                  'How do I connect my wearable device?',
-                  'Can I export my health data?',
-                  'Contact us'
-                ].map((q, idx) => (
-                  <div key={idx} className="bg-white border border-slate-200 rounded-lg p-4 flex items-center justify-between group hover:border-indigo-300 transition-colors cursor-pointer">
-                    <span className="font-medium text-slate-700">{q}</span>
-                    <div className="flex items-center gap-3">
-                      <button className="text-slate-400 hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity"><Edit2 size={16} /></button>
-                      <button className="text-slate-400 hover:text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 size={16} /></button>
-                      <ChevronDown size={18} className="text-slate-400" />
+                  'How do I view past lab results?',
+                  'Is my health data secure?'
+                ].map((q, i) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', border: '1px solid var(--border-color)', borderRadius: '6px', backgroundColor: '#fafafa' }}>
+                    <span style={{ fontSize: '14px', fontWeight: 500 }}>{q}</span>
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      <button className="icon-btn"><Edit2 size={16} /></button>
+                      <button className="icon-btn" style={{ color: 'var(--danger)' }}><Trash2 size={16} /></button>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-          )}
+          </div>
+        )}
 
-        </div>
+        {/* Consent Content */}
+        {activeTab === 'Consent Content' && (
+          <div className="fadeIn" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            {['Terms & Conditions', 'Privacy Policy', 'Data Sharing Consent'].map(doc => (
+              <div key={doc} className="security-card" style={{ marginBottom: 0, backgroundColor: '#fafafa' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 600 }}>{doc}</h4>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>v2.4 (Published 14 Sep 2026)</span>
+                </div>
+                
+                <div style={{ display: 'flex', gap: '16px', borderBottom: '1px solid var(--border-color)', marginBottom: '16px' }}>
+                  <button style={{ background: 'none', border: 'none', borderBottom: '2px solid var(--primary)', padding: '0 0 8px 0', fontSize: '13px', fontWeight: 600, color: 'var(--primary)', cursor: 'pointer' }}>English</button>
+                  <button style={{ background: 'none', border: 'none', padding: '0 0 8px 0', fontSize: '13px', fontWeight: 500, color: 'var(--text-secondary)', cursor: 'pointer' }}>Thai (ภาษาไทย)</button>
+                </div>
+
+                <div className="form-group">
+                  <textarea 
+                    rows={5}
+                    style={{ fontFamily: 'monospace', fontSize: '13px', resize: 'vertical' }}
+                    defaultValue={`This is the standard content for ${doc}...`}
+                  />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
+                  <button className="btn-secondary-small">Save Text Content</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Preview & Publish */}
+        {activeTab === 'Preview & Publish' && (
+          <div className="fadeIn" style={{ display: 'flex', justifyContent: 'center', paddingTop: '40px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', maxWidth: '600px', textAlign: 'center' }}>
+              <div style={{ width: '64px', height: '64px', backgroundColor: 'rgba(59, 130, 246, 0.1)', color: 'var(--primary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
+                <Globe size={32} />
+              </div>
+              <h2 style={{ margin: '0 0 8px 0', fontSize: '24px', fontWeight: 700 }}>Publish Configuration</h2>
+              <p style={{ margin: '0 0 32px 0', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                You are about to publish the current Draft configuration to the mobile app environment. This will update the patient experience immediately.
+              </p>
+              
+              <div style={{ width: '100%', backgroundColor: '#fafafa', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '24px', marginBottom: '32px', textAlign: 'left' }}>
+                <h4 style={{ margin: '0 0 16px 0', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)' }}>
+                  Changes in this draft ({lastSaved})
+                </h4>
+                <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: 'var(--text-main)' }}>
+                    <CheckCircle2 size={16} style={{ color: 'var(--success)' }} /> Updated "Help & Support" FAQs
+                  </li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: 'var(--text-main)' }}>
+                    <CheckCircle2 size={16} style={{ color: 'var(--success)' }} /> Modified display order in "Dashboard Display"
+                  </li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: 'var(--text-main)' }}>
+                    <CheckCircle2 size={16} style={{ color: 'var(--success)' }} /> Drafted new Questionnaire: "Lifestyle Survey"
+                  </li>
+                </ul>
+              </div>
+
+              <div style={{ display: 'flex', gap: '16px', width: '100%' }}>
+                <button className="btn-secondary" style={{ flex: 1, justifyContent: 'center' }}>
+                  Preview on Mobile Simulator
+                </button>
+                <button 
+                  className="btn-primary" 
+                  style={{ flex: 1, justifyContent: 'center', backgroundColor: configStatus === 'Published' ? 'var(--success)' : 'var(--primary)' }}
+                  onClick={handlePublish}
+                  disabled={configStatus === 'Published'}
+                >
+                  {configStatus === 'Published' ? 'Already Published' : 'Publish to Mobile App'}
+                </button>
+              </div>
+              <p style={{ margin: '24px 0 0 0', fontSize: '13px', color: 'var(--text-muted)' }}>
+                All changes will be permanently recorded in the system audit logs under your account.
+              </p>
+            </div>
+          </div>
+        )}
+
       </div>
-    </div>
     </div>
   );
 }

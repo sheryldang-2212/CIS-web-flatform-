@@ -126,6 +126,16 @@ export const PERMISSION_MODULES = [
     ]
   },
   {
+    id: 'global_test_master',
+    name: 'Global Test Master',
+    icon: Database,
+    permissions: [
+      { name: 'View Master List', code: 'gtm.view', roles: ['platform_admin'], dependency: null },
+      { name: 'Sync from LIS', code: 'gtm.sync', roles: ['platform_admin'], dependency: null },
+      { name: 'Edit Test Status', code: 'gtm.edit', roles: ['platform_admin'], dependency: null },
+    ]
+  },
+  {
     id: 'laboratory_operations',
     name: 'Laboratory Operations',
     icon: Settings2,

@@ -36,7 +36,7 @@ const getNavGroups = (role: string) => {
         groupName: 'CONFIGURATION',
         items: [
           { name: 'Platform Settings', icon: Settings },
-          { name: 'Services & Packages', icon: Box },
+          { name: 'Global Test Master', icon: Database },
           { name: 'Roles & Permissions', icon: Shield }
         ]
       },
@@ -44,12 +44,6 @@ const getNavGroups = (role: string) => {
         groupName: 'MONITORING & LOGS',
         items: [
           { name: 'Platform Audit Logs', icon: FileKey }
-        ]
-      },
-      {
-        groupName: 'COMMUNICATION',
-        items: [
-          { name: 'Announcements', icon: BellRing }
         ]
       }
     ];

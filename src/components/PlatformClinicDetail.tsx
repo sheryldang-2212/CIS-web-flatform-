@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Building2, CheckCircle2, AlertTriangle, XCircle, Clock, ShieldAlert, X, Users, Activity, History, MoreVertical, Save, RefreshCw, Edit2 } from 'lucide-react';
+import { ArrowLeft, Building2, CheckCircle2, AlertTriangle, XCircle, Clock, ShieldAlert, X, Users, Activity, History, MoreVertical, Save, RefreshCw, Edit2, Database, Trash2, UserPlus } from 'lucide-react';
 import AssignAdminModal from './AssignAdminModal';
 import ClinicModuleAccess from './ClinicModuleAccess';
+import PlatformClinicTestAvailability from './PlatformClinicTestAvailability';
 import './PlatformAdmin.css';
 
 interface PlatformClinicDetailProps {
@@ -318,6 +319,7 @@ export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, o
       <div className="detail-tabs">
         {[
           { id: 'Clinic Profile', icon: Building2 },
+          { id: 'Test Availability', icon: Database },
           { id: 'Module Access', icon: Activity },
           { id: 'Activity History', icon: History }
         ].map(tab => (
@@ -334,6 +336,10 @@ export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, o
 
       {/* Content Area */}
       <div className="detail-content">
+        {activeTab === 'Test Availability' && (
+          <PlatformClinicTestAvailability clinic={clinic} isEditing={isEditing} />
+        )}
+
         {activeTab === 'Module Access' && (
           <ClinicModuleAccess />
         )}
@@ -366,176 +372,159 @@ export default function PlatformClinicDetail({ clinic, onBack, onUpdateStatus, o
             )}
 
             {!isEditing ? (
-              <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', alignItems: 'flex-start' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                  {/* Left Column: Basic Info & Admins */}
-                  <div className="detail-card">
-                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
-                      <div style={{ padding: '6px', backgroundColor: '#eff6ff', borderRadius: '6px', color: '#3b82f6' }}>
-                        <Building2 size={18} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '2.5fr 1fr', gap: '24px', alignItems: 'flex-start' }}>
+                  {/* Left Column: Basic Info */}
+                  <div className="detail-card" style={{ padding: '24px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                      <h2 style={{ fontSize: '20px', fontWeight: 700, margin: 0, color: '#111827' }}>{clinic.name}</h2>
+                      {renderStatusBadge(clinic.status)}
+                    </div>
+                    <div style={{ color: '#64748b', fontSize: '14px', marginBottom: '20px' }}>{clinic.code}</div>
+                    
+                    <div style={{ height: '1px', backgroundColor: '#e2e8f0', margin: '0 -24px 20px -24px' }}></div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', rowGap: '20px' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Organization Type</span>
+                        <span style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>{clinic.type || 'Clinic'}</span>
                       </div>
-                      Basic Information
-                    </h3>
-                    <div className="detail-list" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                      <div className="detail-list-item" style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
-                        <span className="detail-label" style={{ marginBottom: '4px' }}>Clinic Code</span>
-                        <span className="detail-value">{clinic.code}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Legal Name</span>
+                        <span style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>{clinic.legalName}</span>
                       </div>
-                      <div className="detail-list-item" style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
-                        <span className="detail-label" style={{ marginBottom: '4px' }}>Organization Type</span>
-                        <span className="detail-value">{clinic.type || 'Clinic'}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Default Language</span>
+                        <span style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>{clinic.language || 'English'}</span>
                       </div>
-                      <div className="detail-list-item" style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
-                        <span className="detail-label" style={{ marginBottom: '4px' }}>Legal Name</span>
-                        <span className="detail-value">{clinic.legalName}</span>
+                      
+                      <div style={{ display: 'flex', flexDirection: 'column', gridColumn: 'span 3' }}>
+                        <span style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Physical Address</span>
+                        <span style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>{clinic.address}</span>
                       </div>
-                      <div className="detail-list-item" style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
-                        <span className="detail-label" style={{ marginBottom: '4px' }}>Display Name</span>
-                        <span className="detail-value">{clinic.name}</span>
+                      
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Country</span>
+                        <span style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>{clinic.country || 'Thailand'}</span>
                       </div>
-                      <div className="detail-list-item" style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px', gridColumn: 'span 2' }}>
-                        <span className="detail-label" style={{ marginBottom: '4px' }}>Physical Address</span>
-                        <span className="detail-value">{clinic.address}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Contact Email</span>
+                        <span style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>{clinic.contactEmail || `contact@${clinic.code.toLowerCase()}.com`}</span>
                       </div>
-                      <div className="detail-list-item" style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
-                        <span className="detail-label" style={{ marginBottom: '4px' }}>Country</span>
-                        <span className="detail-value">{clinic.country || 'Thailand'}</span>
-                      </div>
-                      <div className="detail-list-item" style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
-                        <span className="detail-label" style={{ marginBottom: '4px' }}>Contact Email</span>
-                        <span className="detail-value">{clinic.contactEmail || `contact@${clinic.code.toLowerCase()}.com`}</span>
-                      </div>
-                      <div className="detail-list-item" style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px', gridColumn: 'span 2' }}>
-                        <span className="detail-label" style={{ marginBottom: '4px' }}>Contact Phone</span>
-                        <span className="detail-value">{clinic.contactPhone || '+66...'}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Contact Phone</span>
+                        <span style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>{clinic.contactPhone || '+66 812345671'}</span>
                       </div>
                     </div>
                   </div>
 
-                  {clinic.status === 'Setup Pending' && renderChecklist()}
-
-                  <div className="detail-card">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                      <h3 style={{ fontSize: '16px', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ padding: '6px', backgroundColor: '#fef2f2', borderRadius: '6px', color: '#ef4444' }}>
-                          <ShieldAlert size={18} />
+                  {/* Right Column: Lifecycle Information */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                    <div className="detail-card" style={{ padding: '24px' }}>
+                      <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#111827', margin: '0 0 24px 0' }}>Lifecycle Information</h3>
+                      
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          <span style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Created Date / By</span>
+                          <span style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>{clinic.created} • {clinic.createdBy || 'System Admin'}</span>
                         </div>
-                        Clinic Administrators
-                      </h3>
-                      <button 
-                        className="btn-primary" 
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', fontSize: '13px' }}
-                        onClick={() => setShowAssignModal(true)}
-                        disabled={clinic.status === 'Cancelled'}
-                      >
-                        <Users size={14} /> Assign Admin
-                      </button>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          <span style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>First Activated Date</span>
+                          <span style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>{clinic.firstActivatedDate || 'May 10, 2026'}</span>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          <span style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Last Updated / By</span>
+                          <span style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>{clinic.lastUpdated || clinic.created} • {clinic.updatedBy || 'System Admin'}</span>
+                        </div>
+                      </div>
                     </div>
+
                     {clinic.status === 'Suspended' && (
-                      <div style={{ backgroundColor: '#fffbeb', border: '1px solid #fde68a', padding: '12px 16px', borderRadius: '8px', display: 'flex', alignItems: 'flex-start', marginBottom: '16px' }}>
-                        <AlertTriangle style={{ color: '#d97706', marginRight: '12px', flexShrink: 0, marginTop: '2px' }} size={16} />
-                        <p style={{ color: '#b45309', fontSize: '13px', margin: 0 }}>
-                          This clinic is Suspended. Administrators can be assigned but they will not be able to access the clinic until it is Reactivated.
-                        </p>
+                      <div className="detail-card" style={{ padding: '24px', borderLeft: '4px solid #ef4444' }}>
+                        <h3 style={{ color: '#b91c1c', margin: '0 0 20px 0', fontSize: '16px', fontWeight: 700, display: 'flex', alignItems: 'center' }}>
+                          <AlertTriangle size={18} className="mr-2" /> Suspension Details
+                        </h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}><span style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Suspension Reason</span><span style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>{clinic.suspensionReason || 'No reason provided'}</span></div>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}><span style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Suspended Date</span><span style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>{clinic.suspendedDate || 'Unknown'}</span></div>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}><span style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Suspended By</span><span style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>{clinic.suspendedBy || 'System'}</span></div>
+                        </div>
                       </div>
                     )}
-                    <div className="table-container">
-                      <table className="data-table">
-                        <thead>
-                          <tr>
-                            <th>Admin Name</th>
-                            <th>Email Address</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {admins.filter(a => a.assignmentStatus === 'Assigned').length > 0 ? (
-                            admins.filter(a => a.assignmentStatus === 'Assigned').map(admin => (
-                              <tr key={admin.id}>
-                                <td style={{ fontWeight: 500 }}>{admin.name}</td>
-                                <td>{admin.email}</td>
-                                <td>
-                                  <span className={`status-badge ${admin.accountStatus === 'Active' ? 'success' : 'warning'}`}>
-                                    {admin.accountStatus === 'Active' ? <CheckCircle2 size={12} className="mr-1" /> : <Clock size={12} className="mr-1" />}
-                                    {admin.accountStatus}
-                                  </span>
-                                </td>
-                                <td>
-                                  <button 
-                                    style={{ color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 500, fontSize: '13px' }}
-                                    onClick={() => setShowRemoveConfirm(admin.id)}
-                                  >
-                                    Remove
-                                  </button>
-                                </td>
-                              </tr>
-                            ))
-                          ) : (
-                            <tr>
-                              <td colSpan={4} style={{ textAlign: 'center', padding: '32px 0', color: '#64748b' }}>No administrators assigned yet.</td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
-                    <p style={{ fontSize: '12px', color: '#64748b', marginTop: '16px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <ShieldAlert size={12} /> A clinic must have at least one active administrator to be activated.
-                    </p>
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                  {/* Right Column: Lifecycle, Admin Summary, Suspension */}
-                  <div className="detail-card">
-                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
-                      <div style={{ padding: '6px', backgroundColor: '#f0fdf4', borderRadius: '6px', color: '#16a34a' }}>
-                        <Activity size={18} />
-                      </div>
-                      Lifecycle Information
-                    </h3>
-                    <div className="detail-list" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                      <div className="detail-list-item" style={{ flexDirection: 'column', alignItems: 'flex-start' }}><span className="detail-label" style={{ marginBottom: '4px' }}>Clinic Status</span><div>{renderStatusBadge(clinic.status)}</div></div>
-                      <div className="detail-list-item" style={{ flexDirection: 'column', alignItems: 'flex-start' }}><span className="detail-label" style={{ marginBottom: '4px' }}>Created Date / By</span><span className="detail-value">{clinic.created} • {clinic.createdBy || 'System Admin'}</span></div>
-                      <div className="detail-list-item" style={{ flexDirection: 'column', alignItems: 'flex-start' }}><span className="detail-label" style={{ marginBottom: '4px' }}>First Activated Date</span><span className="detail-value">{clinic.firstActivatedDate || 'Not Activated'}</span></div>
-                      <div className="detail-list-item" style={{ flexDirection: 'column', alignItems: 'flex-start' }}><span className="detail-label" style={{ marginBottom: '4px' }}>Last Status Changed</span><span className="detail-value">{clinic.lastStatusChangedDate || clinic.created}</span></div>
-                      <div className="detail-list-item" style={{ flexDirection: 'column', alignItems: 'flex-start' }}><span className="detail-label" style={{ marginBottom: '4px' }}>Last Updated / By</span><span className="detail-value">{clinic.lastUpdated || clinic.created} • {clinic.updatedBy || 'System Admin'}</span></div>
-                    </div>
-                  </div>
+                {clinic.status === 'Setup Pending' && renderChecklist()}
 
-                  <div className="detail-card">
-                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
-                      <div style={{ padding: '6px', backgroundColor: '#fdf4ff', borderRadius: '6px', color: '#d946ef' }}>
-                        <Users size={18} />
-                      </div>
-                      Admin Summary
+                {/* Full Width: Clinic Administrators */}
+                <div className="detail-card" style={{ padding: '24px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                    <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#111827', margin: 0 }}>
+                      Clinic Administrators
                     </h3>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-                      <div style={{ backgroundColor: '#f8fafc', padding: '16px', borderRadius: '12px', display: 'flex', flexDirection: 'column', gridColumn: 'span 2' }}>
-                        <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Total Admins</span>
-                        <span style={{ fontSize: '28px', fontWeight: 800, color: '#334155', marginTop: '4px' }}>{(clinic.activeAdmins || 0) + (clinic.pendingAdmins || 0)}</span>
-                      </div>
-                      <div style={{ backgroundColor: '#f0fdf4', padding: '12px', borderRadius: '12px', display: 'flex', flexDirection: 'column' }}>
-                        <span style={{ fontSize: '11px', color: '#166534', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Active</span>
-                        <span style={{ fontSize: '24px', fontWeight: 800, color: '#16a34a', marginTop: '4px' }}>{clinic.activeAdmins || 0}</span>
-                      </div>
-                      <div style={{ backgroundColor: '#fffbeb', padding: '12px', borderRadius: '12px', display: 'flex', flexDirection: 'column' }}>
-                        <span style={{ fontSize: '11px', color: '#b45309', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Pending</span>
-                        <span style={{ fontSize: '24px', fontWeight: 800, color: '#d97706', marginTop: '4px' }}>{clinic.pendingAdmins || 0}</span>
-                      </div>
-                    </div>
+                    <button 
+                      style={{ 
+                        display: 'flex', alignItems: 'center', gap: '6px', 
+                        padding: '6px 12px', fontSize: '13px', fontWeight: 500,
+                        backgroundColor: '#fff', border: '1px solid #e2e8f0',
+                        borderRadius: '6px', color: '#111827', cursor: 'pointer'
+                      }}
+                      onClick={() => setShowAssignModal(true)}
+                      disabled={clinic.status === 'Cancelled'}
+                    >
+                      <UserPlus size={14} /> Assign Admin
+                    </button>
                   </div>
-
+                  
                   {clinic.status === 'Suspended' && (
-                    <div className="detail-card" style={{ borderLeft: '4px solid #ef4444' }}>
-                      <h3 style={{ color: '#b91c1c', marginBottom: '24px' }}><AlertTriangle size={18} className="mr-2 inline" /> Suspension Details</h3>
-                      <div className="detail-list" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        <div className="detail-list-item" style={{ flexDirection: 'column', alignItems: 'flex-start' }}><span className="detail-label" style={{ marginBottom: '4px' }}>Suspension Reason</span><span className="detail-value font-medium">{clinic.suspensionReason || 'No reason provided'}</span></div>
-                        <div className="detail-list-item" style={{ flexDirection: 'column', alignItems: 'flex-start' }}><span className="detail-label" style={{ marginBottom: '4px' }}>Suspended Date</span><span className="detail-value">{clinic.suspendedDate || 'Unknown'}</span></div>
-                        <div className="detail-list-item" style={{ flexDirection: 'column', alignItems: 'flex-start' }}><span className="detail-label" style={{ marginBottom: '4px' }}>Suspended By</span><span className="detail-value">{clinic.suspendedBy || 'System'}</span></div>
-                      </div>
+                    <div style={{ backgroundColor: '#fffbeb', border: '1px solid #fde68a', padding: '12px 16px', borderRadius: '8px', display: 'flex', alignItems: 'flex-start', marginBottom: '16px' }}>
+                      <AlertTriangle style={{ color: '#d97706', marginRight: '12px', flexShrink: 0, marginTop: '2px' }} size={16} />
+                      <p style={{ color: '#b45309', fontSize: '13px', margin: 0 }}>
+                        This clinic is Suspended. Administrators can be assigned but they will not be able to access the clinic until it is Reactivated.
+                      </p>
                     </div>
                   )}
+
+                  <div style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '14px' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '1px solid #e2e8f0', backgroundColor: '#f8fafc' }}>
+                          <th style={{ padding: '12px 16px', fontWeight: 500, color: '#64748b', fontSize: '13px' }}>Name</th>
+                          <th style={{ padding: '12px 16px', fontWeight: 500, color: '#64748b', fontSize: '13px' }}>Email Address</th>
+                          <th style={{ padding: '12px 16px', fontWeight: 500, color: '#64748b', fontSize: '13px' }}>Status</th>
+                          <th style={{ padding: '12px 16px', width: '48px' }}></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {admins.filter(a => a.assignmentStatus === 'Assigned').length > 0 ? (
+                          admins.filter(a => a.assignmentStatus === 'Assigned').map((admin, idx, arr) => (
+                            <tr key={admin.id} style={{ borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e2e8f0' }}>
+                              <td style={{ padding: '16px', color: '#111827' }}>{admin.name}</td>
+                              <td style={{ padding: '16px', color: '#475569' }}>{admin.email}</td>
+                              <td style={{ padding: '16px' }}>
+                                <span className={`status-badge ${admin.accountStatus === 'Active' ? 'success' : 'bg-gray-100 text-gray-700'}`} style={admin.accountStatus !== 'Active' ? { backgroundColor: '#f1f5f9', color: '#475569', borderColor: '#e2e8f0', fontWeight: 500 } : { fontWeight: 500 }}>
+                                  {admin.accountStatus}
+                                </span>
+                              </td>
+                              <td style={{ padding: '16px', textAlign: 'right' }}>
+                                <button 
+                                  style={{ color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', padding: '4px' }}
+                                  onClick={() => setShowRemoveConfirm(admin.id)}
+                                  title="Remove"
+                                >
+                                  <Trash2 size={18} />
+                                </button>
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan={4} style={{ textAlign: 'center', padding: '32px 0', color: '#64748b' }}>No administrators assigned yet.</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             ) : (
