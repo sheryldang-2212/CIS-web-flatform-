@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, Download, FileSpreadsheet, CheckCircle2, AlertCircle, X, FileText, XCircle, AlertTriangle, List, Plus } from 'lucide-react';
+import { Upload, Download, FileSpreadsheet, CheckCircle2, X, FileText, XCircle, AlertTriangle, List, Plus } from 'lucide-react';
 import './PatientData.css';
 import './PatientBulkUpload.css';
 

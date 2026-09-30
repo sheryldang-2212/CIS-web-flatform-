@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Building2, CheckCircle2, AlertTriangle, XCircle, Clock, ShieldAlert, X, Users, Activity, History, MoreVertical, Save, RefreshCw, Edit2, Database, Trash2, UserPlus } from 'lucide-react';
+import { ArrowLeft, Building2, CheckCircle2, AlertTriangle, XCircle, Clock, X, Activity, History, MoreVertical, Save, RefreshCw, Edit2, Database, Trash2, UserPlus } from 'lucide-react';
 import AssignAdminModal from './AssignAdminModal';
 import ClinicModuleAccess from './ClinicModuleAccess';
 import PlatformClinicTestAvailability from './PlatformClinicTestAvailability';

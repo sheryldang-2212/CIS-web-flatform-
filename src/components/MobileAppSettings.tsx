@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Smartphone, LayoutDashboard, Activity, FileQuestion, Bell, LifeBuoy, ShieldCheck, Eye, Save, Plus, Trash2, Edit2, CheckCircle2, ChevronRight, Globe, AlertTriangle } from 'lucide-react';
 import './Settings.css';
 

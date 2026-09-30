@@ -12,7 +12,6 @@ import UserManagement from './components/UserManagement';
 import RolesPermissions from './components/RolesPermissions';
 import ClinicSettings from './components/ClinicSettings';
 import ServicesAndPackages from './components/ServicesAndPackages';
-import LaboratoryOperations from './components/LaboratoryOperations';
 import StaffSecurity from './components/StaffSecurity';
 import AuditLogs from './components/AuditLogs';
 import DoctorDashboard from './components/DoctorDashboard';

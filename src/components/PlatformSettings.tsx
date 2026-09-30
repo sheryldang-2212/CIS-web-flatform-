@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Settings, Building2, FlaskConical, Save, CheckCircle, AlertTriangle, Smartphone } from 'lucide-react';
+import { Settings, Save, Smartphone } from 'lucide-react';
 import './Dashboard.css';
 import MobileAppSettings from './MobileAppSettings';
 

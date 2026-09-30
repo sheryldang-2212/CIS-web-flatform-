@@ -1,7 +1,7 @@
 import { 
-  RefreshCw, Building2, ShieldCheck, Settings, PauseCircle, AlertTriangle, Info, ChevronRight, 
-  Users, Activity, UserPlus, Plus, Mail, Bell, FileText, Calendar, Clock, Package,
-  MoreVertical, CheckCircle2, AlertCircle
+  RefreshCw, Building2, ShieldCheck, Settings, PauseCircle, AlertTriangle, ChevronRight, 
+  Users, Activity, UserPlus, Plus, Mail, FileText, Calendar, Clock, Package,
+  MoreVertical
 } from 'lucide-react';
 import './Dashboard.css';
 

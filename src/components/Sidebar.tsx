@@ -1,4 +1,4 @@
-import { LayoutGrid, Users, FlaskConical, PanelLeftClose, Settings, Shield, Lock, Box, Activity, FileKey, Database, BellRing, BarChart2 } from 'lucide-react';
+import { LayoutGrid, Users, FlaskConical, PanelLeftClose, Settings, Shield, Lock, Box, Activity, FileKey, Database, BarChart2 } from 'lucide-react';
 import './Sidebar.css';
 
 interface SidebarProps {
